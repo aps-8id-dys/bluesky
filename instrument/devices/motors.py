@@ -1,6 +1,8 @@
 """
-example motors
+Example motors.
 """
+
+# TODO: configure for XPCS as needed.
 
 __all__ = """
     m1  m2  m3  m4
