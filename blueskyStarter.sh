@@ -4,7 +4,7 @@
 
 # Get the Python environment name.
 # either: BLUESKY_ENVIRONMENT or BLUESKY_ENV
-export ENV_NAME="${BLUESKY_ENVIRONMENT:-${BLUESKY_ENV:-training_2022}}"
+export ENV_NAME="${BLUESKY_ENVIRONMENT:-${BLUESKY_ENV:-bluesky_2023_1}}"
 export IPYTHON_PROFILE=bluesky
 export IPYTHONDIR="${HOME}/.ipython-bluesky"
 
