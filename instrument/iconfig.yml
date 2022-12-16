@@ -3,29 +3,29 @@
 # configuration for the instrument package
 # simple key:value pairs
 
-ADSIM_IOC_PREFIX: "ad:"
-GP_IOC_PREFIX: "gp:"
+# ADSIM_IOC_PREFIX: "ad:"
+# GP_IOC_PREFIX: "gp:"
 
-DATABROKER_CATALOG: &databroker_catalog training
+DATABROKER_CATALOG: &databroker_catalog 8idi_xpcs
 
 # default RunEngine metadata
 RUNENGINE_METADATA:
-  beamline_id: Bluesky_training
-  instrument_name: BCDA EPICS Bluesky training
-  proposal_id: training
+  beamline_id: 8idi_XPCS
+  instrument_name: 8-ID-I XPCS
+  proposal_id: XPCS Development
   databroker_catalog: *databroker_catalog
 
 # paths
-AD_IMAGE_DIR: "adsimdet/%Y/%m/%d"
-AD_MOUNT_PATH: /tmp
-BLUESKY_MOUNT_PATH: /tmp/docker_ioc/iocad/tmp
+# AD_IMAGE_DIR: "adsimdet/%Y/%m/%d"
+# AD_MOUNT_PATH: /tmp
+# BLUESKY_MOUNT_PATH: /tmp/docker_ioc/iocad/tmp
 
 # permissions
 ALLOW_AREA_DETECTOR_WARMUP: false
 ENABLE_AREA_DETECTOR_IMAGE_PLUGIN: true
-ENABLE_CALCS: true
+ENABLE_CALCS: false
 USE_PROGRESS_BAR: false
-WRITE_SPEC_DATA_FILES: true
+WRITE_SPEC_DATA_FILES: false
 
 # override default control layer for ophyd
 # if undefined, defaults to PyEpics
@@ -43,13 +43,13 @@ PV_CONNECTION_TIMEOUT: *TIMEOUT
 # These will be converted to tuple() for comparisons.
 MINIMUM_PYTHON_VERSION:
   - 3
-  - 7
+  - 10
 MINIMUM_BLUESKY_VERSION:
   - 1
-  - 8
-MINIMUM_OPHYD_VERSION:
-  - 1
-  - 6
+  - 10
 MINIMUM_DATABROKER_VERSION:
   - 1
   - 2
+MINIMUM_OPHYD_VERSION:
+  - 1
+  - 7
