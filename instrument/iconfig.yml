@@ -1,0 +1,55 @@
+# configuration.yml
+
+# configuration for the instrument package
+# simple key:value pairs
+
+ADSIM_IOC_PREFIX: "ad:"
+GP_IOC_PREFIX: "gp:"
+
+DATABROKER_CATALOG: &databroker_catalog training
+
+# default RunEngine metadata
+RUNENGINE_METADATA:
+  beamline_id: Bluesky_training
+  instrument_name: BCDA EPICS Bluesky training
+  proposal_id: training
+  databroker_catalog: *databroker_catalog
+
+# paths
+AD_IMAGE_DIR: "adsimdet/%Y/%m/%d"
+AD_MOUNT_PATH: /tmp
+BLUESKY_MOUNT_PATH: /tmp/docker_ioc/iocad/tmp
+
+# permissions
+ALLOW_AREA_DETECTOR_WARMUP: false
+ENABLE_AREA_DETECTOR_IMAGE_PLUGIN: true
+ENABLE_CALCS: true
+USE_PROGRESS_BAR: false
+WRITE_SPEC_DATA_FILES: true
+
+# override default control layer for ophyd
+# if undefined, defaults to PyEpics
+# OPHYD_CONTROL_LAYER: PyEpics
+# OPHYD_CONTROL_LAYER: caproto
+
+# ----------------------------------
+
+# default timeouts (seconds)
+PV_TIMEOUT: &TIMEOUT 60
+PV_WRITE_TIMEOUT: *TIMEOUT
+PV_CONNECTION_TIMEOUT: *TIMEOUT
+
+# Minimum software package version checks: MAJOR.minor (no .patch).
+# These will be converted to tuple() for comparisons.
+MINIMUM_PYTHON_VERSION:
+  - 3
+  - 7
+MINIMUM_BLUESKY_VERSION:
+  - 1
+  - 8
+MINIMUM_OPHYD_VERSION:
+  - 1
+  - 6
+MINIMUM_DATABROKER_VERSION:
+  - 1
+  - 2
