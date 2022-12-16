@@ -15,15 +15,6 @@ RUNENGINE_METADATA:
   databroker_catalog: *databroker_catalog
 
 
-# ADSIM_IOC_PREFIX: "ad:"
-# GP_IOC_PREFIX: "gp:"
-AD_LAMBDA2M_IOC_PREFIX: "8idLambda2m:"
-
-# paths
-# AD_IMAGE_DIR: "adsimdet/%Y/%m/%d"
-# AD_MOUNT_PATH: /tmp
-# BLUESKY_MOUNT_PATH: /tmp/docker_ioc/iocad/tmp
-
 # permissions
 ALLOW_AREA_DETECTOR_WARMUP: false
 ENABLE_AREA_DETECTOR_IMAGE_PLUGIN: true
