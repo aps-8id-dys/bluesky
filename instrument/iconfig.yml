@@ -3,8 +3,7 @@
 # configuration for the instrument package
 # simple key:value pairs
 
-# ADSIM_IOC_PREFIX: "ad:"
-# GP_IOC_PREFIX: "gp:"
+CONTROLS_SUBNET: 116
 
 DATABROKER_CATALOG: &databroker_catalog 8idi_xpcs
 
@@ -14,6 +13,11 @@ RUNENGINE_METADATA:
   instrument_name: 8-ID-I XPCS
   proposal_id: XPCS Development
   databroker_catalog: *databroker_catalog
+
+
+# ADSIM_IOC_PREFIX: "ad:"
+# GP_IOC_PREFIX: "gp:"
+AD_LAMBDA2M_IOC_PREFIX: "8idLambda2m:"
 
 # paths
 # AD_IMAGE_DIR: "adsimdet/%Y/%m/%d"
