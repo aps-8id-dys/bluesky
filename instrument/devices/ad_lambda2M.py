@@ -13,7 +13,10 @@ logger.info(__file__)
 
 from pathlib import PurePath
 
+from .. import iconfig
 from apstools.devices import AD_EpicsFileNameHDF5Plugin
+from apstools.devices import AD_plugin_primed
+from apstools.devices import AD_prime_plugin2
 from ophyd import ADComponent
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
@@ -106,3 +109,27 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
 
 
 lambda2M = Lambda2MDetector("8idLambda2m:", name="lambda2M")
+
+# Create two (local) convenience definitions which make
+# it easier to copy/paste to other similar detectors.
+det = lambda2M  # for convenience below
+plugin = det.hdf1  # for convenience below
+
+det.read_attrs.append(plugin.attr_name)  # Ensure plugin's read is called.
+
+# just in case these are not defined in the class source code
+det.cam.stage_sigs["wait_for_plugins"] = "Yes"
+det.image.stage_sigs["blocking_callbacks"] = "No"
+plugin.stage_sigs["blocking_callbacks"] = "No"
+plugin.stage_sigs.move_to_end("capture", last=True)
+
+det.wait_for_connection(timeout=iconfig.get("PV_CONNECTION_TIMEOUT", 15))
+
+# Needed if IOC has just been started
+# plugin.auto_increment.put("Yes")
+# plugin.auto_save.put("Yes")
+# plugin.create_directory.put(-5)
+
+if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
+    if not AD_plugin_primed(plugin):
+        AD_prime_plugin2(plugin)
