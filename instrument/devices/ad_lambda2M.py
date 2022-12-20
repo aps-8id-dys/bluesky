@@ -22,6 +22,7 @@ from ophyd.areadetector import CamBase
 from ophyd.areadetector import DetectorBase
 from ophyd.areadetector import SingleTrigger
 from ophyd.areadetector.plugins import FileBase
+from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import PvaPlugin_V34
 
@@ -101,6 +102,7 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
     )
     image = ADComponent(MyImagePlugin, "image1:")
     pva = ADComponent(MyPvaPlugin, "Pva1:")
+    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
 
 
 lambda2M = Lambda2MDetector("8idLambda2m:", name="lambda2M")
