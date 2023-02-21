@@ -45,4 +45,5 @@ def prepare_count(
         plugin.num_capture, n_images,  # save all frames received
         plugin.compression, compression,
         plugin.file_template, file_template,
+        plugin.enable, 1
     )

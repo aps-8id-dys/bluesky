@@ -11,6 +11,8 @@ import logging
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+import time
+
 from pathlib import PurePath
 
 from .. import iconfig
@@ -108,28 +110,40 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
     codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
 
 
-lambda2M = Lambda2MDetector("8idLambda2m:", name="lambda2M")
+DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
+PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]
 
-# Create two (local) convenience definitions which make
-# it easier to copy/paste to other similar detectors.
-det = lambda2M  # for convenience below
-plugin = det.hdf1  # for convenience below
+t0 = time.time()
+try:
+    lambda2M = Lambda2MDetector(PV_PREFIX, name=DET_NAME)
 
-det.read_attrs.append(plugin.attr_name)  # Ensure plugin's read is called.
+    # Create two (local) convenience definitions which make
+    # it easier to copy/paste to other similar detectors.
+    det = lambda2M  # for convenience below
+    plugin = det.hdf1  # for convenience below
 
-# just in case these are not defined in the class source code
-det.cam.stage_sigs["wait_for_plugins"] = "Yes"
-det.image.stage_sigs["blocking_callbacks"] = "No"
-plugin.stage_sigs["blocking_callbacks"] = "No"
-plugin.stage_sigs.move_to_end("capture", last=True)
+    det.read_attrs.append(plugin.attr_name)  # Ensure plugin's read is called.
 
-det.wait_for_connection(timeout=iconfig.get("PV_CONNECTION_TIMEOUT", 15))
+    # just in case these are not defined in the class source code
+    det.cam.stage_sigs["wait_for_plugins"] = "Yes"
+    det.image.stage_sigs["blocking_callbacks"] = "No"
+    plugin.stage_sigs["blocking_callbacks"] = "No"
+    plugin.stage_sigs.move_to_end("capture", last=True)
 
-# Needed if IOC has just been started
-# plugin.auto_increment.put("Yes")
-# plugin.auto_save.put("Yes")
-# plugin.create_directory.put(-5)
+    det.wait_for_connection(timeout=iconfig.get("PV_CONNECTION_TIMEOUT", 15))
 
-if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
-    if not AD_plugin_primed(plugin):
-        AD_prime_plugin2(plugin)
+    # Needed if IOC has just been started
+    # plugin.auto_increment.put("Yes")
+    # plugin.auto_save.put("Yes")
+    # plugin.create_directory.put(-5)
+
+    if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
+        if det.connected:
+            if not AD_plugin_primed(plugin):
+                AD_prime_plugin2(plugin)
+except (KeyError, NameError, TimeoutError):
+    lambda2M = None
+    logger.warning(
+        "Did not connect '%s' (prefix '%s') in %.2fs.  Setting to 'None'.",
+        DET_NAME, PV_PREFIX, time.time() - t0,
+        )
