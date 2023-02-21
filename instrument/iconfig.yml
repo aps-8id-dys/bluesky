@@ -27,10 +27,31 @@ WRITE_SPEC_DATA_FILES: false
 # OPHYD_CONTROL_LAYER: PyEpics
 # OPHYD_CONTROL_LAYER: caproto
 
+APS_DATA_MANAGEMENT:
+  DM_ROOT_DIR: /home/dm/production
+  DM_DS_WEB_SERVICE_URL: "https://xraydtn02.xray.aps.anl.gov:22236"
+  DM_DAQ_WEB_SERVICE_URL: "https://s8ididm.xray.aps.anl.gov:33336"
+  DM_CAT_WEB_SERVICE_URL: "https://s8ididm.xray.aps.anl.gov:44436"
+  DM_PROC_WEB_SERVICE_URL: "https://s8ididm.xray.aps.anl.gov:55536"
+  DM_APS_DB_WEB_SERVICE_URL: "https://xraydtn02.xray.aps.anl.gov:11236"
+  DM_STATION_NAME: 8IDI
+  DM_ALLOWED_EXPERIMENT_TYPES: XPCS8,TEST
+  DM_GLOBUS_GROUP_ADMINS: sureshn@anl.gov
+  DM_LOGIN_FILE: /home/dm/etc/.8idiuser.system.login
+  DM_BEAMLINE_NAME: 8-ID-I
+  DM_ESAF_SECTOR: 08
+  DM_BEAMLINE_MANAGERS: d53124,d85323,d228484,d85110,d217104
+  DM_DATA_DIRECTORY_MAP: "/net/wolfa/:/ /net/wolf/:/"
+
+AREA_DETECTOR:
+  LAMBDA_2M:
+    PV_PREFIX: "8idLambda2m:"
+    NAME: lambda2M
+
 # ----------------------------------
 
 # default timeouts (seconds)
-PV_TIMEOUT: &TIMEOUT 60
+PV_TIMEOUT: &TIMEOUT 30
 PV_WRITE_TIMEOUT: *TIMEOUT
 PV_CONNECTION_TIMEOUT: *TIMEOUT
 
