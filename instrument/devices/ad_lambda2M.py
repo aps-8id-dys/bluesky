@@ -115,7 +115,9 @@ PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]
 
 t0 = time.time()
 try:
-    lambda2M = Lambda2MDetector(PV_PREFIX, name=DET_NAME)
+    lambda2M = Lambda2MDetector(
+        PV_PREFIX, name=DET_NAME, labels=["area_detector"]
+    )
 
     # Create two (local) convenience definitions which make
     # it easier to copy/paste to other similar detectors.
