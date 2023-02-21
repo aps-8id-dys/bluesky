@@ -13,7 +13,7 @@ QS session.  Any files user support files should go into the
 
 From either tcsh or bash shell, this linux command should start an
 interactive session (using the present working directory for any
-file storage, such as logs): 
+file storage, such as logs):
 
 ```bash
 blueskyStarter.sh
