@@ -15,12 +15,14 @@ import logging
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-from bluesky import plans as bp
 from ophyd import Component, Device, Signal
+
+from bluesky import plans as bp
 
 
 class HelloDevice(Device):
     """Simple ophyd device."""
+
     number = Component(Signal, value=0, kind="hinted")
     text = Component(Signal, value="", kind="normal")
 
