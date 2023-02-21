@@ -23,3 +23,6 @@ mViewer.log
 
 # local developer Python code
 dev_*.py
+
+# APS IT droppings
+.loglogin
