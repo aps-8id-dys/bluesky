@@ -3,8 +3,8 @@ import numpy as np
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from instrument.collection import *  # Yikes!  Starts the bluesky instrument!
-from instrument.devices import *
-from instrument.framework import RE
+# from instrument.devices import *  # imported with collection
+# from instrument.framework import RE  # imported with collection
 
 
 def Rep_Acq(acq_rep=3):
