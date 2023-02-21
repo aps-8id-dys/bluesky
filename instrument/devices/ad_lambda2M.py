@@ -128,8 +128,10 @@ try:
 
     # just in case these are not defined in the class source code
     det.cam.stage_sigs["wait_for_plugins"] = "Yes"
-    det.image.stage_sigs["blocking_callbacks"] = "No"
-    plugin.stage_sigs["blocking_callbacks"] = "No"
+    for nm in det.component_names:
+        obj = getattr(det, nm)
+        if "blocking_callbacks" in dir(obj):  # is it a plugin?
+            obj.stage_sigs["blocking_callbacks"] = "No"
     plugin.stage_sigs.move_to_end("capture", last=True)
 
     det.wait_for_connection(timeout=iconfig.get("PV_CONNECTION_TIMEOUT", 15))
