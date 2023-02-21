@@ -1,3 +1,10 @@
+"""
+Test the Lambda2M area detector.
+
+Load this file::
+
+    %run -i ./user/Lambda2M_Test_bps.py
+"""
 import numpy as np
 
 from bluesky import plan_stubs as bps
