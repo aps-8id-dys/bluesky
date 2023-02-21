@@ -28,6 +28,7 @@ WRITE_SPEC_DATA_FILES: false
 # OPHYD_CONTROL_LAYER: caproto
 
 APS_DATA_MANAGEMENT:
+  # environment variables for APS Data Management at XPCS
   DM_ROOT_DIR: /home/dm/production
   DM_DS_WEB_SERVICE_URL: "https://xraydtn02.xray.aps.anl.gov:22236"
   DM_DAQ_WEB_SERVICE_URL: "https://s8ididm.xray.aps.anl.gov:33336"

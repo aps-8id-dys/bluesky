@@ -12,9 +12,7 @@ logger.info(__file__)
 from os import environ
 from .. import iconfig
 
-constants = iconfig.get("APS_DATA_MANAGEMENT")
-if constants is not None:
-    environ.update(constants)
-    # for k, v in constants.items():
-    #     print(f"{k=} {v=}")
-del constants
+env_vars = iconfig.get("APS_DATA_MANAGEMENT")
+if env_vars is not None:
+    environ.update(env_vars)
+del env_vars
