@@ -28,6 +28,8 @@ Jupyter notebook sessions are not used commonly for bluesky controls.
 The [_QS_](./instrument/README.md) is being configured for
 initial demonstration at this time.
 
+You'll need to have the `bluesky_2023_1` conda/micromamba environment activated and change your working directory to `~/bluesky` to run the QS _server_.
+
 Start QS _server_ process in a screen session. (choices include
 `start`, `stop`, `status`, `restart`, `console`, & `usage`)
 
