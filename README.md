@@ -35,7 +35,7 @@ Start QS _server_ process in a screen session. (choices include
 ./qserver.sh start
 ```
 
-Start client GUI to observe and control the QS server.
+Start QS demo (client) GUI to observe and control the QS server.
 
 ```bash
 queue-monitor &
