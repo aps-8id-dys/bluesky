@@ -28,7 +28,16 @@ Jupyter notebook sessions are not used commonly for bluesky controls.
 The [_QS_](./instrument/README.md) is being configured for
 initial demonstration at this time.
 
-You'll need to have the `bluesky_2023_1` conda/micromamba environment activated and change your working directory to `~/bluesky` to run the QS _server_.
+The QS _server_ must run on the same workstation as the `redis`
+software for reasons of the `redis` configuration.  Only the
+QS _server_ needs to communicate directly with `redis`.
+
+We have selected workstation `lapis.xray.aps.anl.gov` to run
+both `redis` and the QS _server_.
+
+You'll need to have the `bluesky_2023_1` conda/micromamba environment
+activated and change your working directory to `~/bluesky` to run the
+QS _server_.
 
 Start QS _server_ process in a screen session. (choices include
 `start`, `stop`, `status`, `restart`, `console`, & `usage`)
@@ -36,6 +45,9 @@ Start QS _server_ process in a screen session. (choices include
 ```bash
 ./qserver.sh start
 ```
+
+Note: the script will stop if you try to run this on any other
+workstation than the one designated above.
 
 Start QS demo (client) GUI to observe and control the QS server.
 
