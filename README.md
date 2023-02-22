@@ -28,7 +28,7 @@ Jupyter notebook sessions are not used commonly for bluesky controls.
 The [_QS_](./instrument/README.md) is being configured for
 initial demonstration at this time.
 
-The QS _server_ must run on the same workstation as the `redis`
+**Note**: The QS _server_ must run on the same workstation as the `redis`
 software for reasons of the `redis` configuration.  Only the
 QS _server_ needs to communicate directly with `redis`.
 
@@ -46,7 +46,7 @@ Start QS _server_ process in a screen session. (choices include
 ./qserver.sh start
 ```
 
-Note: the script will stop if you try to run this on any other
+**Note**: The script will stop if you try to run this on any other
 workstation than the one designated above.
 
 Start QS demo (client) GUI to observe and control the QS server.
@@ -55,7 +55,9 @@ Start QS demo (client) GUI to observe and control the QS server.
 queue-monitor &
 ```
 
-**Related**: Notes for the (similar) BDP [QS](https://github.com/BCDA-APS/bdp_controls/blob/main/qserver/README.md) installation are on GitHub.  Plans and devices _will_ be different.
+**Related**: Notes for the (similar) BDP
+[QS](https://github.com/BCDA-APS/bdp_controls/blob/main/qserver/README.md)
+installation are on GitHub.  Plans and devices _will_ be different.
 
 ### First job
 
@@ -106,6 +108,10 @@ Out[8]:
 <xarray.Dataset>
 Dimensions:     (time: 1)
 Coordinates:
+  * time        (time) float64 1.677e+09
+Data variables:
+    hello       (time) int64 1
+    hello_text  (time) <U13 'Hello, World!'
 ```
 
 </details>
