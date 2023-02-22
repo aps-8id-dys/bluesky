@@ -6,3 +6,4 @@ local, custom Bluesky plans (scans) and other functions
 
 from .detector_prep import *
 from .qs_hello_test import *
+from .acquire_plans import *
