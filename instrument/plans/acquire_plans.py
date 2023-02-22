@@ -30,6 +30,15 @@ def Rep_Acq(
 ):
     """Repeated Acquisition (using lambda2M)."""
     # fmt: off
+    print(f"{file_path=}")
+    print(f"{TEMPLATE=}")
+    yield from bps.mv(
+        lambda2M.hdf1.file_number, 0,
+        lambda2M.hdf1.file_template, TEMPLATE,
+        lambda2M.hdf1.file_path, file_path,
+    )
+
+    print(f"{title=}")
     yield from prepare_count(
         lambda2M.hdf1,
         title, acquire_time, acquire_period,
@@ -37,13 +46,11 @@ def Rep_Acq(
         compression="None",
         auto_save="No",
     )
-
-    yield from bps.mv(
-        lambda2M.hdf1.file_number, 0,
-        lambda2M.hdf1.file_template, TEMPLATE,
-        lambda2M.hdf1.file_path, file_path,
-    )
     # fmt: on
+
+    print(f"Staging setup {lambda2M.stage_sigs=}")
+    print(f"Staging setup {lambda2M.cam.stage_sigs=}")
+    print(f"Staging setup {lambda2M.hdf1.stage_sigs=}")
 
     for ii in range(acq_rep):
         print(f"Iteration {ii+1} of {acq_rep}...")
