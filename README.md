@@ -43,6 +43,61 @@ queue-monitor &
 
 **Related**: Notes for the (similar) BDP [QS](https://github.com/BCDA-APS/bdp_controls/blob/main/qserver/README.md) installation are on GitHub.  Plans and devices _will_ be different.
 
+### First job
+
+Try submitting and running the `hello_plan()` plan.  It does not need any arguments.
+
+<details>
+<summary>hello_plan()</summary>
+
+```
+[I 2023-02-22 11:34:19,130 bluesky_queueserver.manager.manager] Adding new item to the queue ...
+[I 2023-02-22 11:34:19,131 bluesky_queueserver.manager.manager] Item added: success=True item_type='plan' name='hello_plan' item_uid='40b04ad8-a4a1-49b9-8828-b111c99196ce' qsize=1.
+[I 2023-02-22 11:34:19,133 bluesky_queueserver.manager.manager] Returning current queue and running plan ...
+[I 2023-02-22 11:34:27,127 bluesky_queueserver.manager.manager] Starting queue processing ...
+[I 2023-02-22 11:34:27,128 bluesky_queueserver.manager.manager] Processing the next queue item: 1 plans are left in the queue.
+[I 2023-02-22 11:34:27,129 bluesky_queueserver.manager.manager] Starting the plan:
+{'name': 'hello_plan',
+'args': [],
+'kwargs': {},
+'user': 'GUI Client',
+'user_group': 'primary',
+'meta': {},
+'item_uid': '40b04ad8-a4a1-49b9-8828-b111c99196ce'}.
+[I 2023-02-22 11:34:27,129 bluesky_queueserver.manager.worker] Starting execution of a plan ...
+[I 2023-02-22 11:34:27,129 bluesky_queueserver.manager.worker] Starting a plan 'hello_plan'.
+[I 2023-02-22 11:34:27,257 bluesky_queueserver.manager.plan_monitoring] New run was open: 'cb838ec8-3812-4a0f-8b54-5130c1eca54f'
+Run was closed: 'cb838ec8-3812-4a0f-8b54-5130c1eca54f'
+[I 2023-02-22 11:34:27,512 bluesky_queueserver.manager.worker] The plan was exited. Plan state: completed
+[I 2023-02-22 11:34:27,886 bluesky_queueserver.manager.manager] No items are left in the queue.
+[I 2023-02-22 11:34:27,886 bluesky_queueserver.manager.manager] Queue is empty.
+[I 2023-02-22 11:34:27,931 bluesky_queueserver.manager.manager] Returning current queue and running plan ...
+[I 2023-02-22 11:34:27,932 bluesky_queueserver.manager.manager] Returning the list of runs for the running plan ...
+[I 2023-02-22 11:34:27,933 bluesky_queueserver.manager.manager] Returning plan history ...
+```
+
+The run looks like:
+
+```
+In [7]: run
+Out[7]:
+BlueskyRun
+  uid='cb838ec8-3812-4a0f-8b54-5130c1eca54f'
+  exit_status='success'
+  2023-02-22 11:34:27.228 -- 2023-02-22 11:34:27.272
+  Streams:
+    * primary
+In [8]: run.primary.read()
+Out[8]:
+<xarray.Dataset>
+Dimensions:     (time: 1)
+Coordinates:
+```
+
+</details>
+
+![QS demo GUI](./instrument/_resources/2023-02-22-QS-lapis.png)
+
 ## Legacy
 
 The previous instrument configuration is stored in the

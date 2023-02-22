@@ -9,7 +9,7 @@ sys.path.append(
 )
 
 from instrument import iconfig
-from instrument.qserver import *
+from instrument.queueserver import *
 
 
 print_instrument_configuration()
