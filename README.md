@@ -66,7 +66,7 @@ Try submitting and running the `hello_plan()` plan.  It does not need any argume
 <details>
 <summary>hello_plan()</summary>
 
-```
+```py
 [I 2023-02-22 11:34:19,130 bluesky_queueserver.manager.manager] Adding new item to the queue ...
 [I 2023-02-22 11:34:19,131 bluesky_queueserver.manager.manager] Item added: success=True item_type='plan' name='hello_plan' item_uid='40b04ad8-a4a1-49b9-8828-b111c99196ce' qsize=1.
 [I 2023-02-22 11:34:19,133 bluesky_queueserver.manager.manager] Returning current queue and running plan ...
@@ -94,7 +94,7 @@ Run was closed: 'cb838ec8-3812-4a0f-8b54-5130c1eca54f'
 
 The run looks like:
 
-```
+```py
 In [7]: run
 Out[7]:
 BlueskyRun

@@ -64,13 +64,14 @@ class Lambda2MCam(CamBase_V34):
 
     https://x-spectrum.de/products/lambda/
     """
+
     _html_docs = ["Lambda2MCam.html"]
 
     firmware_version = ADComponent(EpicsSignalRO, "FirmwareVersion_RBV")
     operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode")
     serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV")
     temperature = ADComponent(EpicsSignalWithRBV, "Temperature")
-    wait_for_plugins = ADComponent(EpicsSignal, 'WaitForPlugins', string=True)
+    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True)
 
     # Aren't these next components part of the HDF5 module?
     # file_path = ADComponent(EpicsSignal, 'FilePath', string=True)
@@ -81,16 +82,19 @@ class Lambda2MCam(CamBase_V34):
 
 class MyAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
     """Remove property attribute not found in Lambda2M."""
+
     _asyn_pipeline_configuration_names = None
 
 
 class MyImagePlugin(ImagePlugin_V34):
     """Remove property attribute not found in Lambda2M."""
+
     _asyn_pipeline_configuration_names = None
 
 
 class MyPvaPlugin(PvaPlugin_V34):
     """Remove property attribute not found in Lambda2M."""
+
     _asyn_pipeline_configuration_names = None
 
 
@@ -98,16 +102,20 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
     """Custom Lambda2MDetector."""
 
     cam = ADComponent(Lambda2MCam, "cam1:")
+
+    # cam --> codec & image
+    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
+    image = ADComponent(MyImagePlugin, "image1:")
+
+    # codec1 --> hdf1 & pva
     hdf1 = ADComponent(
         MyAD_EpicsFileNameHDF5Plugin,
         "HDF1:",
         write_path_template=str(LAMBDA2M_FILES_ROOT / IMAGE_DIR),
         read_path_template=str(BLUESKY_FILES_ROOT / IMAGE_DIR),
-        kind='normal'
+        kind="normal",
     )
-    image = ADComponent(MyImagePlugin, "image1:")
     pva = ADComponent(MyPvaPlugin, "Pva1:")
-    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
 
 
 DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
@@ -115,9 +123,11 @@ PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]
 
 t0 = time.time()
 try:
+    # fmt: off
     lambda2M = Lambda2MDetector(
         PV_PREFIX, name=DET_NAME, labels=["area_detector"]
     )
+    # fmt: on
 
     # Create two (local) convenience definitions which make
     # it easier to copy/paste to other similar detectors.
@@ -147,7 +157,9 @@ try:
                 AD_prime_plugin2(plugin)
 except (KeyError, NameError, TimeoutError):
     lambda2M = None
+    # fmt: off
     logger.warning(
         "Did not connect '%s' (prefix '%s') in %.2fs.  Setting to 'None'.",
         DET_NAME, PV_PREFIX, time.time() - t0,
-        )
+    )
+    # fmt: on
