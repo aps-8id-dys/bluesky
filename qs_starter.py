@@ -12,7 +12,7 @@ from instrument import iconfig
 from instrument.queueserver import *
 
 # turn down the exception-reporting noise
-_xmode_level - iconfig.get("XMODE_DEBUG_LEVEL")
+_xmode_level = iconfig.get("XMODE_DEBUG_LEVEL")
 if _xmode_level is not None:
     try:
         from IPython import get_ipython
