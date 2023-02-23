@@ -3,7 +3,7 @@ Bluesky plans to acquire images.
 """
 
 __all__ = """
-    Rep_Acq
+    repeated_acquire
 """.split()
 
 import logging
@@ -20,9 +20,9 @@ from . import prepare_count
 TEMPLATE = "%s%s_%6.6d.h5"
 
 
-def Rep_Acq(
+def repeated_acquire(
     acq_rep=3,
-    title="Test",
+    file_name="Test",
     acquire_time=0.001,
     acquire_period=0.001,
     n_images=10_000,
@@ -38,10 +38,10 @@ def Rep_Acq(
         lambda2M.hdf1.file_path, file_path,
     )
 
-    print(f"{title=}")
+    print(f"{file_name=}")
     yield from prepare_count(
         lambda2M.hdf1,
-        title, acquire_time, acquire_period,
+        file_name, acquire_time, acquire_period,
         n_images=n_images,
         compression="None",
         auto_save="No",

@@ -7,7 +7,7 @@ EXAMPLE::
 """
 
 __all__ = """
-    hello_plan
+    hello_world
 """.split()
 
 import logging
@@ -33,6 +33,6 @@ hello_device.stage_sigs["text"] = "Hello, World!"
 hello_device.number.name = hello_device.name
 
 
-def hello_plan():
+def hello_world():
     """Simple plan for testing purposes."""
     yield from bp.count([hello_device], md=dict(title="test QS"))
