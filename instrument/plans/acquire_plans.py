@@ -18,13 +18,16 @@ from ..devices import lambda2M
 from . import prepare_count
 
 TEMPLATE = "%s%s_%6.6d.h5"
+DEFAULT_FRAME_RATE = 500  # fps  (expect occasional dropped frames at ~1_000 fps)
+DEFAULT_ACQUIRE_TIME = 1. / DEFAULT_FRAME_RATE
+DEFAULT_ACQUIRE_PERIOD = DEFAULT_ACQUIRE_TIME
 
 
 def repeated_acquire(
     acq_rep=3,
     file_name="Test",
-    acquire_time=0.001,
-    acquire_period=0.001,
+    acquire_time=DEFAULT_ACQUIRE_TIME,
+    acquire_period=DEFAULT_ACQUIRE_PERIOD,
     n_images=10_000,
     file_path="/home/8ididata/2023-1/bluesky202301",
 ):
@@ -40,7 +43,7 @@ def repeated_acquire(
 
     print(f"{file_name=}")
     yield from prepare_count(
-        lambda2M.hdf1,
+        lambda2M.hdf1,  # NOTE: ONLY the HDF5 plugin is expected here
         file_name, acquire_time, acquire_period,
         n_images=n_images,
         compression="None",
