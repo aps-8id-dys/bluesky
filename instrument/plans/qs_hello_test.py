@@ -3,7 +3,7 @@ Hello, World! demo for bluesky-queueserver testing.
 
 EXAMPLE::
 
-    RE(hello_plan())
+    RE(hello_world())
 """
 
 __all__ = """

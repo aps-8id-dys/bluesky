@@ -16,7 +16,8 @@ logger.info(__file__)
 
 
 def prepare_count(
-    plugin, file_name, acquire_time, acquire_period,
+    plugin,  # NOTE: NOT GENERAL, only the HDF5 writer plugin is expected
+    file_name, acquire_time, acquire_period,
     n_images=1,
     auto_increment="Yes",
     auto_save="Yes",
