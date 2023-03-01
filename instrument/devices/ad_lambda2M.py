@@ -67,15 +67,15 @@ class Lambda2MCam(CamBase_V34):
 
     _html_docs = ["Lambda2MCam.html"]
 
-    firmware_version = ADComponent(EpicsSignalRO, "FirmwareVersion_RBV")
-    operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode")
-    serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV")
-    temperature = ADComponent(EpicsSignalWithRBV, "Temperature")
-    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True)
+    firmware_version = ADComponent(EpicsSignalRO, "FirmwareVersion_RBV", kind="omitted")
+    operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode", kind="config")
+    serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV", kind="omitted")
+    temperature = ADComponent(EpicsSignalWithRBV, "Temperature", kind="config")
+    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
 
-    # Aren't these next components part of the HDF5 module?
-    # file_path = ADComponent(EpicsSignal, 'FilePath', string=True)
-    # create_directory = ADComponent(EpicsSignal, "CreateDirectory")
+    energy_threshold = ADComponent(EpicsSignalWithRBV, "EnergyThreshold", kind="config")
+    dual_mode = ADComponent(EpicsSignalWithRBV, "DualMode", string=True, kind="config")
+    dual_threshold = ADComponent(EpicsSignalWithRBV, "DualThreshold", kind="config")
 
     EXT_TRIGGER = 0
 
