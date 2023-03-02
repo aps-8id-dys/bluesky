@@ -57,7 +57,6 @@ def repeated_acquire(
     image_mode = "Multiple" if n_images > 1 else "Single"
 
     _md = dict(
-        title="BDP demo",
         file_name=file_name,
         use_hdf=use_hdf,
         acquire_time=acquire_time,
