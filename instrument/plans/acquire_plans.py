@@ -27,6 +27,8 @@ DEFAULT_N_IMAGES = int(DEFAULT_DURATION * DEFAULT_FRAME_RATE)
 def use_plugin(plugin, use=True):
     """
     Make the lambda2m HDF (or any other AD) plugin optional.
+
+    Does not need to be a bluesky plan if we will not expose it to the QS.
     """
     det = plugin.parent
     if use:
@@ -37,7 +39,6 @@ def use_plugin(plugin, use=True):
         plugin.disable_on_stage()
         if plugin.attr_name in det.read_attrs:
             det.read_attrs.remove(plugin.attr_name)
-    yield from bps.null()
 
 
 def repeated_acquire(
@@ -51,7 +52,7 @@ def repeated_acquire(
     md={},
 ):
     """Repeated Acquisition (using lambda2M)."""
-    yield from use_plugin(lambda2M.hdf1, use_hdf)
+    use_plugin(lambda2M.hdf1, use_hdf)
 
     n_images = max(n_images, 1)
     image_mode = "Multiple" if n_images > 1 else "Single"
