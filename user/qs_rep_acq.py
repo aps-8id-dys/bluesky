@@ -27,6 +27,8 @@ RM = REManagerAPI(
 #     acquire_period=0.001,
 #     n_images=10_000,
 #     file_path="/home/8ididata/2023-1/bluesky202301",
+#     use_hdf=False,
+#     md={},
 # ):
 
 frame_rate = 200
@@ -43,6 +45,8 @@ for i in range(3):
             # acquire_period=1.0 / frame_rate + 0.000_5,
             # n_images=n_images,
             # file_path="/home/8ididata/2023-1/bluesky202301",
+            use_hdf=False,
+            md={"title": "BDP streaming demo"},
         )
     )
     RM.item_add(BPlan("sleep", 3))
