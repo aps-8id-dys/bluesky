@@ -7,7 +7,7 @@
 export ENV_NAME="${BLUESKY_ENVIRONMENT:-${BLUESKY_ENV:-bluesky_2023_1}}"
 export IPYTHON_PROFILE=bluesky
 export IPYTHONDIR="${HOME}/.ipython-bluesky"
-
+echo "conda environment: ${ENV_NAME}"
 
 pick () {  # activate ENV_NAME using (micromamba or conda) from given arg
 
