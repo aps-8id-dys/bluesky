@@ -27,6 +27,7 @@ def prepare_count(
     file_template=None,
 ):
     ad_det = plugin.parent
+    # compression should be "None" if CODEC1 plugin compresses the image
     compression = compression or "zlib"
     file_path = file_path or plugin.write_path_template  # WRITE_PATH_TEMPLATE
     file_template = file_template or "%s%s_%4.4d.h5"
@@ -34,17 +35,25 @@ def prepare_count(
     image_mode = "Multiple" if n_images > 1 else "Single"
 
     yield from bps.mv(
+        plugin.enable, 1
+        plugin.create_directory, create_directory,
+    )
+    # MUST set create_directory BEFORE file_path
+
+    yield from bps.mv(
+        plugin.file_path, file_path,
+        plugin.file_template, file_template,
+    )
+
+    # NOW, set the other components
+    yield from bps.mv(
         ad_det.cam.num_images, n_images,
         ad_det.cam.acquire_time, acquire_time,
         ad_det.cam.acquire_period, acquire_period,
         ad_det.cam.image_mode, image_mode,
         plugin.auto_increment, auto_increment,
         plugin.auto_save, auto_save,
-        plugin.create_directory, create_directory,
         plugin.file_name, file_name,
-        plugin.file_path, file_path,
         plugin.num_capture, n_images,  # save all frames received
         plugin.compression, compression,
-        plugin.file_template, file_template,
-        plugin.enable, 1
     )

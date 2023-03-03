@@ -16,14 +16,13 @@ RUNENGINE_METADATA:
 
 
 # permissions
-ALLOW_AREA_DETECTOR_WARMUP: false
+ALLOW_AREA_DETECTOR_WARMUP: true
 ENABLE_AREA_DETECTOR_IMAGE_PLUGIN: true
 ENABLE_CALCS: false
 USE_PROGRESS_BAR: false
 WRITE_SPEC_DATA_FILES: false
 
-# override default control layer for ophyd
-# if undefined, defaults to PyEpics
+# override default control layer for ophyd (undefined, defaults to PyEpics)
 # OPHYD_CONTROL_LAYER: PyEpics
 # OPHYD_CONTROL_LAYER: caproto
 
