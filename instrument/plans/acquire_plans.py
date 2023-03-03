@@ -3,7 +3,7 @@ Bluesky plans to acquire images.
 """
 
 __all__ = """
-    repeated_acquire
+    bdp_acquire
 """.split()
 
 import logging

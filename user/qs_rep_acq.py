@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Run the repeated_acquire() plan with the Bluesky Queueserver.
+Run the bdp_acquire() plan with the Bluesky Queueserver.
 
 see: https://blueskyproject.io/bluesky-queueserver-api/usage.html
 """
@@ -20,14 +20,14 @@ RM = REManagerAPI(
 # status = RM.status()
 # print(yaml.dump(status, indent=2))
 
-# def repeated_acquire(
+# def bdp_acquire(
 #     acq_rep=3,
 #     file_name="Test",
-#     acquire_time=0.001,
-#     acquire_period=0.001,
-#     n_images=10_000,
+#     acquire_time=0.005,
+#     acquire_period=0.005,
+#     n_images=2_000,
 #     file_path="/home/8ididata/2023-1/bluesky202301",
-#     use_hdf=False,
+#     method="stream",  # "stream" (PVA) or "file" (HDF5)
 #     md={},
 # ):
 
@@ -43,14 +43,14 @@ RM.item_add(BPlan("sleep", 3))
 for i in range(3):
     RM.item_add(
         BPlan(
-            "repeated_acquire",
+            "bdp_acquire",
             acq_rep=1,
             file_name="BDPQS",
             # acquire_time=1.0 / frame_rate,
             # acquire_period=1.0 / frame_rate + 0.000_5,
             # n_images=n_images,
             # file_path="/home/8ididata/2023-1/bluesky202301",
-            use_hdf=False,
+            method="stream",
             md={"title": title},
         )
     )
