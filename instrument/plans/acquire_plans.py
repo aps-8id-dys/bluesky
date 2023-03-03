@@ -13,6 +13,7 @@ logger.info(__file__)
 
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
+from ophyd.ophydobj import Kind
 
 from ..devices import lambda2M
 
@@ -30,15 +31,12 @@ def use_plugin(plugin, use=True):
 
     Does not need to be a bluesky plan if we will not expose it to the QS.
     """
-    det = plugin.parent
     if use:
         plugin.enable_on_stage()
-        if plugin.attr_name not in det.read_attrs:
-            det.read_attrs.append(plugin.attr_name)
+        plugin.kind = Kind.config | Kind.normal
     else:
         plugin.disable_on_stage()
-        if plugin.attr_name in det.read_attrs:
-            det.read_attrs.remove(plugin.attr_name)
+        plugin.kind = Kind.omitted
 
 
 def repeated_acquire(
@@ -53,6 +51,8 @@ def repeated_acquire(
 ):
     """Repeated Acquisition (using lambda2M)."""
     use_plugin(lambda2M.hdf1, use_hdf)
+    use_plugin(lambda2M.roi1, False)
+    lambda2M.roi1.kind = Kind.omitted  # reset it
 
     n_images = max(n_images, 1)
     image_mode = "Multiple" if n_images > 1 else "Single"
@@ -74,6 +74,12 @@ def repeated_acquire(
         lambda2M.cam.image_mode, image_mode,
         lambda2M.cam.num_images, n_images,
     )
+
+    if use_hdf:
+        lambda2M.cam.array_counter.kind = Kind.omitted
+    else:
+        # need to make some content for det.read()
+        lambda2M.cam.array_counter.kind = Kind.config | Kind.normal
 
     if use_hdf:
         # configure the HDF plugin, only if used

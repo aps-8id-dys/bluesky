@@ -34,19 +34,24 @@ RM = REManagerAPI(
 frame_rate = 200
 duration = 10
 n_images = duration * frame_rate
+title = (
+    "BDP streaming demo with Bluesky Queueserver,"
+    f" {frame_rate} fps for ~{duration} s."
+)
+
 RM.item_add(BPlan("sleep", 3))
 for i in range(3):
     RM.item_add(
         BPlan(
-            "repeated_acquire", 
+            "repeated_acquire",
             acq_rep=1,
-            file_name="Pete",
+            file_name="BDPQS",
             # acquire_time=1.0 / frame_rate,
             # acquire_period=1.0 / frame_rate + 0.000_5,
             # n_images=n_images,
             # file_path="/home/8ididata/2023-1/bluesky202301",
             use_hdf=False,
-            md={"title": "BDP streaming demo"},
+            md={"title": title},
         )
     )
     RM.item_add(BPlan("sleep", 3))

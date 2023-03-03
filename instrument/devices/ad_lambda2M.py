@@ -30,6 +30,8 @@ from ophyd.areadetector.plugins import FileBase
 from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import PvaPlugin_V34
+from ophyd.areadetector.plugins import ROIPlugin_V34
+from ophyd.status import Status
 
 LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
@@ -85,6 +87,14 @@ class MyAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
 
     _asyn_pipeline_configuration_names = None
 
+    def stage(self):
+        # ONLY stage if enabled
+        if self.stage_sigs.get("enable") in (1, "Enable"):
+            result = super().stage()
+        else:
+            result = []
+        return result
+
 
 class MyImagePlugin(ImagePlugin_V34):
     """Remove property attribute not found in Lambda2M."""
@@ -93,6 +103,12 @@ class MyImagePlugin(ImagePlugin_V34):
 
 
 class MyPvaPlugin(PvaPlugin_V34):
+    """Remove property attribute not found in Lambda2M."""
+
+    _asyn_pipeline_configuration_names = None
+
+
+class MyROIPlugin(ROIPlugin_V34):
     """Remove property attribute not found in Lambda2M."""
 
     _asyn_pipeline_configuration_names = None
@@ -116,6 +132,21 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
         kind="normal",
     )
     pva = ADComponent(MyPvaPlugin, "Pva1:")
+    roi1 = ADComponent(MyROIPlugin, "ROI1:")
+
+
+class Lambda2MDetectorPVA(SingleTrigger, DetectorBase):
+    """Custom Lambda2MDetector."""
+
+    cam = ADComponent(Lambda2MCam, "cam1:")
+
+    # cam --> codec & image
+    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
+    image = ADComponent(MyImagePlugin, "image1:")
+
+    # codec1 --> pva
+    pva = ADComponent(MyPvaPlugin, "Pva1:")
+    roi1 = ADComponent(MyROIPlugin, "ROI1:")
 
 
 DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
@@ -126,6 +157,9 @@ try:
     # fmt: off
     lambda2M = Lambda2MDetector(
         PV_PREFIX, name=DET_NAME, labels=["area_detector"]
+    )
+    lambda2Mpva = Lambda2MDetectorPVA(
+        PV_PREFIX, name="lambda2Mpva", labels=["area_detector"]
     )
     # fmt: on
 
