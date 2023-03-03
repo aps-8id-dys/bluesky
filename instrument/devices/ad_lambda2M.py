@@ -4,6 +4,7 @@ EPICS area_detector Lambda 2M
 
 __all__ = """
     lambda2M
+    lambda2Mpva
 """.split()
 
 import logging
@@ -31,7 +32,7 @@ from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import PvaPlugin_V34
 from ophyd.areadetector.plugins import ROIPlugin_V34
-from ophyd.status import Kind
+from ophyd.ophydobj import Kind
 
 LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
@@ -39,8 +40,8 @@ BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
 IMAGE_DIR = "2023-1/bluesky202301"
 
 # MUST end with a `/`, pathlib will NOT provide it
-WRITE_PATH_TEMPLATE = f"{AD_IOC_MOUNT_PATH / IMAGE_DIR}/"
-READ_PATH_TEMPLATE = f"{BLUESKY_MOUNT_PATH / IMAGE_DIR}/"
+WRITE_PATH_TEMPLATE = f"{LAMBDA2M_FILES_ROOT / IMAGE_DIR}/"
+READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
 
 DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
 PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]

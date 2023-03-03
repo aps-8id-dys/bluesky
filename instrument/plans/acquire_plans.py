@@ -72,9 +72,10 @@ def bdp_acquire(
 ):
     """Repeated Acquisition (using Lambda2M detector)."""
 
-    det = LAMBDA2M_CAMERAS[method]  # pick the detector instance
     for m, det in LAMBDA2M_CAMERAS.items():
-        print(f"method='{m}' uses detector {det.name}.connected={det.connected}")
+        print(f"method='{m}' uses detector '{det.name}' (connected={det.connected})")
+
+    det = LAMBDA2M_CAMERAS[method]  # pick the detector instance
     print(f"Selected detector '{det.name}' with method '{method}'.")
 
     det.roi1.kind = Kind.omitted  # reset (so we can ignore) it
@@ -84,12 +85,11 @@ def bdp_acquire(
 
     _md = dict(
         file_name=file_name,
-        use_hdf=use_hdf,
+        method=method,
+        n_images=n_images,
         acquire_time=acquire_time,
         acquire_period=acquire_period,
         image_mode=image_mode,
-        n_images=n_images,
-        method=method,
         detector_name=det.name,
     )
 
