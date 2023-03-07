@@ -9,7 +9,7 @@ Activate conda environment::
 
 Add job(s) to the QS and start the queue::
 
-    ./qs_bdp_acquire.py  # add jobs to the QS and start the queue
+    ./user/qs_bdp_acquire.py  # add jobs to the QS and start the queue
 
 QS GUI::
 
