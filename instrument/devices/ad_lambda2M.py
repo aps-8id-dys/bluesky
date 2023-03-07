@@ -4,7 +4,6 @@ EPICS area_detector Lambda 2M
 
 __all__ = """
     lambda2M
-    lambda2Mpva
 """.split()
 
 import logging
@@ -13,7 +12,6 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 import time
-
 from pathlib import PurePath
 
 from .. import iconfig
@@ -33,6 +31,7 @@ from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import PvaPlugin_V34
 from ophyd.areadetector.plugins import ROIPlugin_V34
 from ophyd.ophydobj import Kind
+from ophyd.status import Status
 
 LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
@@ -95,13 +94,35 @@ class MyAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
 
     _asyn_pipeline_configuration_names = None
 
-    # def stage(self):
-    #     # ONLY stage if enabled
-    #     if self.stage_sigs.get("enable") in (1, "Enable"):
-    #         result = super().stage()
-    #     else:
-    #         result = []
-    #     return result
+    @property
+    def _plugin_enabled(self):
+        return self.stage_sigs.get("enable") in (1, "Enable")
+
+    def generate_datum(self, *args, **kwargs):
+        if self._plugin_enabled:
+            super().generate_datum(*args, **kwargs)
+
+    def read(self):
+        if self._plugin_enabled:
+            readings = super().read()
+        else:
+            readings = {}
+        return readings
+
+    def stage(self):
+        if self._plugin_enabled:
+            staged_objects = super().stage()
+        else:
+            staged_objects = []
+        return staged_objects
+
+    def trigger(self):
+        if self._plugin_enabled:
+            trigger_status = super().trigger()
+        else:
+            trigger_status = Status(self)
+            trigger_status.set_finished()
+        return trigger_status
 
 
 class MyImagePlugin(ImagePlugin_V34):
@@ -122,8 +143,8 @@ class MyROIPlugin(ROIPlugin_V34):
     _asyn_pipeline_configuration_names = None
 
 
-class Lambda2MDetectorFile(SingleTrigger, DetectorBase):
-    """Custom Lambda2M detector with HDF file writing."""
+class Lambda2MDetector(SingleTrigger, DetectorBase):
+    """Custom Lambda2M detector."""
 
     cam = ADComponent(Lambda2MCam, "cam1:")
 
@@ -143,50 +164,34 @@ class Lambda2MDetectorFile(SingleTrigger, DetectorBase):
     roi1 = ADComponent(MyROIPlugin, "ROI1:")
 
 
-class Lambda2MDetectorStream(SingleTrigger, DetectorBase):
-    """Custom Lambda2M detector with PVA image streaming."""
-
-    cam = ADComponent(Lambda2MCam, "cam1:")
-
-    # cam --> codec & image
-    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
-    image = ADComponent(MyImagePlugin, "image1:")
-
-    # codec1 --> pva (& roi1?)
-    pva = ADComponent(MyPvaPlugin, "Pva1:")
-    roi1 = ADComponent(MyROIPlugin, "ROI1:")
-
-
 t0 = time.time()
 try:
-    lambda2M = Lambda2MDetectorFile(
+    # fmt: off
+    lambda2M = Lambda2MDetector(
         PV_PREFIX, name=DET_NAME, labels=["area_detector"]
     )
-    lambda2Mpva = Lambda2MDetectorStream(
-        PV_PREFIX, name="lambda2Mpva", labels=["area_detector"]
-    )
-    # fmt: on
     connection_timeout = iconfig.get("PV_CONNECTION_TIMEOUT", 15)
-    for det in (lambda2M, lambda2Mpva):
-        det.wait_for_connection(timeout=connection_timeout)
-except (KeyError, NameError, TimeoutError):
+    lambda2M.wait_for_connection(timeout=connection_timeout)
+    # fmt: on
+
+except (KeyError, NameError, TimeoutError) as exinfo:
     # fmt: off
     logger.warning(
         "Error connecting with PV='%s in %.2fs, %s",
         PV_PREFIX, time.time() - t0, str(exinfo),
     )
-    logger.warning("Setting lambda2M and lambda2Mpva to None.")
-    # fmt: on
+    logger.warning("Setting lambda2M to None.")
     lambda2M = None
-    lambda2Mpva = None
+    # fmt: on
+
 else:
     # just in case these things are not defined in the class source code
-    for det in (lambda2M, lambda2Mpva):
-        det.cam.stage_sigs["wait_for_plugins"] = "Yes"
-        for nm in det.component_names:
-            obj = getattr(det, nm)
-            if "blocking_callbacks" in dir(obj):  # is it a plugin?
-                obj.stage_sigs["blocking_callbacks"] = "No"
+    det = lambda2M
+    det.cam.stage_sigs["wait_for_plugins"] = "Yes"
+    for nm in det.component_names:
+        obj = getattr(det, nm)
+        if "blocking_callbacks" in dir(obj):  # is it a plugin?
+            obj.stage_sigs["blocking_callbacks"] = "No"
 
     det = lambda2M  # for convenience below
     plugin = det.hdf1  # for convenience below

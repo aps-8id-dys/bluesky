@@ -16,7 +16,6 @@ from bluesky import plans as bp
 from ophyd.ophydobj import Kind
 
 from ..devices import lambda2M
-from ..devices import lambda2Mpva
 from ..framework import bec
 
 AD_HDF5_FILE_TEMPLATE = "%s%s_%6.6d.h5"
@@ -26,22 +25,26 @@ DEFAULT_FRAME_RATE = 200  # fps  (expect occasional dropped frames at ~1_000 fps
 DEFAULT_ACQUIRE_TIME = 1.0 / DEFAULT_FRAME_RATE
 DEFAULT_ACQUIRE_PERIOD = DEFAULT_ACQUIRE_TIME
 DEFAULT_N_IMAGES = int(DEFAULT_DURATION * DEFAULT_FRAME_RATE)
-LAMBDA2M_CAMERAS = dict(file=lambda2M, stream=lambda2Mpva)
 
 
 def prep_camera(det, n_images, t_acq, t_period, mode):
     """Prepare the cam plugin for acquisition."""
+    # fmt: off
     yield from bps.mv(
         det.cam.acquire_period, t_period,
         det.cam.acquire_time, t_acq,
         det.cam.image_mode, mode,
         det.cam.num_images, n_images,
     )
+    # fmt: on
 
 
 def prep_hdf_plugin(plugin, n_images, file_path, file_name):
     """Prepare the hdf1 plugin for acquisition."""
     # these must be set in steps
+    # fmt: off
+    plugin.enable_on_stage()
+    plugin.kind = Kind.config | Kind.normal
     yield from bps.mv(
         plugin.auto_increment, "Yes",
         plugin.auto_save, "Yes",
@@ -49,6 +52,7 @@ def prep_hdf_plugin(plugin, n_images, file_path, file_name):
         plugin.file_number, 0,
         plugin.file_template, AD_HDF5_FILE_TEMPLATE,
     )
+    print(f"{file_path=}")
     yield from bps.mv(
         # plugin.compression, None,
         # plugin.enable, 1,
@@ -57,7 +61,18 @@ def prep_hdf_plugin(plugin, n_images, file_path, file_name):
     )
     yield from bps.mv(
         plugin.file_name, file_name,
+        # avoids: ERROR: capture not supported in Single mode
+        plugin.file_write_mode, "Stream",
     )
+    # fmt: on
+
+
+def restore_hdf_plugin(plugin):
+    # fmt: off
+    yield from bps.mv(
+        plugin.file_write_mode, "Single",
+    )
+    # fmt: on
 
 
 def bdp_acquire(
@@ -72,11 +87,7 @@ def bdp_acquire(
 ):
     """Repeated Acquisition (using Lambda2M detector)."""
 
-    for m, det in LAMBDA2M_CAMERAS.items():
-        print(f"method='{m}' uses detector '{det.name}' (connected={det.connected})")
-
-    det = LAMBDA2M_CAMERAS[method]  # pick the detector instance
-    print(f"Selected detector '{det.name}' with method '{method}'.")
+    det = lambda2M
 
     det.roi1.kind = Kind.omitted  # reset (so we can ignore) it
 
@@ -108,8 +119,12 @@ def bdp_acquire(
                 file_template=AD_HDF5_FILE_TEMPLATE,
             )
         )
+        print(f"{md=}")
         yield from prep_hdf_plugin(det.hdf1, n_images, file_path, file_name)
         print(f"Staging setup {det.hdf1.stage_sigs=}")
+    else:
+        det.hdf1.disable_on_stage()
+        det.hdf1.kind = Kind.omitted
     # fmt: on
 
     _md.update(md)  # add the user-supplied metadata, if any

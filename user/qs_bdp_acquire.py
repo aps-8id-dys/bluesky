@@ -55,7 +55,9 @@ RM = REManagerAPI(
 
 frame_rate = 200  # Top speed seems to be 1_000 fps, stay below this
 duration = 10  # seconds
+# now, the computed terms
 n_images = int(duration * frame_rate)
+acquire_time = 1.0 / frame_rate
 title = (
     "BDP streaming demo with Bluesky Queueserver,"
     f" {frame_rate} fps for ~{duration} s."
@@ -68,8 +70,9 @@ for i in range(3):
             "bdp_acquire",
             acq_rep=1,
             file_name="BDPQS",
-            acquire_time=1.0 / frame_rate,
-            acquire_period=1.0 / frame_rate,  # period is ignored, so: + 0.000_5,
+            acquire_time=acquire_time,
+            # acquire_period is ignored by this cam
+            acquire_period=acquire_time,
             n_images=n_images,
             file_path="/home/8ididata/2023-1/bluesky202301",
             # method="file",  # default: "stream"
