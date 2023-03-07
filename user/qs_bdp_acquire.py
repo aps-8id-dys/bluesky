@@ -68,11 +68,11 @@ for i in range(3):
             "bdp_acquire",
             acq_rep=1,
             file_name="BDPQS",
-            # acquire_time=1.0 / frame_rate,
-            # acquire_period=1.0 / frame_rate + 0.000_5,
-            # n_images=n_images,
-            # file_path="/home/8ididata/2023-1/bluesky202301",
-            # method="file",
+            acquire_time=1.0 / frame_rate,
+            acquire_period=1.0 / frame_rate,  # period is ignored, so: + 0.000_5,
+            n_images=n_images,
+            file_path="/home/8ididata/2023-1/bluesky202301",
+            # method="file",  # default: "stream"
             md={"title": title},
         )
     )
