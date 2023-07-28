@@ -16,8 +16,8 @@ logger.info(__file__)
 
 import numpy as np
 import pyRestTable
-from scipy.ndimage import center_of_mass
 from scipy.integrate import trapz
+from scipy.ndimage import center_of_mass
 
 
 def analyze_peak(y_arr, x_arr=None):

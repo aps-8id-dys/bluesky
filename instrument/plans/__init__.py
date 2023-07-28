@@ -2,8 +2,9 @@
 local, custom Bluesky plans (scans) and other functions
 """
 
-# from .peak_finder_example import *
+# fmt: off
 
-# from .detector_prep import *  # not necessary to expose these plan(s)
-from .qs_hello_test import *
+# from .lup_plan import *
+# from .peak_finder_example import *
+from .demo_hello_world import *
 from .acquire_plans import *

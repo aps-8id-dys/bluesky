@@ -13,13 +13,13 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
+import apstools.devices
+import numpy
+from ophyd import EpicsSignalRO
+
 from .. import iconfig
 from .calculation_records import calcs
 from .motors import m1
-from ophyd import EpicsSignalRO
-import apstools.devices
-import numpy
-
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 

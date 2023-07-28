@@ -14,5 +14,4 @@ logger.info(__file__)
 
 import apstools.devices
 
-
 aps = apstools.devices.ApsMachineParametersDevice(name="aps")

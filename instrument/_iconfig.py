@@ -10,17 +10,20 @@ Example YAML configuration file::
     catalog: bdp2022
 """
 
-__all__ = ["iconfig", ]
+__all__ = [
+    "iconfig",
+]
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 print(__file__)
 
 import pathlib
-import yaml
 
+import yaml
 
 CONFIG_FILE = pathlib.Path(__file__).absolute().parent / "iconfig.yml"
 

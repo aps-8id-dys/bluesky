@@ -1,33 +1,27 @@
 #!/bin/bash
 
-# start a bluesky session in IPython console (default) or Jupyter notebook GUI
+# Start a bluesky session in IPython console (default) or Jupyter notebook GUI.
 
 # Get the Python environment name.
-# either: BLUESKY_ENVIRONMENT or BLUESKY_ENV
-export ENV_NAME="${BLUESKY_ENVIRONMENT:-${BLUESKY_ENV:-bluesky_2023_2}}"
+# define fallback if BLUESKY_CONDA_ENV is not found
+DEFAULT_ENV=bluesky_2023_2
+export ENV_NAME="${BLUESKY_CONDA_ENV:-${DEFAULT_ENV}}"
 export IPYTHON_PROFILE=bluesky
 export IPYTHONDIR="${HOME}/.ipython-bluesky"
-echo "conda environment: ${ENV_NAME}"
 
-pick () {  # activate ENV_NAME using (micromamba or conda) from given arg
+
+pick () {  # activate ENV_NAME (using conda) from given arg
 
     ARG="${1}"
-    # echo "============"
-    # echo "ARG = ${ARG}"
 
     if [ "${ARG}" == "" ]; then
-        # echo "empty"
         return 1
     fi
 
     if [ -d "${ARG}" ]; then
-        # echo "a directory"
-
-        pick "${ARG}/bin/micromamba" \
-        || pick "${ARG}/bin/conda"
+        pick "${ARG}/bin/conda"
 
         if [ "${cmd_base}" != "" ]; then
-            # echo "cmd_base = ${cmd_base}"
             return 0
         fi
         return 1
@@ -38,9 +32,7 @@ pick () {  # activate ENV_NAME using (micromamba or conda) from given arg
         return 1
     fi
 
-    # echo "cmd = ${CMD}"
     if [ -x "${CMD}" ]; then
-        # echo "executable cmd = ${CMD}"
         match_env_name=$( \
             ${CMD} env list \
             | grep "^[ ]*${ENV_NAME} " \
@@ -49,18 +41,10 @@ pick () {  # activate ENV_NAME using (micromamba or conda) from given arg
         if [ "${match_env_name}" != "" ]; then
             # found the requested environment name
             cmd_base=$(basename "${CMD}")
-            # echo "match_env_name cmd = ${match_env_name}"
             case "${cmd_base}" in
-                micromamba)
-                    eval "$(${CMD} shell hook --shell=bash)"
-                    "${cmd_base}" activate "${ENV_NAME}"
-                    # echo "MAMBA_ROOT_PREFIX = ${MAMBA_ROOT_PREFIX}"
-                    return 0
-                    ;;
-                conda | mamba)
+                conda)
                     source "$(dirname ${CMD})/activate" base
                     "${cmd_base}" activate "${ENV_NAME}"
-                    # echo "CONDA_PREFIX = ${CONDA_PREFIX}"
                     return 0
                     ;;
                 *)
@@ -76,14 +60,14 @@ pick () {  # activate ENV_NAME using (micromamba or conda) from given arg
 
 pick_environment_executable () {  # Activate the environment
     # Pick the first "hit"
-    pick "${HOME}" \
-    || pick "micromamba" \
+    pick "/APSshare/miniconda/x86_64" \
+    || pick "${HOME}" \
     || pick "conda" \
-    || pick "/APSshare/bin/micromamba" \
-    || pick "/APSshare/miniconda/x86_64" \
     || pick "/opt/miniconda3" \
     || pick "${HOME}/Apps/miniconda" \
     || pick "${HOME}/Apps/anaconda"
+
+    echo "==> CONDA_PREFIX=${CONDA_PREFIX}"
 
     if [ "${cmd_base}" != "" ]; then
         echo "$(which python) -- $(python --version)"
@@ -125,13 +109,8 @@ usage () {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 case $(echo "${1}" | tr '[:upper:]' '[:lower:]') in
-  gui | jupyter | lab | notebook | server)
-    lab_server  ;;
-  "" | console | ipython)
-    console_session  ;;
-  help | usage)
-    usage  ;;
-  *)
-    usage
-    exit 1
+  lab) lab_server  ;;
+  "" | console) console_session  ;;
+  help) usage  ;;
+  *) usage; exit 1
 esac

@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 import sys
+
 from .. import iconfig
 
 # ensure BlueSky is available
@@ -43,10 +44,12 @@ req_version = tuple(iconfig.get("MINIMUM_OPHYD_VERSION", (1, 6)))
 cur_version = tuple(map(int, ophyd.__version__.split(".")[:2]))
 if cur_version < req_version:
     ver_str = ".".join((map(str, req_version)))
+    # fmt: off
     raise ValueError(
         f"Need ophyd version {ver_str} or higher"
         f", found version {ophyd.__version__}"
     )
+    # fmt: on
 
 
 # ensure minimum databroker version

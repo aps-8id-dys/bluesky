@@ -2,11 +2,10 @@
 configure the Bluesky framework
 """
 
-from .check_python import *
+# fmt: off
+
 from .check_bluesky import *
-
+from .check_python import *
+from .dm_setup import *
 from .initialize import *
-
 from .metadata import *
-
-from .aps_data_management import *

@@ -12,29 +12,31 @@ __all__ = """
 """.split()
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 print(__file__)
 
-from . import iconfig
-from .epics_signal_config import epics_scan_id_source
-from .epics_signal_config import scan_id_epics
+import getpass
+import os
+import socket
+
 import apstools
-import bluesky
 import bluesky_queueserver
 import databroker
 import epics
-import getpass
 import h5py
 import matplotlib
 import numpy
 import ophyd
-import os
 import pyRestTable
-import socket
 import spec2nexus
 
+import bluesky
+
+from . import iconfig
+from .epics_signal_config import epics_scan_id_source, scan_id_epics
 
 HOSTNAME = socket.gethostname() or "localhost"
 USERNAME = getpass.getuser() or "queueserver user"

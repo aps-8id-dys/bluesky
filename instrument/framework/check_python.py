@@ -10,8 +10,9 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
 import sys
+
+from .. import iconfig
 
 # ensure minimum Python version
 

@@ -15,15 +15,14 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
 from ophyd import Component, Device, EpicsSignalRO
 
+from .. import iconfig
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 
 
 class IocInfoDevice(Device):
-
     iso8601 = Component(EpicsSignalRO, "iso8601")
     uptime = Component(EpicsSignalRO, "UPTIME")
 
@@ -31,4 +30,5 @@ class IocInfoDevice(Device):
 gp_stats = IocInfoDevice(IOC, name="gp_stats")
 
 # Too bad, this ADSimDetector does not have iocStats
-# ad_stats = IocInfoDevice("ad:", name="ad_stats")
+# IOC = iconfig.get("ADSIM_IOC_PREFIX", "ad:")
+# ad_stats = IocInfoDevice(IOC, name="ad_stats")
