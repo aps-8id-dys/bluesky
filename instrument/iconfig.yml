@@ -50,6 +50,12 @@ AREA_DETECTOR:
   LAMBDA_2M:
     PV_PREFIX: "8idLambda2m:"
     NAME: lambda2M
+  SIMDET_4M:
+    PV_PREFIX: "8idSimDetector4m:"
+    NAME: simdet4M
+  SIMDET_16M:
+    PV_PREFIX: "8idSimDetector16m:"
+    NAME: simdet16M
 
 # ----------------------------------
 
