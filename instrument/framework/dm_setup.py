@@ -26,6 +26,7 @@ else:
     # parse environment variables from bash script
     setup_file = pathlib.Path(DM_SETUP_FILE)
     logger.info("APS DM environment file: %s", str(setup_file))
+    print(f"APS DM environment file '{setup_file}'")
     environment_variables = {}
     export_ = "export "
     for line in open(setup_file).readlines():
@@ -36,4 +37,5 @@ else:
         environment_variables[k] = v
 
     os.environ.update(environment_variables)
+    DM_WORKFLOW_OWNER = environment_variables.get("DM_STATION_NAME", "unknown").lower()
     logger.info("APS DM workflow owner: %s", DM_WORKFLOW_OWNER)

@@ -15,7 +15,6 @@ import os
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level
 logger.info(__file__)
-print(__file__)
 
 from apstools.devices import DM_WorkflowConnector
 
