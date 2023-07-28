@@ -13,10 +13,11 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
-from ophyd.scaler import ScalerCH
 import time
 
+from ophyd.scaler import ScalerCH
+
+from .. import iconfig
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 
@@ -28,9 +29,7 @@ if not len(scaler1.channels.chan01.chname.get()):
     # CAUTION: define channel names JUST for this simulation.
     # For a real instrument, the names are assigned when the
     # detector pulse cables are connected to the scaler channels.
-    logger.info(
-        f"{scaler1.name} has no channel names.  Assigning channel names."
-    )
+    logger.info(f"{scaler1.name} has no channel names.  Assigning channel names.")
     scaler1.channels.chan01.chname.put("timebase")
     scaler1.channels.chan02.chname.put("I0")
     scaler1.channels.chan03.chname.put("scint")

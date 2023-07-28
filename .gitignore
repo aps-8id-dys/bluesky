@@ -1,8 +1,10 @@
 # bluesky-queueserver
 existing_plans_and_devices.yaml
 
-*.pyc
-*.pyo
+__pycache__/
+*.py[cod]
+*$py.class
+
 *~
 mViewer.log
 
@@ -23,6 +25,10 @@ mViewer.log
 
 # local developer Python code
 dev_*.py
+dev_*.ipynb
+
+# Sphinx build products
+build/
 
 # local developer notes
 notes_*.md

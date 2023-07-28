@@ -2,6 +2,8 @@
 local, custom Device definitions
 """
 
+# fmt: off
+
 # from ophyd.log import config_ophyd_logging
 # config_ophyd_logging(level="DEBUG")
 #     # 'ophyd' — the logger to which all ophyd log records propagate
@@ -14,12 +16,20 @@ local, custom Device definitions
 
 # from .area_detector import *
 # from .calculation_records import *
+from .data_management import *
+
+# from .fourc_diffractometer import *
 # from .ioc_stats import *
 # from .kohzu_monochromator import *
 # from .motors import *
 # from .noisy_detector import *
 # from .scaler import *
 # from .shutter_simulator import *
+# from .simulated_fourc import *
+# from .simulated_kappa import *
+# from .slits import *
+# from .sixc_diffractometer import *
 # from .temperature_signal import *
 
+# imports that MUST come after the above devices
 from .ad_lambda2M import *

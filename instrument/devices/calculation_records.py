@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
 import apstools.synApps
 
+from .. import iconfig
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 

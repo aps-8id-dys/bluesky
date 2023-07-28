@@ -12,20 +12,20 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
 from apstools.devices import KohzuSeqCtl_Monochromator
-from bluesky import plan_stubs as bps
-from ophyd import Component
-from ophyd import EpicsMotor
+from ophyd import Component, EpicsMotor
 
+from bluesky import plan_stubs as bps
+
+from .. import iconfig
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 
 
 class MyKohzu(KohzuSeqCtl_Monochromator):
-    m_theta = Component(EpicsMotor, "m45", kind="normal")
-    m_y = Component(EpicsMotor, "m46", kind="normal")
-    m_z = Component(EpicsMotor, "m47", kind="normal")
+    m_theta = Component(EpicsMotor, "m45", kind="normal", labels=["motor"])
+    m_y = Component(EpicsMotor, "m46", kind="normal", labels=["motor"])
+    m_z = Component(EpicsMotor, "m47", kind="normal", labels=["motor"])
 
     def into_control_range(self, p_theta=2, p_y=-15, p_z=90):
         """
@@ -45,15 +45,12 @@ class MyKohzu(KohzuSeqCtl_Monochromator):
             args += [self.m_y, p_y]
         if self.m_z.position < p_z:
             args += [self.m_z, p_z]
-        if (len(args) == 0):
+        if len(args) == 0:
             # all motors in range, no work to do, MUST yield something
             yield from bps.null()
             return
         yield from bps.sleep(1)  # allow IOC to react
-        yield from bps.mv(
-            self.operator_acknowledge, 1,
-            self.mode, "Auto"
-        )
+        yield from bps.mv(self.operator_acknowledge, 1, self.mode, "Auto")
 
     def stop(self):
         self.m_theta.stop()

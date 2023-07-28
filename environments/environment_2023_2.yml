@@ -3,19 +3,26 @@ name: bluesky_2023_2
 # download:
 #   wget https://raw.githubusercontent.com/BCDA-APS/bluesky_training/main/bluesky/environments/environment_2023_2.yml
 # create:
-#   conda env create --force -n bluesky_2023_2 --force -f ./environment_2023_2.yml --solver=libmamba
+#   conda env create --force -n bluesky_2023_2 -f ./environment_2023_2.yml --solver=libmamba
 # activate:
 #   conda activate bluesky_2023_2
 
-# Note this advice about bash environment variables:
+# Add/revise environment variable for default bluesky environment.
+# Add to ~/.bash_aliases (or if that does not exist, ~/.bashrc).
+# export BLUESKY_CONDA_ENV=bluesky_2023_2
+
+# For more advice about bash environment variables, see:
 # https://github.com/BCDA-APS/bluesky_training/blob/main/bluesky/environments/admin/bluesky.md#bash-environment-variables
 
 channels:
-  - conda-forge
+  # To get epics-base compatible with both PyEpics _and_ pvapy, apsu channel first.
+  # BTW: apsu channel includes all of sveseli channel (no need for the extra).
   - apsu
+
+  # then conda-forge
+  - conda-forge
   - aps-anl-tag
   - defaults
-  - sveseli
 
 dependencies:
 
@@ -65,6 +72,7 @@ dependencies:
   - databroker-pack
   - databroker =1.2
   - hklpy >=1.0.3  # --- linux-64
+  - httpx >=0.14  # issue #75
   - ophyd >=1.7
   - pydm
   - tiled
@@ -92,6 +100,7 @@ dependencies:
   - pydata-sphinx-theme
   - pygithub
   - sphinx
+  - sphinx-tabs
   - sphinxcontrib-napoleon
   - twine
   - versioneer

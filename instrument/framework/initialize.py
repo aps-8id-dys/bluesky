@@ -20,50 +20,41 @@ import sys
 
 sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent.parent))
 
-from .. import iconfig
-from bluesky import RunEngine
-from bluesky import SupplementalData
+import warnings
+
+import databroker
+import numpy as np
+import ophyd
+from IPython import get_ipython
+from ophyd.signal import EpicsSignalBase
+
+# convenience imports
+import bluesky.plan_stubs as bps
+import bluesky.plans as bp
+import bluesky.preprocessors as bpp
+from bluesky import RunEngine, SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from bluesky.magics import BlueskyMagics
 from bluesky.simulators import summarize_plan
-from bluesky.utils import PersistentDict
-from bluesky.utils import ProgressBarManager
-from bluesky.utils import ts_msg_hook
-from IPython import get_ipython
-from ophyd.signal import EpicsSignalBase
-import databroker
-import ophyd
-import warnings
+from bluesky.utils import PersistentDict, ProgressBarManager, ts_msg_hook
 
-# convenience imports
-import bluesky.plans as bp
-import bluesky.plan_stubs as bps
-import bluesky.preprocessors as bpp
-import numpy as np
+from .. import iconfig
 
 
 def get_md_path():
-    return str(pathlib.Path.home() / "Bluesky_RunEngine_md")
-
-
-md_path = get_md_path()
-# ### remove this legacy code after 2022-07-31 and below (old_md)
-# check if we need to transition from SQLite-backed historydict
-# old_md = None
-# if not os.path.exists(md_path):
-#     logger.info("New directory to store RE.md between sessions: %s", md_path)
-#     os.makedirs(md_path)
-#     from bluesky.utils import get_history
-
-#     old_md = get_history()
+    path = iconfig.get("RUNENGINE_MD_PATH")
+    if path is None:
+        path = pathlib.Path.home() / "Bluesky_RunEngine_md"
+    else:
+        path = pathlib.Path(path)
+    logger.info("RunEngine metadata saved in directory: %s", str(path))
+    return str(path)
 
 
 # Set up a RunEngine and use metadata backed PersistentDict
 RE = RunEngine({})
-RE.md = PersistentDict(md_path)
-# if old_md is not None:
-#     logger.info("migrating RE.md storage to PersistentDict")
-#     RE.md.update(old_md)
+RE.md = PersistentDict(get_md_path())
+
 
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
@@ -120,7 +111,7 @@ TIMEOUT = 60
 if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
     EpicsSignalBase.set_defaults(
         auto_monitor=True,
-        timeout=iconfig.get("PV_TIMEOUT", TIMEOUT),
+        timeout=iconfig.get("PV_READ_TIMEOUT", TIMEOUT),
         write_timeout=iconfig.get("PV_WRITE_TIMEOUT", TIMEOUT),
         connection_timeout=iconfig.get("PV_CONNECTION_TIMEOUT", TIMEOUT),
     )

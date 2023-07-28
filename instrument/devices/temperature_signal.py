@@ -12,13 +12,10 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
+from ophyd import Component, EpicsSignal, PVPositioner, Signal
+
 from .. import iconfig
 from .calculation_records import calcs
-from ophyd import Component
-from ophyd import EpicsSignal
-from ophyd import PVPositioner
-from ophyd import Signal
-
 
 IOC = iconfig.get("GP_IOC_PREFIX", "gp:")
 
@@ -128,7 +125,10 @@ class MyPvPositioner(PVPositioner):
 
 
 temperature = MyPvPositioner(
-    f"{IOC}userCalc8", name="temperature", limits=(-20, 255), egu="C",
+    f"{IOC}userCalc8",
+    name="temperature",
+    limits=(-20, 255),
+    egu="C",
 )
 temperature.wait_for_connection()
 temperature.setup_temperature(

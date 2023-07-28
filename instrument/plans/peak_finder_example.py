@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-from .. import iconfig
-from ..devices import change_noisy_parameters
-from ..devices import m1
-from ..devices import noisy
-from ..utils.image_analysis import analyze_peak
-from bluesky import plans as bp
 import pyRestTable
+
+from bluesky import plans as bp
+
+from .. import iconfig
+from ..devices import change_noisy_parameters, m1, noisy
+from ..utils.image_analysis import analyze_peak
 
 if iconfig.get("framework", "unknown") == "queueserver":
     from ..queueserver_framework import cat
@@ -92,7 +92,7 @@ def findpeak_multipass(number_of_scans=4, number_of_points=23, magnify=1.2, md=N
     cen = 0
     results = []
     for _again in range(number_of_scans):
-        md["scan_sequence_number"] = _again+1
+        md["scan_sequence_number"] = _again + 1
         m1.move(cen)
         uid = yield from bp.rel_scan(
             [noisy], m1, -magnify * sig, magnify * sig, number_of_points, md=md
@@ -115,9 +115,10 @@ def findpeak_multipass(number_of_scans=4, number_of_points=23, magnify=1.2, md=N
 
 
 def repeat_findpeak(iters=1, md=None):
+    """Repeat findpeak_multipass() with new parameters each time."""
     md = md or {}
     for _i in range(iters):
-        md["iteration"] = _i+1
+        md["iteration"] = _i + 1
         # FIXME: apstools.utils.trim_plot_lines(bec, 4, m1, noisy)
         change_noisy_parameters()
         yield from findpeak_multipass(md=md)
