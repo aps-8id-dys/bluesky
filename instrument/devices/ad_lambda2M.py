@@ -36,7 +36,7 @@ from ophyd.status import Status
 LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
 # IMAGE_DIR = "%Y/%m/%d/"
-IMAGE_DIR = "2023-1/bluesky202301"
+IMAGE_DIR = "2023-2/pvaccess_test"
 
 # MUST end with a `/`, pathlib will NOT provide it
 WRITE_PATH_TEMPLATE = f"{LAMBDA2M_FILES_ROOT / IMAGE_DIR}/"
