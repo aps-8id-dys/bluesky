@@ -31,6 +31,7 @@ specwriter = APS_fw.SpecWriterCallback()
 _path = pathlib.Path().cwd()
 specwriter.newfile(_path / specwriter.spec_filename)
 
+# TODO: generalize. not specific to SPEC
 try:
     # feature new in apstools 1.6.14
     from apstools.plans import label_stream_wrapper

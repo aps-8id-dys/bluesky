@@ -27,6 +27,14 @@ class MyNXWriter(NXWriterAPS):
             # title = super().get_sample_title()  # the default title
             title = f"S{self.scan_id:05d}-{self.plan_name}-{self.uid[:7]}"
         return title
+    
+    # FIXME: do not copy the image data to this file
+    # TODO: include the metadata like we did previously
+    #   old_code/spec_support/APS_DM_8idi.py starting at line ~310
+    #   Use a separate stream named "ad_metadata"
+    #   OR, use labels=("ad_metadata",) as each device is defined
+    #      and write a separate stream (stream: label_start_ad_metadata)
+    #      do like we do for motors .
 
 
 nxwriter = MyNXWriter()  # create the callback instance
