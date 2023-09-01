@@ -41,6 +41,8 @@ class MyNXWriter(NXWriterAPS):
         Do not delay by waiting for the image file to close, then copying
         the image data to the one NeXus file.
         """
+        # TODO: Do not bother with ExternalLink (for now, at least)
+        # TODO: record the name(s) of the external file resources.
         resource_id = self.get_unique_resource(d)
         fname = self.getResourceFile(resource_id)
 
