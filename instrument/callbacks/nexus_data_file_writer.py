@@ -38,32 +38,27 @@ class MyNXWriter(NXWriterAPS):
         """
         Modify the default behavior of NXWriter.  Don't copy the image.
 
-        For now:
-        Create a dataset and give it some dummy data (since this dataset may
-        actually be used as the NeXus suggestion for default plottable data).
+        The design is to have all HDF5 files (metadata, image, analysis) in the
+        same directory.  This makes it easy to create external file links.
 
-        Eventually:
-        Do not bother with ExternalLink (for now, at least).
-        Create an external file link to the image file data.
-        Do not delay by waiting for the image file to close, then copying
-        the image data to the one NeXus file.
+        BUT, some detectors do not create an HDF5 file. We'll have to re-visit
+        external links when we get such a detector.
 
-        TODO: Which file path to use when making an external link?
+        Do not delay by waiting for the image file to close, then copying the
+        image data to the one NeXus file.
+
         Advice is to ALWAYS use a RELATIVE file path with ExternalLink.  When
         the master:external file pair are moved, the new location can construct
         the expected relative path using softlinks (or Windows aliases).
         """
         resource_id = self.get_unique_resource(d)
         fname = self.getResourceFile(resource_id)
-        fname_ioc = self.get_ioc_file_path() / fname.name
 
+        # Link to image file in the same directory.
         h5addr = "/entry/data/data"  # NeXus default data address.
-        # TODO: Which file path to use when making an external link?
-        # ds = h5py.ExternalLink(str(fname), h5addr)  # TODO: check the path
-        # subgroup["value"] = ds
-        ds = subgroup.create_dataset("value", data=[1])  # TODO: dummy plottable data?
-        ds.attrs["HDF5_image_file"] = str(fname_ioc)
-        ds.attrs["HDF5_image_address"] = h5addr
+        subgroup["value"] = h5py.ExternalLink(fname.name, h5addr)
+
+        ds = subgroup.create_dataset("image_file_name", data=fname.name)
         ds.attrs["bluesky_resource_id"] = resource_id
         ds.attrs["shape"] = v.get("shape", "")
         ds.attrs["target"] = ds.name
