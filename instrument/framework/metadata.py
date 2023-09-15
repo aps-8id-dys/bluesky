@@ -22,6 +22,7 @@ import socket
 from datetime import datetime
 
 import apstools
+import bluesky
 import databroker
 import epics
 import h5py
@@ -32,9 +33,8 @@ import ophyd
 import pyRestTable
 import spec2nexus
 
-import bluesky
-
-from .initialize import RE, cat
+from .initialize import RE
+from .initialize import cat
 
 HOSTNAME = socket.gethostname() or "localhost"
 USERNAME = getpass.getuser() or "Bluesky user"
