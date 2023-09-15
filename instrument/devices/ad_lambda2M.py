@@ -90,7 +90,7 @@ class Lambda2MCam(CamBase_V34):
 
 
 class MyAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
-    """Remove property attribute not found in Lambda2M."""
+    """Remove property attribute not found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
 
@@ -126,19 +126,19 @@ class MyAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
 
 
 class MyImagePlugin(ImagePlugin_V34):
-    """Remove property attribute not found in Lambda2M."""
+    """Remove property attribute found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
 
 
 class MyPvaPlugin(PvaPlugin_V34):
-    """Remove property attribute not found in Lambda2M."""
+    """Remove property attribute found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
 
 
 class MyROIPlugin(ROIPlugin_V34):
-    """Remove property attribute not found in Lambda2M."""
+    """Remove property attribute found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
 
@@ -149,7 +149,7 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
     cam = ADComponent(Lambda2MCam, "cam1:")
 
     # cam --> codec & image
-    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")
+    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
     image = ADComponent(MyImagePlugin, "image1:")
 
     # codec1 --> hdf1 & pva (& roi1?)
@@ -161,7 +161,7 @@ class Lambda2MDetector(SingleTrigger, DetectorBase):
         kind="normal",
     )
     pva = ADComponent(MyPvaPlugin, "Pva1:")
-    roi1 = ADComponent(MyROIPlugin, "ROI1:")
+    # roi1 = ADComponent(MyROIPlugin, "ROI1:")
 
 
 t0 = time.time()
