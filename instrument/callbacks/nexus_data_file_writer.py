@@ -15,11 +15,16 @@ from .._iconfig import iconfig
 
 # from ..framework.initialize import RE
 
+XPCS_LAYOUT_VERSION = "2023.09"
 
 class MyNXWriter(NXWriterAPS):
     """
     Modify the default behavior of NXWriter for XPCS.
     """
+
+    def write_root(self, filename):
+        super().write_root(filename)
+        self.root.attrs["xpcs_layout_version"] = XPCS_LAYOUT_VERSION
 
     def get_sample_title(self):
         """
