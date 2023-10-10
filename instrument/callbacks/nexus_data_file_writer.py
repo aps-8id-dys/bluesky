@@ -15,16 +15,83 @@ from .._iconfig import iconfig
 
 # from ..framework.initialize import RE
 
-XPCS_LAYOUT_VERSION = "2023.09"
+XPCS_LAYOUT_VERSION = "APS-8IDI-202310"
+NEXUS_RELEASE = "v2022.07"  # NeXus release to which this file is written
 
-class MyNXWriter(NXWriterAPS):
+class PatchedNXWriter(NXWriterAPS):
+
+    def create_NX_group(self, parent, specification):
+        """
+        create an h5 group with named NeXus class (specification)
+        """
+        local_address, nx_class = specification.split(":")
+        if not nx_class.startswith("NX"):
+            # fmt: off
+            raise ValueError(
+                "NeXus base class must start with 'NX',"
+                f" received {nx_class}"
+            )
+            # fmt: on
+        group = parent.create_group(local_address)
+        group.attrs["NX_class"] = nx_class
+        group.attrs["target"] = group.name  # for use as NeXus link
+        return group
+
+class MyNXWriter(PatchedNXWriter):
     """
     Modify the default behavior of NXWriter for XPCS.
     """
 
     def write_root(self, filename):
         super().write_root(filename)
+        self.root.attrs["NeXus_version"] = NEXUS_RELEASE
         self.root.attrs["xpcs_layout_version"] = XPCS_LAYOUT_VERSION
+
+    def write_entry(self):
+        nxentry = super().write_entry()
+        ds = nxentry.create_dataset("xpcs_layout_version", data=XPCS_LAYOUT_VERSION)
+        ds.attrs["target"] = ds.name
+        nxentry["instrument/layout_version"] = ds
+
+        nxentry["entry_identifier_uuid"] = nxentry["entry_identifier"]
+        # scan_number is deprecated, see NXxpcs docs (linking content anyway)
+        nxentry["scan_number"] = nxentry["entry_identifier"]
+
+        # data:NXdata (optional, with NeXus v2022.07)
+        # NOTE:NXnote (optional, replace "NOTE" as appropriate)
+        # sample:NXsample (optional)
+
+    def write_instrument(self, parent):
+        super().write_instrument(parent)
+        nxinstrument = parent["instrument"]
+        self.write_beam(nxinstrument)
+
+        # link from bluesky/metadata fields
+        mdgroup = nxinstrument["bluesky/metadata"]
+        nxdet = self.create_NX_group(parent, "instrument/lambda2M:NXdetector")
+        nxdet.create_dataset("description", data="lambda2M")  # not in metadata
+        nxdet["beam_center_x"] = mdgroup["bcx"]
+        nxdet["beam_center_y"] = mdgroup["bcy"]
+        nxdet["distance"] = mdgroup["det_dist"]
+        nxdet["x_pixel_size"] = mdgroup["pix_dim_x"]
+        nxdet["y_pixel_size"] = mdgroup["pix_dim_y"]
+        # unknowns, but optional
+        # nxdet["count_time"] = mdgroup[""]  # :NX_FLOAT64[0] = []
+        # nxdet["frame_time"] = mdgroup[""]  # :NX_FLOAT64[0] = []
+
+        # masks:NXnote (optional, not appropriate for raw data file)
+
+    def write_beam(self, parent, name="incident_beam"):
+        nxbeam = self.create_NX_group(parent, f"{name}:NXbeam")
+        ds = parent["bluesky/metadata/X_energy"]
+        ds.attrs["units"] = "keV"
+        nxbeam["incident_energy"] = ds
+        # unknowns, but optional
+        # nxbeam["extent"] = # :NX_FLOAT64[0] = []  # 2D size of the beam at this position
+        # nxbeam["incident_energy"] = # :NX_FLOAT64[0] = []
+        # nxbeam["incident_energy_spread"] = # :NX_FLOAT64[0] = []
+        # nxbeam["incident_polarization_type"] = # :NX_CHAR = b'text_here'
+        return nxbeam
 
     def get_sample_title(self):
         """
@@ -94,13 +161,6 @@ class MyNXWriter(NXWriterAPS):
             )
             # fmt: on
         return resource_id_list[0]
-
-    # TODO: include the metadata like we did previously
-    #   old_code/spec_support/APS_DM_8idi.py starting at line ~310
-    #   Use a separate stream named "ad_metadata"
-    #   OR, use labels=("ad_metadata",) as each device is defined
-    #      and write a separate stream (stream: label_start_ad_metadata)
-    #      do like we do for motors .
 
 
 nxwriter = MyNXWriter()  # create the callback instance
