@@ -22,6 +22,7 @@ mViewer.log
 # filewriter callback output files
 *.h5
 *.hdf
+*.hdf5
 *.dat
 
 # local developer Python code
