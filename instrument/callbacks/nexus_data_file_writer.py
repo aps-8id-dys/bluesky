@@ -18,26 +18,8 @@ from .._iconfig import iconfig
 XPCS_LAYOUT_VERSION = "APS-8IDI-202310"
 NEXUS_RELEASE = "v2022.07"  # NeXus release to which this file is written
 
-class PatchedNXWriter(NXWriterAPS):
 
-    def create_NX_group(self, parent, specification):
-        """
-        create an h5 group with named NeXus class (specification)
-        """
-        local_address, nx_class = specification.split(":")
-        if not nx_class.startswith("NX"):
-            # fmt: off
-            raise ValueError(
-                "NeXus base class must start with 'NX',"
-                f" received {nx_class}"
-            )
-            # fmt: on
-        group = parent.create_group(local_address)
-        group.attrs["NX_class"] = nx_class
-        group.attrs["target"] = group.name  # for use as NeXus link
-        return group
-
-class MyNXWriter(PatchedNXWriter):
+class MyNXWriter(NXWriterAPS):
     """
     Modify the default behavior of NXWriter for XPCS.
     """
