@@ -4,6 +4,20 @@ Write each run to a NeXus/HDF5 file.
 IMPORTANT
 See the note about waiting for the nxwriter to finish AFTER EACH ACQUISITION!
 https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks.nexus_writer.NXWriter
+
+TODO: Things to add to metadata file
+
+incident beam: energy spread should come from a PV, not ready now, 1e-4 or 3e-5 (Bragg width)
+incident beam: extent (Size (2-D) of the beam at this position): estimate=(10, 10) micrometer
+incident beam: I0 & I1
+detector: frame_time -> camera module (where is it?)
+detector: count_time -> camera module (where is it?)
+detector: change `ccd`` to `det` in metadata (need x, y, & z and det_x0, det_y0, det_z0 and det_yaw[-1..5 degrees])
+sample: temperature - get 3 temperatures from PVs (QNW setup), default: 25C
+sample: position -> get from PVs (3 translations, 3 rotations: roll, pitch, yaw)
+sample: add NXbeam group (intensity, size)
+instrument: NXattenuator missing:  group
+BPM: NXbeam
 """
 
 __all__ = ["nxwriter"]
@@ -70,8 +84,8 @@ class MyNXWriter(NXWriterAPS):
         nxbeam["incident_energy"] = ds
         # unknowns, but optional
         # nxbeam["extent"] = # :NX_FLOAT64[0] = []  # 2D size of the beam at this position
-        # nxbeam["incident_energy"] = # :NX_FLOAT64[0] = []
-        # nxbeam["incident_energy_spread"] = # :NX_FLOAT64[0] = []
+        # nxbeam["incident_energy"] =  # 12 keV
+        # nxbeam["incident_energy_spread"] =  # 1e-4 or 3e-5 (Bragg width)
         # nxbeam["incident_polarization_type"] = # :NX_CHAR = b'text_here'
         return nxbeam
 
