@@ -3,7 +3,8 @@ lup: lineup
 """
 
 __all__ = [
-    "lup",
+    "lup",  # simple logic (FWHM must be obtained) to center after scan
+    "lineup",  # "smart" choice (peak must be a *peak*) to center after scan
 ]
 
 import logging
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
+from apstools.plans import lineup
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
