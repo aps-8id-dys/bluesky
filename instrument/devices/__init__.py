@@ -2,6 +2,8 @@
 local, custom Device definitions
 """
 
+# noqa
+
 # fmt: off
 
 # ----- ----- ----- ----- -----
@@ -19,6 +21,7 @@ from .data_management import *
 # ----- ----- ----- ----- -----
 # imports that MUST come after the above devices
 from .ad_lambda2M import *
+from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
 # See the .unused_examples folder
