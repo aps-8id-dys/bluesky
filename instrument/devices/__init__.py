@@ -15,6 +15,7 @@ local, custom Device definitions
 # from .aps_undulator import *
 
 # from .area_detector import *
+from .aerotech_stages import *
 # from .calculation_records import *
 from .data_management import *
 
