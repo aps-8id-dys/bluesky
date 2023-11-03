@@ -25,8 +25,10 @@ logger.info(__file__)
 from ophyd.sim import SynGauss
 from . import sample
 
+MOTOR = sample.x
 CENTER = 1.1 + 0.8*random.random()
 IMAX = 95_000 + 10_000*random.random()
 SIGMA = 0.01 + 0.1*random.random()
+NOISE="poisson"
 
-sim1d = SynGauss("sim1d", sample.x, sample.x.name, CENTER, IMAX, sigma=SIGMA, noise="poisson")
+sim1d = SynGauss("sim1d", MOTOR, MOTOR.name, CENTER, IMAX, sigma=SIGMA, noise=NOISE)
