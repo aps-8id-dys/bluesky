@@ -17,11 +17,12 @@ local, custom Device definitions
 # ----- ----- ----- ----- -----
 from .aerotech_stages import *
 from .data_management import *
+from .meascomp_usb_ctr08 import *
+from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
 # imports that MUST come after the above devices
 from .ad_lambda2M import *
-from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
 # See the .unused_examples folder
