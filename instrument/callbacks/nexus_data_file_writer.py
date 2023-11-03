@@ -4,20 +4,6 @@ Write each run to a NeXus/HDF5 file.
 IMPORTANT
 See the note about waiting for the nxwriter to finish AFTER EACH ACQUISITION!
 https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks.nexus_writer.NXWriter
-
-TODO: Things to add to metadata file
-
-incident beam: energy spread should come from a PV, not ready now, 1e-4 or 3e-5 (Bragg width)
-incident beam: extent (Size (2-D) of the beam at this position): estimate=(10, 10) micrometer
-incident beam: I0 & I1
-detector: frame_time -> camera module (where is it?)
-detector: count_time -> camera module (where is it?)
-detector: change `ccd`` to `det` in metadata (need x, y, & z and det_x0, det_y0, det_z0 and det_yaw[-1..5 degrees])
-sample: temperature - get 3 temperatures from PVs (QNW setup), default: 25C
-sample: position -> get from PVs (3 translations, 3 rotations: roll, pitch, yaw)
-sample: add NXbeam group (intensity, size)
-instrument: NXattenuator missing:  group
-BPM: NXbeam
 """
 
 __all__ = ["nxwriter"]
@@ -55,39 +41,90 @@ class MyNXWriter(NXWriterAPS):
 
         # data:NXdata (optional, with NeXus v2022.07)
         # NOTE:NXnote (optional, replace "NOTE" as appropriate)
-        # sample:NXsample (optional)
 
     def write_instrument(self, parent):
         super().write_instrument(parent)
         nxinstrument = parent["instrument"]
-        self.write_beam(nxinstrument)
+        self.write_attenuator(nxinstrument, "attenuator")
 
-        # link from bluesky/metadata fields
+        nxbeam = self.write_beam(nxinstrument, "incident_beam")
         mdgroup = nxinstrument["bluesky/metadata"]
-        nxdet = self.create_NX_group(parent, "instrument/lambda2M:NXdetector")
+        ds = mdgroup["X_energy"]
+        ds.attrs["units"] = "keV"
+        nxbeam["incident_energy"] = ds
+
+        ds = mdgroup["incident_beam_size_nm_xy"]
+        ds.attrs["units"] = "nm"
+        nxbeam["extent"] = ds  # 2D size of incident beam
+
+        for k in "I0 I1 incident_energy_spread".split():
+            nxbeam[k] = mdgroup[k]
+
+
+        self.write_beam(nxinstrument, "BPM")
+
+        # masks:NXnote (optional, not appropriate for raw data file)
+
+    def write_attenuator(self, parent, name="attenuator"):
+        self.create_NX_group(parent, f"{name}:NXattenuator")
+
+    def write_beam(self, parent, name="incident_beam"):
+        nxbeam = self.create_NX_group(parent, f"{name}:NXbeam")
+        return nxbeam
+
+    def write_detector(self, parent):
+        super().write_detector(parent)
+
+        nxdet = self.create_NX_group(parent, "lambda2M:NXdetector")
+        parent["detector_1"] = nxdet  # convenience link
         nxdet.create_dataset("description", data="lambda2M")  # not in metadata
+
+        # links from bluesky/metadata fields
+        # md created in user's plan:
+        #   /home/8ididata/2023-2/pvaccess_test/bp_Nexus_Lambda2M.py
+        #   gather_dm_metadata()
+        # TODO: To coordinate with those names, that code should be
+        #   located in the instrument package itself.
+        mdgroup = parent["bluesky/metadata"]
         nxdet["beam_center_x"] = mdgroup["bcx"]
         nxdet["beam_center_y"] = mdgroup["bcy"]
         nxdet["distance"] = mdgroup["det_dist"]
         nxdet["x_pixel_size"] = mdgroup["pix_dim_x"]
         nxdet["y_pixel_size"] = mdgroup["pix_dim_y"]
-        # unknowns, but optional
-        # nxdet["count_time"] = mdgroup[""]  # :NX_FLOAT64[0] = []
-        # nxdet["frame_time"] = mdgroup[""]  # :NX_FLOAT64[0] = []
+        nxdet["count_time"] = mdgroup["t1"]  # AD's acquire_time
+        nxdet["frame_time"] = mdgroup["t1"]  # AD's acquire_time
+        nxdet["acquire_period"] = mdgroup["t0"]  # AD's acquire_period
 
-        # masks:NXnote (optional, not appropriate for raw data file)
+    def write_sample(self, parent):
+        super().write_sample(parent)
+        nxsample = parent["sample"]
+        mdgroup = parent["instrument/bluesky/metadata"]
 
-    def write_beam(self, parent, name="incident_beam"):
-        nxbeam = self.create_NX_group(parent, f"{name}:NXbeam")
-        ds = parent["bluesky/metadata/X_energy"]
-        ds.attrs["units"] = "keV"
-        nxbeam["incident_energy"] = ds
-        # unknowns, but optional
-        # nxbeam["extent"] = # :NX_FLOAT64[0] = []  # 2D size of the beam at this position
-        # nxbeam["incident_energy"] =  # 12 keV
-        # nxbeam["incident_energy_spread"] =  # 1e-4 or 3e-5 (Bragg width)
-        # nxbeam["incident_polarization_type"] = # :NX_CHAR = b'text_here'
-        return nxbeam
+        nxsample["temperature1"] = mdgroup["sample_temperature1"]
+        nxsample["temperature2"] = mdgroup["sample_temperature2"]
+        nxsample["temperature3"] = mdgroup["sample_temperature3"]
+        nxsample["temperature1"].attrs["units"] = "C"
+        nxsample["temperature2"].attrs["units"] = "C"
+        nxsample["temperature3"].attrs["units"] = "C"
+
+        def write_positioner(name, md_name, units):
+            """Per NXsample, use NXpositioner group for each."""
+            group = self.create_NX_group(nxsample, f"{name}:NXpositioner")
+            group["value"] = mdgroup[md_name]
+            group["value"].attrs["units"] = units
+
+        write_positioner("x", "sample_x_mm", "mm")
+        write_positioner("y", "sample_y_mm", "mm")
+        write_positioner("z", "sample_z_mm", "mm")
+
+        write_positioner("roll", "sample_roll_degrees", "degrees")
+        write_positioner("pitch", "sample_pitch_degrees", "degrees")
+        write_positioner("yaw", "sample_yaw_degrees", "degrees")
+
+        nxbeam = self.write_beam(nxsample, "beam")
+        nxbeam["intensity"] = mdgroup["sample_beam_intensity"]
+        nxbeam["extent"] = mdgroup["sample_beam_size_nm_xy"]
+        nxbeam["extent"].attrs["units"] = "nm"
 
     def get_sample_title(self):
         """
