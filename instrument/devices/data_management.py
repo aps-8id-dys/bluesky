@@ -22,6 +22,6 @@ DM_STATION_NAME = str(os.environ.get("DM_STATION_NAME", "unknown")).lower()
 
 
 # TODO: 'labels=("DM")' kwarg is ignored for non-EPICS devices.  Refactor to ophyd_registry?
-dm_workflow = DM_WorkflowConnector(name="dm_workflow")
+dm_workflow = DM_WorkflowConnector(name="dm_workflow", labels=["APS_Data_Management"])
 dm_workflow.owner.put(DM_STATION_NAME)
 # RE(dm_workflow.run_as_plan(workflow="example-01", filePath="/home/beams/S1IDTEST/.bashrc"))

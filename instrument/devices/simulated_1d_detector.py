@@ -31,4 +31,4 @@ IMAX = 95_000 + 10_000*random.random()
 SIGMA = 0.01 + 0.1*random.random()
 NOISE="poisson"
 
-sim1d = SynGauss("sim1d", MOTOR, MOTOR.name, CENTER, IMAX, sigma=SIGMA, noise=NOISE)
+sim1d = SynGauss("sim1d", MOTOR, MOTOR.name, CENTER, IMAX, sigma=SIGMA, noise=NOISE, labels=["simulator"])

@@ -17,7 +17,7 @@ local, custom Device definitions
 # ----- ----- ----- ----- -----
 from .aerotech_stages import *
 from .data_management import *
-from .meascomp_usb_ctr08 import *
+from .meascomp_usb_ctr import *
 from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
