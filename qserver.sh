@@ -5,7 +5,12 @@
 
 #--------------------
 # change the program defaults here
-DATABROKER_CATALOG=training  # also defined in _run_qs.sh
+source "${HOME}/.bash_aliases"
+if [ "${DATABROKER_CATALOG}" == "" ]; then
+    SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
+    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/instrument/iconfig.yml  | awk '{print $NF}')
+    # echo "Using catalog ${DATABROKER_CATALOG}"
+fi
 DEFAULT_SESSION_NAME="bluesky_queueserver-${DATABROKER_CATALOG}"
 #--------------------
 
@@ -20,6 +25,14 @@ SESSION_NAME=${2:-"${DEFAULT_SESSION_NAME}"}
 
 PROCESS=_run_qs.sh
 STARTUP_COMMAND="${STARTUP_DIR}/${PROCESS}"
+# _run_qs.sh will check that $(hostname) matches ${REDIS_HOST}
+export QS_SERVER_HOST="${REDIS_HOST}"
+# But other management commands will fail if mismatch
+if [ "$(hostname)" != "${QS_SERVER_HOST}" ]; then
+    echo "Must manage queueserver process on ${QS_SERVER_HOST}.  This is $(hostname)."
+    exit 1
+fi
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -126,10 +139,14 @@ function start() {
         echo -n "${SCREEN_SESSION} is already running (pid=${MY_PID})"
         screenpid
     else
+        if [ ! -f "${CONDA_EXE}" ]; then
+            echo "No 'conda' command available."
+            exit 1
+        fi
         echo "Starting ${SESSION_NAME}"
         cd "${STARTUP_DIR}"
         # Run SESSION_NAME inside a screen session
-        CMD="screen -dm -S ${SESSION_NAME} -h 5000 ${STARTUP_COMMAND}"
+        CMD="screen -dmS ${SESSION_NAME} -h 5000 ${STARTUP_COMMAND}"
         ${CMD}
     fi
 }
