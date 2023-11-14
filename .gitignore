@@ -15,6 +15,7 @@ mViewer.log
 
 # log files
 .logs/
+screenlog.*
 
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
