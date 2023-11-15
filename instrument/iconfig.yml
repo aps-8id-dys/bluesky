@@ -17,6 +17,7 @@ RUNENGINE_METADATA:
 # Uncomment and edit to define a PV to use for the `scan_id`.
 # The default behavior is to use `RE.md["scan_id"]`.
 # RUN_ENGINE_SCAN_ID_PV: "IOC:integer"
+# 8idDAQ1:Reg0
 
 
 # permissions
