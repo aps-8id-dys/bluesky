@@ -18,6 +18,9 @@ local, custom Device definitions
 from .aerotech_stages import *
 from .data_management import *
 from .meascomp_usb_ctr import *
+
+# ----- ----- ----- ----- -----
+# simulator depends on (Aerotech stage) sample.x
 from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
