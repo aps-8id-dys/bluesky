@@ -2,7 +2,13 @@
 
 ## 2023-11-14
 
-Some of the old notes may still apply.  This is not guaranteed.
+All of the commands below (unless noted) require use of the `bash` command shell
+and the bluesky conda environment to be activated: `become_bluesky`.
+
+**VERY IMPORTANT**:  When the queueserver starts, it **must** find only one
+`.py` file in the `~/bluesky` directory and it must find `instrument/` in the
+same directory.  Attempts to place the qserver files in a sub directory result
+in `'instrument/' directory not found` as queueserver starts.
 
 ### (Re)Start the bluesky queueserver server process
 
@@ -45,13 +51,23 @@ Must manage queueserver process on 8idpixirad.xray.aps.anl.gov.  This is agate.x
 ### Start the bluesky queueserver client GUI
 
 Since the server runs on a different workstation, we must supply additional
-information.  (Could be bundled into shell script.)
+information.
+
+Use this simple command: `run_qs_gui`
+
+<details>
+
+Actually, it's a bash shell alias command for this much longer command:
 
 ```bash
 queue-monitor \
     --zmq-control-addr "tcp://${QS_HOST}:60615" \
     --zmq-info-addr "tcp://${QS_HOST}:60625" &
 ```
+
+</details>
+
+These are the steps you might use with the GUI:
 
 - connect to the server
 - open the environment
@@ -60,48 +76,18 @@ queue-monitor \
 
 ## Watch (monitor) the QS console
 
+Use this simple command: `monitor_qs_console`
+
+<details>
+
+Actually, it's a bash shell alias command for this much longer command:
+
 ```bash
-qserver-console  --zmq-control-addr "tcp://${QS_HOST}:60615"
+qserver-console  --zmq-info-addr "tcp://${QS_HOST}:60625"
 ```
 
-## old notes from 2022
+</details>
 
-work-in-progress: *very* basic notes for now
-
-- [Introduction to the Bluesky Queueserver](#introduction-to-the-bluesky-queueserver)
-  - [2023-11-14](#2023-11-14)
-    - [(Re)Start the bluesky queueserver server process](#restart-the-bluesky-queueserver-server-process)
-    - [Start the bluesky queueserver client GUI](#start-the-bluesky-queueserver-client-gui)
-  - [Watch (monitor) the QS console](#watch-monitor-the-qs-console)
-  - [old notes from 2022](#old-notes-from-2022)
-  - [Run the queuserver](#run-the-queuserver)
-    - [operations](#operations)
-    - [diagnostics and testing](#diagnostics-and-testing)
-  - [graphical user interface](#graphical-user-interface)
-
-**IMPORTANT**:  When the queueserver starts, it **must** find only one `.py` file in this directory and it must find `instrument/` in the same directory.  Attempts to place the qserver files in a sub directory result in `'instrument/' directory not found` as queueserver starts.
-
-## Run the queuserver
-
-### operations
-
-Run in a background screen session.
-
-`./qserver.sh start`
-
-Stop this with
-
-`./qserver.sh stop`
-
-### diagnostics and testing
-
-`./qserver.sh run`
-
-## graphical user interface
-
-`queue-monitor &`
-
-- connect to the server
-- open the environment
-- add tasks to the queue
-- run the queue
+**NOTE**: This does not work at the moment.  Researching the issue.  Expect
+(later) it should work from any workstation on the subnet.  For now, expand the
+console history section on the GUI.
