@@ -12,6 +12,8 @@ in `'instrument/' directory not found` as queueserver starts.
 
 ### (Re)Start the bluesky queueserver server process
 
+NOTE: Unless you are testing, use `~/bluesky/qserver.sh restart`
+
 The QS (bluesky queueserver) process will only start on workstation
 `8idpixirad.xray.aps.anl.gov`.  (Ensures there is only ONE QS process running
 for XPCS.)  This steps requires the `CONDA_EXE` environment variable to be
@@ -31,7 +33,7 @@ Usage: qserver.sh {start|stop|restart|status|checkup|console|run} [NAME]
         console   attach to process console if process is running in screen
         checkup   check that process is running, restart if not
         restart   restart process
-        run       run process in console (not screen)
+        run       run process in console (not screen) for debugging only
         start     start process
         status    report if process is running
         stop      stop process
@@ -47,6 +49,9 @@ If you try to manage (start/stop/ ...) the queueserver on the wrong workstation
 agate% ./qserver.sh status
 Must manage queueserver process on 8idpixirad.xray.aps.anl.gov.  This is agate.xray.aps.anl.gov.
 ```
+
+Please only use the `run` command for interactive debugging sessions.  When done,
+run the queueserver using the `restart` command.
 
 ### Start the bluesky queueserver client GUI
 
