@@ -34,6 +34,12 @@ def lineup2(detectors, mover, rel_start, rel_end, points, nscans=2, feature="cen
     """
     Lineup and center a given mover, relative to current position.
 
+    This plan can be used in the queueserver.  It does not require the 
+    bluesky BestEffortCallback.  Instead, it uses *PySumReg*  [#pysumreg]_
+    to compute statistics for each signal in a 1-D scan.
+
+    New in release 1.6.18
+
     .. caution:: This is an early draft and is subject to change!
 
     .. index:: Bluesky Plan; lineup2; lineup
