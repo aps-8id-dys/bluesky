@@ -189,6 +189,18 @@ class MeasCompCtr(Device):
 # create, connect, and configure the devices
 daq1 = MeasCompCtr(IOC, name="daq1")
 mcs = MeasCompCtrMcs(f"{IOC}MCS01:", name="mcs")
-scaler1 = ScalerCH(f"{IOC}scaler1", name="scaler1", labels=["scalers", "detectors"])
-scaler1.wait_for_connection()
-scaler1.select_channels()
+try:
+    logger.info("Waiting to connect with 'scaler1' ...")
+    scaler1 = ScalerCH(f"{IOC}scaler1", name="scaler1", labels=["scalers", "detectors"])
+    scaler1.wait_for_connection()
+    scaler1.select_channels()
+except Exception as exc:
+    logger.warning("Could not connect with MC-USB-CTR08 device.  %s", str(exc))
+    if not daq1.connected:
+        logger.warning("Could not create %s", daq1.name)
+        daq1 = None
+    if not mcs.connected:
+        logger.warning("Could not create %s", mcs.name)
+        mcs = None
+    logger.warning("Could not create %s", scaler1.name)
+    scaler1 = None
