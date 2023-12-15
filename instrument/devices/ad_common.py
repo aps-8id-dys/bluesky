@@ -153,6 +153,26 @@ class XpcsAD_CommonAreaDetectorDevice(SingleTrigger, DetectorBase):
     # roi1 = ADComponent(MyROIPlugin, "ROI1:")
 
 
+# def XpcsAD_factory(title, cam_class, write_path, read_path):
+
+#     # TODO: Use `title` to make a custom name for this class.
+#     class CustomDetector(XpcsAD_CommonAreaDetectorDevice):
+#         # self.__class__.__name__ = f"XpcsAD_{title}"
+#         """Custom detector."""
+
+#         cam = ADComponent(cam_class, "cam1:")
+
+#         hdf1 = ADComponent(
+#             XpcsAD_EpicsFileNameHDF5Plugin,
+#             "HDF1:",
+#             write_path_template=write_path,
+#             read_path_template=read_path,
+#             kind="normal",
+#         )
+    
+#     return CustomDetector
+
+
 def build_xpcs_area_detector(
     ad_class,  # subclass of XpcsCommonAreaDetectorDevice
     pv_prefix,  # EPICS PV prefix

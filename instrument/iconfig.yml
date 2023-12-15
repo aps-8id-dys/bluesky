@@ -39,6 +39,8 @@ AREA_DETECTOR:
     PV_PREFIX: "8idLambda2m:"
     NAME: lambda2M
   SIMDET_4M:
+    # For reference:
+    # /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idSimDetectors/iocBoot/ioc8idSimDetector4m/softioc/8idSimDetector4m.pl start
     PV_PREFIX: "8idSimDetector4m:"
     NAME: simdet4M
   SIMDET_16M:

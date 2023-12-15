@@ -10,3 +10,5 @@ from .lineup2_plan import *
 # from .peak_finder_example import *
 from .demo_hello_world import *
 from .acquire_plans import *
+
+from .listruns_plan import listruns
