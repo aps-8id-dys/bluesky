@@ -2,7 +2,12 @@
 QNW temperature controller
 """
 
-from apstools.devices import PVPositionerSoftDone
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
+
+from apstools.devices import PVPositionerSoftDoneWithStop
 from ophyd import EpicsSignal, EpicsSignalRO, Signal, Component
 
 __all__ = [
@@ -11,20 +16,18 @@ __all__ = [
     'qnw_env3',
 ]
 
-class QnwDevice(PVPositionerSoftDone):
-    # FIXME: Choose a different base class?
-    # FIXME: ValueError: readback_pv () and setpoint_pv () must have different values
-
+class QnwDevice(PVPositionerSoftDoneWithStop):
     readback = Component(EpicsSignalRO, "SH_RBV", kind="hinted", auto_monitor=True)
     setpoint = Component(EpicsSignal, "TARG", kind="normal", put_complete=True)
     tolerance = Component(Signal, value=0.1, kind="config")    
     ramprate = Component(EpicsSignal, "RAMP", kind="normal", put_complete=True)
 
-qnw_env1 = QnwDevice("8idi:QNWenv_1:", name="qnw_env1")
-qnw_env2 = QnwDevice("8idi:QNWenv_2:", name="qnw_env2")
-qnw_env3 = QnwDevice("8idi:QNWenv_3:", name="qnw_env3")
+# Use readback_pv=None since readback and setpoint were defined above.
+# Works even though it looks ugglee.
+qnw_env1 = QnwDevice("8idi:QNWenv_1:", readback_pv=None, name="qnw_env1")
+qnw_env2 = QnwDevice("8idi:QNWenv_2:", readback_pv=None, name="qnw_env2")
+qnw_env3 = QnwDevice("8idi:QNWenv_3:", readback_pv=None, name="qnw_env3")
 
 
 # TODO:
-# Add read-only temperatures to watch;
-# Overwrite STOP feature (pause the course; take the read-back temperature and write to the set point)
+# Add read-only temperatures to watch.  (What PVs?)
