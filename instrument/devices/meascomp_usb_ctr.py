@@ -202,5 +202,5 @@ except Exception as exc:
     if not mcs.connected:
         logger.warning("Could not create %s", mcs.name)
         mcs = None
-    logger.warning("Could not create %s", scaler1.name)
+    logger.warning("Could not create scaler1")
     scaler1 = None
