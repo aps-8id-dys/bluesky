@@ -13,27 +13,26 @@ logger.info(__file__)
 
 from pathlib import PurePath
 
-from ophyd import ADComponent, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
+from ophyd import ADComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 
 from .. import iconfig
-from .ad_common import (
-    CamBase_V34,
-    XpcsAD_EpicsFileNameHDF5Plugin,
-    XpcsAD_CommonAreaDetectorDevice,
-    build_xpcs_area_detector,
-)
-
-LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
-BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
-# IMAGE_DIR = "%Y/%m/%d/"
-IMAGE_DIR = "2023-2/pvaccess_test"
-
-# MUST end with a `/`, pathlib will NOT provide it
-WRITE_PATH_TEMPLATE = f"{LAMBDA2M_FILES_ROOT / IMAGE_DIR}/"
-READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
+from .ad_common import BLUESKY_FILES_ROOT
+from .ad_common import CamBase_V34
+from .ad_common import IMAGE_DIR
+from .ad_common import XpcsAD_factory
 
 DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
 PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]
+
+LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
+
+# TODO: refactor these lines into the factory so users do not have to "get it right"
+# MUST end with a `/`, pathlib will NOT provide it
+WRITE_PATH_TEMPLATE = f"{LAMBDA2M_FILES_ROOT / IMAGE_DIR}/"
+READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
 
 
 class Lambda2MCam(CamBase_V34):
@@ -60,18 +59,4 @@ class Lambda2MCam(CamBase_V34):
     EXT_TRIGGER = 0
 
 
-class Lambda2MDetector(XpcsAD_CommonAreaDetectorDevice):
-    """Custom Lambda2M detector."""
-
-    cam = ADComponent(Lambda2MCam, "cam1:")
-
-    hdf1 = ADComponent(
-        XpcsAD_EpicsFileNameHDF5Plugin,
-        "HDF1:",
-        write_path_template=WRITE_PATH_TEMPLATE,
-        read_path_template=READ_PATH_TEMPLATE,
-        kind="normal",
-    )
-
-
-lambda2M = build_xpcs_area_detector(Lambda2MDetector, PV_PREFIX, DET_NAME)
+lambda2M = XpcsAD_factory(PV_PREFIX, DET_NAME, Lambda2MCam, WRITE_PATH_TEMPLATE, READ_PATH_TEMPLATE)
