@@ -3,14 +3,18 @@ EPICS area_detector common support
 """
 
 __all__ = """
-build_xpcs_area_detector
-CamBase_V34
-FileBase_V34
-XpcsAD_CommonAreaDetectorDevice
-XpcsAD_EpicsFileNameHDF5Plugin
-XpcsAD_ImagePlugin
-XpcsAD_PvaPlugin
-XpcsAD_ROIPlugin
+    CamBase_V34
+    FileBase_V34
+    SimDetectorCam_V34
+    XpcsAD_EpicsFileNameHDF5Plugin
+    XpcsAD_factory
+    XpcsAD_ImagePlugin
+    XpcsAD_OverlayPlugin
+    XpcsAD_PluginMixin
+    XpcsAD_PvaPlugin
+    XpcsAD_ROIPlugin
+    XpcsAD_StatsPlugin
+    XpcsAD_TransformPlugin
 """.split()
 
 import logging
@@ -21,24 +25,31 @@ logger.info(__file__)
 import time
 from pathlib import PurePath
 
-from apstools.devices import (
-    AD_EpicsFileNameHDF5Plugin,
-    AD_plugin_primed,
-    AD_prime_plugin2,
-)
+from apstools.devices import AD_EpicsFileNameHDF5Plugin
+from apstools.devices import AD_plugin_primed
+from apstools.devices import AD_prime_plugin2
+from apstools.devices import CamMixin_V34
 from ophyd import ADComponent
-from ophyd.areadetector import CamBase, DetectorBase, SingleTrigger
-from ophyd.areadetector.plugins import (
-    CodecPlugin_V34,
-    FileBase,
-    ImagePlugin_V34,
-    PvaPlugin_V34,
-    ROIPlugin_V34,
-)
+from ophyd.areadetector import CamBase
+from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import SimDetectorCam
+from ophyd.areadetector import SingleTrigger
+from ophyd.areadetector.plugins import CodecPlugin_V34
+from ophyd.areadetector.plugins import FileBase
+from ophyd.areadetector.plugins import ImagePlugin_V34
+from ophyd.areadetector.plugins import OverlayPlugin_V34
+from ophyd.areadetector.plugins import PluginBase_V34
+from ophyd.areadetector.plugins import PvaPlugin_V34
+from ophyd.areadetector.plugins import ROIPlugin_V34
+from ophyd.areadetector.plugins import StatsPlugin_V34
+from ophyd.areadetector.plugins import TransformPlugin_V34
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
 from .. import iconfig
+
+BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
+IMAGE_DIR = "2023-2/pvaccess_test"
 
 # LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 # BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
@@ -74,10 +85,18 @@ class FileBase_V34(FileBase):
     file_number_write = None
 
 
-class XpcsAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
-    """Remove property attribute not found in AD IOCs now."""
+class SimDetectorCam_V34(CamMixin_V34, SimDetectorCam):
+    '''Revise SimDetectorCam for ADCore revisions.'''
+
+
+class XpcsAD_PluginMixin(PluginBase_V34):
+    """Remove property attribute found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
+
+
+class XpcsAD_EpicsFileNameHDF5Plugin(XpcsAD_PluginMixin, AD_EpicsFileNameHDF5Plugin):
+    """Remove property attribute not found in AD IOCs now."""
 
     @property
     def _plugin_enabled(self):
@@ -110,100 +129,122 @@ class XpcsAD_EpicsFileNameHDF5Plugin(AD_EpicsFileNameHDF5Plugin):
         return trigger_status
 
 
-class XpcsAD_ImagePlugin(ImagePlugin_V34):
+class XpcsAD_ImagePlugin(XpcsAD_PluginMixin, ImagePlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _asyn_pipeline_configuration_names = None
 
-
-class XpcsAD_PvaPlugin(PvaPlugin_V34):
+class XpcsAD_OverlayPlugin(XpcsAD_PluginMixin, OverlayPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _asyn_pipeline_configuration_names = None
 
-
-class XpcsAD_ROIPlugin(ROIPlugin_V34):
+class XpcsAD_PvaPlugin(XpcsAD_PluginMixin, PvaPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _asyn_pipeline_configuration_names = None
+
+class XpcsAD_ROIPlugin(XpcsAD_PluginMixin, ROIPlugin_V34):
+    """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_CommonAreaDetectorDevice(SingleTrigger, DetectorBase):
-    """Common area detector Device class."""
-
-    # Every subclass should define these component.
-    # They are specific to the camera.
-    #
-    # cam = ADComponent(Lambda2MCam, "cam1:")
-    # hdf1 = ADComponent(
-    #     XpcsAD_EpicsFileNameHDF5Plugin,
-    #     "HDF1:",
-    #     write_path_template=WRITE_PATH_TEMPLATE,
-    #     read_path_template=READ_PATH_TEMPLATE,
-    #     kind="normal",
-    # )
-
-    # In the AD IOC, cam --> codec & image
-    codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
-    image = ADComponent(XpcsAD_ImagePlugin, "image1:")
-
-    # In the AD IOC, codec1 --> hdf1 & pva
-    # If AD IOC sends codec1 to roi (& roi1?)
-    pva = ADComponent(XpcsAD_PvaPlugin, "Pva1:")
-    # roi1 = ADComponent(MyROIPlugin, "ROI1:")
+class XpcsAD_StatsPlugin(XpcsAD_PluginMixin, StatsPlugin_V34):
+    """Remove property attribute found in AD IOCs now."""
 
 
-# def XpcsAD_factory(title, cam_class, write_path, read_path):
-
-#     # TODO: Use `title` to make a custom name for this class.
-#     class CustomDetector(XpcsAD_CommonAreaDetectorDevice):
-#         # self.__class__.__name__ = f"XpcsAD_{title}"
-#         """Custom detector."""
-
-#         cam = ADComponent(cam_class, "cam1:")
-
-#         hdf1 = ADComponent(
-#             XpcsAD_EpicsFileNameHDF5Plugin,
-#             "HDF1:",
-#             write_path_template=write_path,
-#             read_path_template=read_path,
-#             kind="normal",
-#         )
-    
-#     return CustomDetector
+class XpcsAD_TransformPlugin(XpcsAD_PluginMixin, TransformPlugin_V34):
+    """Remove property attribute found in AD IOCs now."""
 
 
-def build_xpcs_area_detector(
-    ad_class,  # subclass of XpcsCommonAreaDetectorDevice
-    pv_prefix,  # EPICS PV prefix
-    detector_name,  # for the ophyd device
-    labels=["area_detector"],  # for the %wa command
-    **kwargs,  # anything else the caller wants to add
+def XpcsAD_factory(
+    prefix,
+    name,
+    cam_class,
+    write_path,
+    read_path,
+    labels=("area_detector", ),
+    use_image=True,
+    use_overlay=True,
+    use_pva=True,
+    use_roi=True,
+    use_stats=True,
+    use_transform=True,
+    **kwargs
 ):
-    if not issubclass(ad_class, XpcsAD_CommonAreaDetectorDevice):
-        # fmt:off
-        raise TypeError(
-            f"{ad_class} must be a subclass of"
-            f" {XpcsAD_CommonAreaDetectorDevice.__class__.__name__}")
-        # fmt:on
+    """
+    Create XPCS area detector with standard configuration.
+
+    Returns a detector object or ``None`` if the detector does not connect.
+
+    PARAMETERS
+
+    prefix *str* :
+        EPICS IOC prefix for the area detector.
+    name *str* :
+        Name of the Python detector object to be created.
+    cam_class *object* :
+        Custom subclass of CamBase_V34 for this detector.
+    write_path *str* :
+        Directory root for image files *as seen by the IOC.*
+        MUST end with a "/".
+    read_path *str* :
+        Directory root for image files *as seen by the bluesky databroker.*
+        MUST end with a "/".
+    labels *object* :
+        List or tuple of text labels for this detector.  Used by ``%wa``.
+    kwargs :
+        Anything else the caller wants to add, as ``keyword=value`` pairs.
+    """
+
+    class AreaDetector(SingleTrigger, DetectorBase):
+        cam = ADComponent(cam_class, "cam1:")
+
+        # In the AD IOC, cam --> codec & image
+        codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
+        if use_image:
+            image = ADComponent(XpcsAD_ImagePlugin, "image1:")
+
+        # In the AD IOC, codec1 --> hdf1 & pva
+        hdf1 = ADComponent(
+            XpcsAD_EpicsFileNameHDF5Plugin,
+            "HDF1:",
+            write_path_template=write_path,
+            read_path_template=read_path,
+            kind="normal",
+        )
+        if use_pva:
+            pva = ADComponent(XpcsAD_PvaPlugin, "Pva1:")
+
+        # If AD IOC sends codec1 to roi (& roi1?)
+        if use_overlay:
+            over1 = ADComponent(XpcsAD_OverlayPlugin, "Over1:")
+        if use_roi:
+            roi1 = ADComponent(XpcsAD_ROIPlugin, "ROI1:")
+        if use_stats:
+            stats1 = ADComponent(XpcsAD_StatsPlugin, "Stats1:")
+        if use_transform:
+            trans1 = ADComponent(XpcsAD_TransformPlugin, "Trans1:")
+
+    # tricky: Make it look as if we defined a custom class for this detector.
+    # Use the cam class name.
+    title = cam_class.__name__.rstrip("_V34").rstrip("Cam")
+    AreaDetector.__name__ = f"XpcsAD_{title}"
+    AreaDetector.__qualname__ = AreaDetector.__name__
+
+    # ADSimDetector does not subclass from CamBase_V34
+    # TODO: Find different way to validate.
+    # if not issubclass(cam_class, CamBase_V34):
+    #     raise TypeError(f"{cam_class} must be a subclass of  {CamBase_V34.__name__}")
 
     t0 = time.time()
     try:
-        # fmt: off
         connection_timeout = iconfig.get("PV_CONNECTION_TIMEOUT", 15)
-        det = ad_class(
-            pv_prefix, name=detector_name, labels=labels, **kwargs,
-        )
+        det = AreaDetector(prefix, name=name, labels=labels, **kwargs)
         det.wait_for_connection(timeout=connection_timeout)
-        # fmt: on
-
     except (KeyError, NameError, TimeoutError) as exinfo:
         # fmt: off
         logger.warning(
             "Error connecting with PV='%s in %.2fs, %s",
-            pv_prefix, time.time() - t0, str(exinfo),
+            prefix, time.time() - t0, str(exinfo),
         )
-        logger.warning("Setting %s to None.", detector_name)
+        logger.warning("Setting '%s' to 'None'.", name)
         det = None
         # fmt: on
 
