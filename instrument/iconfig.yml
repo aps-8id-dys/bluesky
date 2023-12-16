@@ -40,9 +40,10 @@ AREA_DETECTOR:
     NAME: lambda2M
   SIMDET_4M:
     # For reference:
+    # Let us use bixbite (10.54.116.22) for adsim4M.
     # /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idSimDetectors/iocBoot/ioc8idSimDetector4m/softioc/8idSimDetector4m.pl start
     PV_PREFIX: "8idSimDetector4m:"
-    NAME: simdet4M
+    NAME: adsim4M
   SIMDET_16M:
     PV_PREFIX: "8idSimDetector16m:"
     NAME: simdet16M
