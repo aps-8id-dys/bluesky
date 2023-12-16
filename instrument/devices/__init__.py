@@ -18,6 +18,7 @@ local, custom Device definitions
 from .aerotech_stages import *
 from .data_management import *
 from .meascomp_usb_ctr import *
+# from .qnw_device import *
 
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
@@ -26,6 +27,7 @@ from .simulated_1d_detector import *
 # ----- ----- ----- ----- -----
 # imports that MUST come after the above devices
 from .ad_lambda2M import *
+from .ad_simdet4M import *
 
 # ----- ----- ----- ----- -----
 # See the .unused_examples folder
