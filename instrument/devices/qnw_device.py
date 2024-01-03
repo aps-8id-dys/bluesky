@@ -8,19 +8,21 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 from apstools.devices import PVPositionerSoftDoneWithStop
-from ophyd import EpicsSignal, EpicsSignalRO, Signal, Component
+from ophyd import Component, EpicsSignal, EpicsSignalRO, Signal
 
 __all__ = [
-    'qnw_env1',
-    'qnw_env2',
-    'qnw_env3',
+    "qnw_env1",
+    "qnw_env2",
+    "qnw_env3",
 ]
+
 
 class QnwDevice(PVPositionerSoftDoneWithStop):
     readback = Component(EpicsSignalRO, "SH_RBV", kind="hinted", auto_monitor=True)
     setpoint = Component(EpicsSignal, "TARG", kind="normal", put_complete=True)
-    tolerance = Component(Signal, value=0.1, kind="config")    
+    tolerance = Component(Signal, value=0.1, kind="config")
     ramprate = Component(EpicsSignal, "RAMP", kind="normal", put_complete=True)
+
 
 # Use readback_pv=None since readback and setpoint were defined above.
 # Works even though it looks ugglee.

@@ -18,7 +18,7 @@ local, custom Device definitions
 from .aerotech_stages import *
 from .data_management import *
 from .meascomp_usb_ctr import *
-# from .qnw_device import *
+from .qnw_device import *
 
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
