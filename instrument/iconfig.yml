@@ -35,6 +35,10 @@ DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
 
 
 AREA_DETECTOR:
+  EIGER_4M:
+    PV_PREFIX: "8idEiger4m:"
+    NAME: eiger2M
+    # IOC host: beryl
   LAMBDA_2M:
     PV_PREFIX: "8idLambda2m:"
     NAME: lambda2M
