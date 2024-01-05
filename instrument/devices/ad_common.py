@@ -54,18 +54,7 @@ from .. import iconfig
 
 BLUESKY_FILES_ROOT = PurePath(iconfig["BLUESKY_FILES_ROOT"])
 IMAGE_DIR = iconfig["AD_IMAGE_DIR"]
-
-# LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
-# BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
-# # IMAGE_DIR = "%Y/%m/%d/"
-# IMAGE_DIR = "2023-2/pvaccess_test"
-
-# # MUST end with a `/`, pathlib will NOT provide it
-# WRITE_PATH_TEMPLATE = f"{LAMBDA2M_FILES_ROOT / IMAGE_DIR}/"
-# READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
-
-# DET_NAME = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["NAME"]
-# PV_PREFIX = iconfig["AREA_DETECTOR"]["LAMBDA_2M"]["PV_PREFIX"]
+# IMAGE_DIR = "%Y/%m/%d/"
 
 
 class CamBase_V34(CamBase):
@@ -197,7 +186,7 @@ class XpcsAD_TransformPlugin(XpcsAD_PluginMixin, TransformPlugin_V34):
 
 
 def XpcsAreaDetectorFactory(det_key, **kwargs):
-    """Simpler than XpcsAD_factory()."""
+    """Simpler than XpcsAD_factory().  Use detector key from iconfig."""
 
     ad_conf = iconfig["AREA_DETECTOR"][det_key]
     IOC_FILES_ROOT = PurePath(ad_conf["IOC_FILES_ROOT"])
