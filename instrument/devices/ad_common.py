@@ -30,8 +30,12 @@ from apstools.devices import AD_plugin_primed
 from apstools.devices import AD_prime_plugin2
 from apstools.devices import CamMixin_V34
 from ophyd import ADComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 from ophyd.areadetector import CamBase
 from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import EigerDetectorCam
 from ophyd.areadetector import SimDetectorCam
 from ophyd.areadetector import SingleTrigger
 from ophyd.areadetector.plugins import CodecPlugin_V34
@@ -48,8 +52,8 @@ from ophyd.status import Status
 
 from .. import iconfig
 
-BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
-IMAGE_DIR = "2023-2/pvaccess_test"
+BLUESKY_FILES_ROOT = PurePath(iconfig["BLUESKY_FILES_ROOT"])
+IMAGE_DIR = iconfig["AD_IMAGE_DIR"]
 
 # LAMBDA2M_FILES_ROOT = PurePath("/extdisk/")
 # BLUESKY_FILES_ROOT = PurePath("/home/8ididata/")
@@ -85,8 +89,47 @@ class FileBase_V34(FileBase):
     file_number_write = None
 
 
+class EigerDetectorCam_V34(CamMixin_V34, EigerDetectorCam):
+    """Revise EigerDetectorCam for ADCore revisions."""
+
+    # These components not found on Eiger 4M at 8-ID-I
+    file_number_sync = None
+    file_number_write = None
+    fw_clear = None
+    link_0 = None
+    link_1 = None
+    link_2 = None
+    link_3 = None
+    dcu_buff_free = None
+    offset = None
+
+
+class Lambda2MCam(CamBase_V34):
+    """
+    Support for the Lambda 2M cam controls.
+
+    https://x-spectrum.de/products/lambda/
+    """
+
+    _html_docs = ["Lambda2MCam.html"]
+
+    firmware_version = ADComponent(EpicsSignalRO, "FirmwareVersion_RBV", kind="omitted")
+    operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode", kind="config")
+    serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV", kind="omitted")
+    temperature = ADComponent(EpicsSignalWithRBV, "Temperature", kind="config")
+    wait_for_plugins = ADComponent(
+        EpicsSignal, "WaitForPlugins", string=True, kind="config"
+    )
+
+    energy_threshold = ADComponent(EpicsSignalWithRBV, "EnergyThreshold", kind="config")
+    dual_mode = ADComponent(EpicsSignalWithRBV, "DualMode", string=True, kind="config")
+    dual_threshold = ADComponent(EpicsSignalWithRBV, "DualThreshold", kind="config")
+
+    EXT_TRIGGER = 0
+
+
 class SimDetectorCam_V34(CamMixin_V34, SimDetectorCam):
-    '''Revise SimDetectorCam for ADCore revisions.'''
+    """Revise SimDetectorCam for ADCore revisions."""
 
 
 class XpcsAD_PluginMixin(PluginBase_V34):
@@ -153,20 +196,47 @@ class XpcsAD_TransformPlugin(XpcsAD_PluginMixin, TransformPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
+def XpcsAreaDetectorFactory(det_key, **kwargs):
+    """Simpler than XpcsAD_factory()."""
+
+    ad_conf = iconfig["AREA_DETECTOR"][det_key]
+    IOC_FILES_ROOT = PurePath(ad_conf["IOC_FILES_ROOT"])
+
+    WRITE_PATH_TEMPLATE = f"{IOC_FILES_ROOT / IMAGE_DIR}/"
+    READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
+
+    cam_class = {
+        "ADSIM_4M": SimDetectorCam_V34,
+        "ADSIM_16M": SimDetectorCam_V34,
+        "EIGER_4M": EigerDetectorCam_V34,
+        "LAMBDA_2M": Lambda2MCam,
+    }[det_key]
+
+    return XpcsAD_factory(
+        ad_conf["PV_PREFIX"],
+        ad_conf["NAME"],
+        cam_class,
+        WRITE_PATH_TEMPLATE,
+        READ_PATH_TEMPLATE,
+        labels=("area_detector",),
+        **kwargs,
+    )
+
+
 def XpcsAD_factory(
     prefix,
     name,
     cam_class,
     write_path,
     read_path,
-    labels=("area_detector", ),
+    labels=("area_detector",),
     use_image=True,
     use_overlay=True,
     use_pva=True,
     use_roi=True,
     use_stats=True,
     use_transform=True,
-    **kwargs
+    **kwargs,
 ):
     """
     Create XPCS area detector with standard configuration.
@@ -205,8 +275,8 @@ def XpcsAD_factory(
         hdf1 = ADComponent(
             XpcsAD_EpicsFileNameHDF5Plugin,
             "HDF1:",
-            write_path_template=write_path,
-            read_path_template=read_path,
+            write_path_template=f"{PurePath(write_path)}/",
+            read_path_template=f"{PurePath(read_path)}/",
             kind="normal",
         )
         if use_pva:

@@ -33,24 +33,31 @@ WRITE_SPEC_DATA_FILES: false
 # APS Data Management
 DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
 
-
+# TODO: switch to the Voyager-based path structure
+BLUESKY_FILES_ROOT: &BLUESKY_DATA_ROOT "/home/8ididata/"
+AD_IMAGE_DIR: "2023-2/pvaccess_test"
 AREA_DETECTOR:
-  EIGER_4M:
-    PV_PREFIX: "8idEiger4m:"
-    NAME: eiger2M
-    # IOC host: beryl
-  LAMBDA_2M:
-    PV_PREFIX: "8idLambda2m:"
-    NAME: lambda2M
-  SIMDET_4M:
-    # For reference:
-    # Let us use bixbite (10.54.116.22) for adsim4M.
+  ADSIM_4M:
+    # IOC host: bixbite
     # /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idSimDetectors/iocBoot/ioc8idSimDetector4m/softioc/8idSimDetector4m.pl start
-    PV_PREFIX: "8idSimDetector4m:"
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
     NAME: adsim4M
-  SIMDET_16M:
-    PV_PREFIX: "8idSimDetector16m:"
+    PV_PREFIX: "8idSimDetector4m:"
+  ADSIM_16M:
+    # IOC host: 8idpixirad
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
     NAME: simdet16M
+    PV_PREFIX: "8idSimDetector16m:"
+  EIGER_4M:
+    # IOC host: beryl
+    # Same filesystem
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: eiger4M
+    PV_PREFIX: "8idEiger4m:"
+  LAMBDA_2M:
+    IOC_FILES_ROOT: "/extdisk/"
+    NAME: lambda2M
+    PV_PREFIX: "8idLambda2m:"
 
 # ----------------------------------
 
