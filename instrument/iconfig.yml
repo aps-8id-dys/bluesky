@@ -14,6 +14,9 @@ RUNENGINE_METADATA:
   proposal_id: XPCS Development
   databroker_catalog: *databroker_catalog
 
+# machines mounting voyager /gdata:
+# onyx, bixbite, beryl, amber
+
 # Uncomment and edit to define a PV to use for the `scan_id`.
 # The default behavior is to use `RE.md["scan_id"]`.
 # RUN_ENGINE_SCAN_ID_PV: "IOC:integer"
