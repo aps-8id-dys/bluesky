@@ -52,9 +52,8 @@ from ophyd.status import Status
 
 from .. import iconfig
 
-BLUESKY_FILES_ROOT = PurePath(iconfig["BLUESKY_FILES_ROOT"])
-IMAGE_DIR = iconfig["AD_IMAGE_DIR"]
-# IMAGE_DIR = "%Y/%m/%d/"
+BLUESKY_FILES_ROOT = PurePath(iconfig["AREA_DETECTOR"]["BLUESKY_FILES_ROOT"])
+IMAGE_DIR = iconfig["AREA_DETECTOR"].get("IMAGE_DIR", "%Y/%m/%d/")
 
 
 class CamBase_V34(CamBase):

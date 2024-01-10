@@ -17,8 +17,9 @@ from ophyd.ophydobj import Kind
 
 from ..devices import lambda2M
 from ..framework import bec
+from .._iconfig import iconfig
 
-AD_HDF5_FILE_TEMPLATE = "%s%s_%6.6d.h5"
+HDF5_FILE_TEMPLATE = iconfig["AREA_DETECTOR"].get("HDF5_FILE_TEMPLATE", "%s%s_%6.6d.h5")
 DEFAULT_DURATION = 10  # seconds
 DEFAULT_FRAME_RATE = 200  # fps  (expect occasional dropped frames at ~1_000 fps)
 # computed terms next ...
@@ -50,7 +51,7 @@ def prep_hdf_plugin(plugin, n_images, file_path, file_name):
         plugin.auto_save, "Yes",
         plugin.create_directory, -5,
         plugin.file_number, 0,
-        plugin.file_template, AD_HDF5_FILE_TEMPLATE,
+        plugin.file_template, HDF5_FILE_TEMPLATE,
     )
     print(f"{file_path=}")
     yield from bps.mv(
@@ -116,7 +117,7 @@ def bdp_acquire(
         md.update(
             dict(
                 file_path=file_path,
-                file_template=AD_HDF5_FILE_TEMPLATE,
+                file_template=HDF5_FILE_TEMPLATE,
             )
         )
         print(f"{md=}")

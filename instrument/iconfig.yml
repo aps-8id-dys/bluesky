@@ -19,9 +19,8 @@ RUNENGINE_METADATA:
 
 # Uncomment and edit to define a PV to use for the `scan_id`.
 # The default behavior is to use `RE.md["scan_id"]`.
-# RUN_ENGINE_SCAN_ID_PV: "IOC:integer"
-# 8idDAQ1:Reg0
-
+# RUN_ENGINE_SCAN_ID_PV: f"{IOC}bluesky_scan_id"
+# RUN_ENGINE_SCAN_ID_PV: "8idi:bluesky_scan_id"
 
 # permissions
 ALLOW_AREA_DETECTOR_WARMUP: true
@@ -36,10 +35,11 @@ WRITE_SPEC_DATA_FILES: false
 # APS Data Management
 DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
 
-# TODO: switch to the Voyager-based path structure
-BLUESKY_FILES_ROOT: &BLUESKY_DATA_ROOT "/home/8ididata/"
-AD_IMAGE_DIR: "2023-2/pvaccess_test"
 AREA_DETECTOR:
+  # TODO: switch to the Voyager-based path structure: "/gdata/..."
+  BLUESKY_FILES_ROOT: &BLUESKY_DATA_ROOT "/home/8ididata/"
+  IMAGE_DIR: "2023-2/pvaccess_test"
+  HDF5_FILE_TEMPLATE: "%s%s_%6.6d.h5"
   ADSIM_4M:
     # IOC host: bixbite
     # /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idSimDetectors/iocBoot/ioc8idSimDetector4m/softioc/8idSimDetector4m.pl start
@@ -58,6 +58,7 @@ AREA_DETECTOR:
     NAME: eiger4M
     PV_PREFIX: "8idEiger4m:"
   LAMBDA_2M:
+  # IOC host: lambda2m
     IOC_FILES_ROOT: "/extdisk/"
     NAME: lambda2M
     PV_PREFIX: "8idLambda2m:"
@@ -66,7 +67,7 @@ AREA_DETECTOR:
 
 # Directory to "autosave" the RE.md dictionary (uses PersistentDict)
 # Uncomment and modify to change from the default.
-# RUNENGINE_MD_PATH: /home/USERNAME/Bluesky_RunEngine_md
+RUNENGINE_MD_PATH: /home/beams/8IDIUSER/.config/Bluesky_RunEngine_md
 
 # override default control layer for ophyd
 # if undefined, defaults to PyEpics
