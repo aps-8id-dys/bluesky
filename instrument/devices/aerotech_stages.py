@@ -10,11 +10,13 @@ __all__ = """
 
 import logging
 
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
-
-from ophyd import Component, Device, EpicsMotor
 
 
 IOC = "8idiAerotech:"
