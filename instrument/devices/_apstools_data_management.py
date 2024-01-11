@@ -186,7 +186,12 @@ class DM_WorkflowConnector(Device):
             self.report_processing_stages()
 
     def start_workflow(self, workflow="", timeout=TIMEOUT_DEFAULT, **kwargs):
-        """Kickoff a DM workflow with optional wait & timeout."""
+        """
+        Kickoff a DM workflow with optional reporting timeout.
+
+        The reporting process will continue until the workflow ends or the
+        timeout period is exceeded.  It does not affect the actual workflow.
+        """
         if workflow == "":
             workflow = self.workflow.get()
         else:
