@@ -9,15 +9,13 @@ __all__ = [
 
 import logging
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
 
 import numpy as np
 import pyRestTable
-from scipy.integrate import trapz
 from scipy.ndimage import center_of_mass
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 def analyze_peak(y_arr, x_arr=None):
