@@ -10,17 +10,16 @@ __all__ = """
 """.split()
 
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level
 logger.info(__file__)
 
 # from apstools.devices import DM_WorkflowConnector
-from ._apstools_dm_prep import DM_WorkflowConnector
+from ._apstools_data_management import DM_WorkflowConnector
 
 # DM_STATION_NAME = str(os.environ.get("DM_STATION_NAME", "unknown")).lower()
-from ._apstools_dm_prep import DM_STATION_NAME
+from ._apstools_data_management import DM_STATION_NAME
 
 
 # TODO: 'labels=("DM")' kwarg is ignored for non-EPICS devices.  Refactor to ophyd_registry?

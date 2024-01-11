@@ -33,23 +33,22 @@ import logging
 import os
 import time
 
+from apstools.utils import run_in_thread
+from ophyd import Component, Device, Signal
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level
 logger.info(__file__)
 
-from ophyd import Component
-from ophyd import Device
-from ophyd import Signal
-
-from apstools.utils import run_in_thread
 
 DM_STATION_NAME = str(os.environ.get("DM_STATION_NAME", "terrier")).lower()
 NOT_AVAILABLE = "-n/a-"
 NOT_RUN_YET = "not_run"
+POLLING_PERIOD_S = 1.0
 REPORT_PERIOD_DEFAULT = 10
 REPORT_PERIOD_MIN = 1
 STARTING = "running"
-TIMEOUT_DEFAULT = 180  # TODO: Consider removing the timeout feature
+TIMEOUT_DEFAULT = 180  # TODO: Consider removing/renaming the timeout feature
 
 
 class DM_WorkflowConnector(Device):
@@ -101,7 +100,7 @@ class DM_WorkflowConnector(Device):
     stage_id = Component(Signal, value=NOT_RUN_YET)
     status = Component(Signal, value=NOT_RUN_YET)
 
-    polling_period = Component(Signal, value=0.1, kind="config")
+    polling_period = Component(Signal, value=POLLING_PERIOD_S, kind="config")
     reporting_period = Component(Signal, value=REPORT_PERIOD_DEFAULT, kind="config")
     concise_reporting = Component(Signal, value=True, kind="config")
 

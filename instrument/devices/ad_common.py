@@ -18,10 +18,6 @@ __all__ = """
 """.split()
 
 import logging
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 import time
 from pathlib import PurePath
 
@@ -50,7 +46,10 @@ from ophyd.areadetector.plugins import TransformPlugin_V34
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from .. import iconfig
+logger = logging.getLogger(__name__)
+logger.info(__file__)
+
+from .. import iconfig  # noqa
 
 BLUESKY_FILES_ROOT = PurePath(iconfig["AREA_DETECTOR"]["BLUESKY_FILES_ROOT"])
 IMAGE_DIR = iconfig["AREA_DETECTOR"].get("IMAGE_DIR", "%Y/%m/%d/")
