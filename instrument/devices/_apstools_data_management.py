@@ -30,18 +30,19 @@ __all__ = """
 """.split()
 
 import logging
-import os
 import time
 
 from apstools.utils import run_in_thread
-from ophyd import Component, Device, Signal
+from ophyd import Component
+from ophyd import Device
+from ophyd import Signal
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level
 logger.info(__file__)
 
+from ..utils import dm_station_name  # noqa
 
-DM_STATION_NAME = str(os.environ.get("DM_STATION_NAME", "terrier")).lower()
 NOT_AVAILABLE = "-n/a-"
 NOT_RUN_YET = "not_run"
 POLLING_PERIOD_S = 1.0
@@ -87,9 +88,9 @@ class DM_WorkflowConnector(Device):
     """
 
     job = None  # DM processing job (must update during workflow execution)
-    _api = None  # DM common API
+    _api = None  # DM processing API
 
-    owner = Component(Signal, value=DM_STATION_NAME, kind="config")
+    owner = Component(Signal, value="", kind="config")
     workflow = Component(Signal, value="")
     workflow_args = {}
 
@@ -126,9 +127,11 @@ class DM_WorkflowConnector(Device):
         if name is None:
             raise KeyError("Must provide value for 'name'.")
         super().__init__(name=name)
+
         if workflow is not None:
             self.workflow.put(workflow)
         self.workflow_args.update(kwargs)
+        self.owner.put(self.api.username)
 
     def put_if_different(self, signal, value):
         """Put ophyd signal only if new value is different."""
@@ -228,7 +231,11 @@ class DM_WorkflowConnector(Device):
 
         @run_in_thread
         def _run_DM_workflow_thread():
-            logger.info("run DM workflow: %s with timeout=%s s", self.workflow.get(), timeout)
+            logger.info(
+                "run DM workflow: %s with reporting time limit=%s s",
+                self.workflow.get(),
+                timeout,
+            )
             self.job = self.api.startProcessingJob(
                 workflowOwner=self.owner.get(),
                 workflowName=workflow,
@@ -238,9 +245,15 @@ class DM_WorkflowConnector(Device):
             logger.info(f"DM workflow started: {self}")
             # wait for workflow to finish
             deadline = time.time() + timeout
-            while time.time() < deadline and self.status.get() not in "done failed timeout".split():
+            while (
+                time.time() < deadline
+                and self.status.get() not in "done failed timeout".split()
+            ):
                 self._update_processing_data()
-                if "_report_deadline" not in dir(self) or time.time() >= self._report_deadline:
+                if (
+                    "_report_deadline" not in dir(self)
+                    or time.time() >= self._report_deadline
+                ):
                     _reporter()
                 time.sleep(self.polling_period.get())
 
@@ -270,7 +283,13 @@ class DM_WorkflowConnector(Device):
         self.status.subscribe(_reporter)
         _run_DM_workflow_thread()
 
-    def run_as_plan(self, workflow="", wait=True, timeout=TIMEOUT_DEFAULT, **kwargs):
+    def run_as_plan(
+        self,
+        workflow: str = "",
+        wait: bool = True,
+        timeout: int = TIMEOUT_DEFAULT,
+        **kwargs,
+    ):
         """Run the DM workflow as a bluesky plan."""
         from bluesky import plan_stubs as bps
 
