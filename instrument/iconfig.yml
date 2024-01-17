@@ -28,6 +28,9 @@ RUNENGINE_METADATA:
 # lambda2m      private no      no        yes       IOC for lambda2M
 # onyx          private yes     no        yes       will move next year to PtychoProbe Eiger IOC
 # s8ididm       private yes     yes       no        APS DM server
+# axinite       private yes     no        yes       analysis (multiple GPUs)
+# tanzanite     private yes     no        yes       analysis (multiple GPUs)
+# rigaku[1-6]   private yes     yes?      no        Rigaku detector
 
 TILED_SERVER: amber
 
@@ -51,6 +54,9 @@ WRITE_SPEC_DATA_FILES: false
 # Use bash shell, deactivate all conda environments, source this file:
 DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
 # TODO: DM_WORKFLOW_NAME: "xpcs-analysis"
+# actually two of them: local and polaris
+# local: see the notes (test apsu)
+# polaris: tbd
 
 AREA_DETECTOR:
   # TODO: switch to the Voyager-based path structure: "/gdata/..."

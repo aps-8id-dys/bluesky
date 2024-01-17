@@ -9,7 +9,9 @@ __all__ = """
 
 import logging
 
+from bluesky import plans as bp
 from bluesky import plan_stubs as bps
+from bluesky import preprocessors as bpp
 
 # from bluesky import plans as bp
 
@@ -17,48 +19,77 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 from .._iconfig import iconfig  # noqa
-from ..devices import dm_experiment  # noqa
 from ..devices import DM_WorkflowConnector  # noqa
+from ..devices import dm_experiment  # noqa
+from ..framework import cat  # noqa
+from ..utils import MINUTE  # noqa
+from ..utils import WorkflowCache  # noqa
 from ..utils import build_run_metadata_dict  # noqa
 from ..utils import dm_api_ds  # noqa
 from ..utils import dm_api_proc  # noqa
 from ..utils import get_workflow_last_stage  # noqa
-from ..utils import MINUTE  # noqa
-from ..utils import WorkflowCache  # noqa
+from ..utils import share_bluesky_metadata_with_dm  # noqa
 
 DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
 TITLE = "BDP XPCS demo"
 DESCRIPTION = "Demonstrate XPCS data acquisition and analysis."
 DEFAULT_RUN_METADATA = {"title": TITLE, "description": DESCRIPTION}
-DEFAULT_WAITING_TIME = 2 * MINUTE  # bluesky will raise TimeoutError if DM is not done
+DEFAULT_WAITING_TIME = (
+    2 * MINUTE
+)  # bluesky will raise TimeoutError if DM workflow is not done in this time
 
 
 def setup_user(dm_experiment_name: str):
-    """Configure bluesky session for this user."""
+    """
+    Configure bluesky session for this user.
+
+    PARAMETERS
+
+    dm_experiment_name *str*:
+    """
+    from ..utils import dm_isDaqActive, dm_start_daq
+
     # Check that named experiment actually exists now.
     # Raises dm.ObjectNotFound if does not exist.
     dm_api_ds().getExperimentByName(dm_experiment_name)
     yield from bps.mv(dm_experiment, dm_experiment_name)
+
+    # Full path to directory where new data will be written.
+    # XPCS new data is written to APS Voyager storage (path
+    # starting with ``/gdata/``).  Use "@voyager" in this case.
+    # DM sees this and knows not copy from voyager to voyager.
+    data_directory = "@voyager"
+
+    # Check DM DAQ is running for this experiment, if not then start it.
+    if not dm_isDaqActive(dm_experiment_name):
+        # Need another DAQ if also writing to a different directory (off voyager).
+        # A single DAQ can be used to cover any subdirectories.
+        # Anything in them will be uploaded.
+        logger.info(
+            "Starting DM DAQ: experiment %r in data directory %r",
+            dm_experiment_name,
+            data_directory,
+        )
+        dm_start_daq(dm_experiment_name, data_directory)
+
     # TODO: What else?
-    """
-    Check DM DAQ is running for this experiment, if not then start it.  There is
-    a DAQ API for this.
 
-    DAQ should be started before bluesky writes any files.
 
-    User option to stop DAQ after bluesky run (default: False).
+def data_acquisition_plan(*args, md={}, **kwargs):
+    """Bluesky data acquisition plan."""
+    from ophyd import Signal
 
-    There is a function to inform if DAQ is active:
-    <!-- [3:29 PM] Parraga, Hannah -->
-    production/src/python/dm/aps_beamline_tools/common/dataTransferMonitor.py
+    sig = Signal(name="sig", value=1.23456)
 
-    def isDaqActive(self, experimentName: str) -> bool:
+    _md = {}
+    _md.update(md)
 
-    https://git.aps.anl.gov/DM/dm-docs/-/wikis/DM/HowTos/Getting-Started
+    # @bpp.run_decorator(md=_md)
+    def user_data_acquisition_plan():
+        # yield from bps.null()
+        yield from bp.count([sig], md=_md)
 
-    Look at:
-    dataTransferMonitor.DataTransferMonitor.isDaqActive(experiment_name)
-    """
+    yield from user_data_acquisition_plan()
 
 
 def run_workflow_only(
@@ -93,11 +124,13 @@ def run_workflow_only(
     )
 
     dm_workflow = DM_WorkflowConnector(name="dm_workflow", labels=["DM"])
+    # WorkflowCache is useful when a plan uses multiple workflows.
+    # For XPCS, it is of little value but left here for demonstration.
     wf_cache = WorkflowCache()
     wf_cache.define_workflow("XCPS", dm_workflow)
     yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
 
-    # TODO: data acquisition here
+    yield from data_acquisition_plan(md=_md)  # TODO: args, kwargs
 
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
@@ -112,5 +145,9 @@ def run_workflow_only(
     wf_cache._update_processing_data()
     wf_cache.print_cache_summary()
     wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
+
+    # upload bluesky run metadata to APS DM
+    run = cat[-1]  # FIXME: hacky!
+    share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
+
     logger.info("Finished: run_workflow_only()")
-    # TODO: update DM workflow metadata
