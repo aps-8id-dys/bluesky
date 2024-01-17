@@ -9,11 +9,12 @@ __all__ = """
 
 import logging
 
-from bluesky import plans as bp
-from bluesky import plan_stubs as bps
-from bluesky import preprocessors as bpp
+from ophyd import Signal
 
-# from bluesky import plans as bp
+from bluesky import plan_stubs as bps
+from bluesky import plans as bp
+
+# from bluesky import preprocessors as bpp
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -29,6 +30,8 @@ from ..utils import dm_api_ds  # noqa
 from ..utils import dm_api_proc  # noqa
 from ..utils import get_workflow_last_stage  # noqa
 from ..utils import share_bluesky_metadata_with_dm  # noqa
+
+sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
 
 DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
 TITLE = "BDP XPCS demo"
@@ -47,7 +50,8 @@ def setup_user(dm_experiment_name: str):
 
     dm_experiment_name *str*:
     """
-    from ..utils import dm_isDaqActive, dm_start_daq
+    from ..utils import dm_isDaqActive
+    from ..utils import dm_start_daq
 
     # Check that named experiment actually exists now.
     # Raises dm.ObjectNotFound if does not exist.
@@ -73,23 +77,6 @@ def setup_user(dm_experiment_name: str):
         dm_start_daq(dm_experiment_name, data_directory)
 
     # TODO: What else?
-
-
-def data_acquisition_plan(*args, md={}, **kwargs):
-    """Bluesky data acquisition plan."""
-    from ophyd import Signal
-
-    sig = Signal(name="sig", value=1.23456)
-
-    _md = {}
-    _md.update(md)
-
-    # @bpp.run_decorator(md=_md)
-    def user_data_acquisition_plan():
-        # yield from bps.null()
-        yield from bp.count([sig], md=_md)
-
-    yield from user_data_acquisition_plan()
 
 
 def run_workflow_only(
@@ -130,7 +117,15 @@ def run_workflow_only(
     wf_cache.define_workflow("XCPS", dm_workflow)
     yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
 
-    yield from data_acquisition_plan(md=_md)  # TODO: args, kwargs
+    def user_data_acquisition_wrapper_plan():
+        """Wrapper for user's data acquisition plan."""
+        # TODO: user_plan(args, kwargs)
+        uid = yield from bp.count([sensor], md=_md)
+        logger.debug("Bluesky RunEngine uid=%s", uid)
+        return uid
+
+    uid = yield from user_data_acquisition_wrapper_plan()
+    print(f"DIAGNOSTIC outer: {uid=}")
 
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
@@ -147,7 +142,7 @@ def run_workflow_only(
     wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
 
     # upload bluesky run metadata to APS DM
-    run = cat[-1]  # FIXME: hacky!
+    run = cat[uid]
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
     logger.info("Finished: run_workflow_only()")

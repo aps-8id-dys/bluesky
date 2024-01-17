@@ -178,7 +178,7 @@ def dm_get_daq(experimentName: str):
 
     experimentName *str*:
         Name of the APS Data Management experiment.
-    
+
     RETURNS
 
         DAQ ``dict`` result or ``None`` if not found.
@@ -188,6 +188,7 @@ def dm_get_daq(experimentName: str):
         if daq.get("experimentName") == experimentName:
             return daq
 
+
 def dm_isDaqActive(experimentName: str) -> bool:
     """
     Return if a DAQ is active for the named APS Data Management experiment.
@@ -196,7 +197,7 @@ def dm_isDaqActive(experimentName: str) -> bool:
 
     experimentName *str*:
         Name of the APS Data Management experiment.
-    
+
     RETURNS
 
         Boolean
@@ -251,7 +252,7 @@ def dm_source_environ():
     # fmt: on
 
 
-def dm_start_daq(experimentName: str,  dataDirectory: str, **daqInfo):
+def dm_start_daq(experimentName: str, dataDirectory: str, **daqInfo):
     """
     Start APS DM data acquisition (real-time directory monitoring and file upload).
 
@@ -379,34 +380,37 @@ def get_workflow_last_stage(workflow_name):
     return list(dm_get_workflow(workflow_name)["stages"])[-1]
 
 
-def share_bluesky_metadata_with_dm(experimentName: str, workflow_name: str, run):
+def share_bluesky_metadata_with_dm(
+    experimentName: str, workflow_name: str, run, should_raise: bool = False
+):
     """
     Once a bluesky run ends, share its metadata with APS DM.
 
     Only upload if we have a workflow.
     """
+    import uuid
+
+    from dm import InvalidArgument
+
     api = dm_api_dataset_cat()
 
-    dm_md = api.addExperimentDataset(
-        {
-            "experimentName": experimentName,
-            "datasetName": f"uid_{run.metadata['start']['uid'][:8]}",  # first part of run uid
-            "workflow_name": workflow_name,
-            "metadata": {k: getattr(run, k).metadata for k in run},  # all streams
-        }
-    )
-    # dm_md = api.addExperimentRun(
-    #     {
-    #         "experimentName": experimentName,
-    #         "workflow_name": workflow_name,
-    #         "runId": f"uid_{run.metadata['start']['uid'][:8]}",  # first part of run uid
-    #         "metadata": {k: getattr(run, k).metadata for k in run},  # all streams
-    #     }
-    # )
-    logger.info("Metadata shared to DM: %s", dm_md)
+    datasetInfo = {
+        "experimentName": experimentName,
+        "datasetName": f"uid_{run.metadata['start']['uid'][:8]}",  # first part of run uid
+        "workflow_name": workflow_name,
+        "metadata": {k: getattr(run, k).metadata for k in run},  # all streams
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        "_id": str(uuid.uuid4()),  # FIXME: dm must fix this upstream
+    }
 
-    # # confirm
-    # dm_mdl = api.getExperimentRuns(experimentName)
+    try:
+        dm_md = api.addExperimentDataset(datasetInfo)
+        logger.info("Metadata shared to DM: %s", dm_md)
+        return dm_md
+    except InvalidArgument as ex:
+        logger.error(ex)
+        if should_raise:
+            raise ex
 
 
 def ts2iso(ts: float, sep: str = " ") -> str:
@@ -459,7 +463,7 @@ class WorkflowCache:
     def report_dm_workflow_output(self, final_stage_id: str):
         """
         Print a final (summary) report about a single DM workflow.
-        
+
         PARAMETERS
 
         final_stage_id *str*:
