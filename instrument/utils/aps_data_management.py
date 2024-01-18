@@ -388,8 +388,6 @@ def share_bluesky_metadata_with_dm(
 
     Only upload if we have a workflow.
     """
-    import uuid
-
     from dm import InvalidArgument
 
     api = dm_api_dataset_cat()
@@ -400,12 +398,12 @@ def share_bluesky_metadata_with_dm(
         "workflow_name": workflow_name,
         "metadata": {k: getattr(run, k).metadata for k in run},  # all streams
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        "_id": str(uuid.uuid4()),  # FIXME: dm must fix this upstream
+        "_id": f"0x{id(object()):x}",  # FIXME: dm must fix this upstream
     }
 
     try:
         dm_md = api.addExperimentDataset(datasetInfo)
-        logger.info("Metadata shared to DM: %s", dm_md)
+        logger.debug("Metadata shared to DM: %s", dm_md)
         return dm_md
     except InvalidArgument as ex:
         logger.error(ex)
