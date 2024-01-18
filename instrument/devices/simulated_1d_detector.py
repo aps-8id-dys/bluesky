@@ -13,19 +13,21 @@ Test Examples::
 
 __all__ = """
     sim1d
+    motor
 """.split()
 
 import logging
 import random
 
-from ophyd.sim import SynGauss
+from ophyd.sim import SynGauss, motor
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 from . import sample  # noqa
 
-MOTOR = sample.x
+MOTOR = motor
+# MOTOR = sample.x
 CENTER = 1.1 + 0.8 * random.random()
 IMAX = 95_000 + 10_000 * random.random()
 SIGMA = 0.01 + 0.1 * random.random()
