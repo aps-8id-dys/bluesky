@@ -3,8 +3,9 @@ APS BDP demo: 2024-02
 """
 
 __all__ = """
+    prj_test
+    run_daq_and_wf
     setup_user
-    run_workflow_only
 """.split()
 
 import logging
@@ -13,23 +14,27 @@ from ophyd import Signal
 
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
+from bluesky import preprocessors as bpp
 
-# from bluesky import preprocessors as bpp
+from .._iconfig import iconfig
+from ..devices import DM_WorkflowConnector
+from ..devices import dm_experiment
+from ..devices import motor
+from ..devices import sim1d
+from ..framework import cat
+from ..plans import lineup2
+from ..utils import MINUTE
+from ..utils import WorkflowCache
+from ..utils import build_run_metadata_dict
+from ..utils import dm_api_ds
+from ..utils import dm_api_proc
+from ..utils import get_workflow_last_stage
+from ..utils import share_bluesky_metadata_with_dm
+
+
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
-
-from .._iconfig import iconfig  # noqa
-from ..devices import DM_WorkflowConnector  # noqa
-from ..devices import dm_experiment  # noqa
-from ..framework import cat  # noqa
-from ..utils import MINUTE  # noqa
-from ..utils import WorkflowCache  # noqa
-from ..utils import build_run_metadata_dict  # noqa
-from ..utils import dm_api_ds  # noqa
-from ..utils import dm_api_proc  # noqa
-from ..utils import get_workflow_last_stage  # noqa
-from ..utils import share_bluesky_metadata_with_dm  # noqa
 
 sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
 
@@ -79,10 +84,27 @@ def setup_user(dm_experiment_name: str):
     # TODO: What else?
 
 
-def run_workflow_only(
+def count_sensor_plan(md):
+    """Standard count plan with custom sensor."""
+    uids = yield from bp.count([sensor], md=md)
+    logger.debug("Bluesky RunEngine uids=%s", uids)
+    return uids
+
+
+def example_scan(md):
+    """Example data acquisition plan."""
+    # TODO: user_plan(args, kwargs)
+    yield from bps.mv(motor, 1.25)
+    uids = yield from lineup2([sim1d], motor, -.55, .55, 79)  # TODO: md=_md in apstools 1.6.18
+    logger.debug("Bluesky RunEngine uids=%s", uids)
+    return uids
+
+
+def run_daq_and_wf(
     workflow_name: str = DM_WORKFLOW_NAME,
     title: str = TITLE,
     description: str = DESCRIPTION,
+    demo: int = 0,
     # internal kwargs ----------------------------------------
     dm_waiting_time=DEFAULT_WAITING_TIME,
     dm_wait=False,
@@ -111,22 +133,37 @@ def run_workflow_only(
     )
 
     dm_workflow = DM_WorkflowConnector(name="dm_workflow", labels=["DM"])
-    # WorkflowCache is useful when a plan uses multiple workflows.
-    # For XPCS, it is of little value but left here for demonstration.
-    wf_cache = WorkflowCache()
-    wf_cache.define_workflow("XCPS", dm_workflow)
+    # # WorkflowCache is useful when a plan uses multiple workflows.
+    # # For XPCS, it is of little value but left here for demonstration.
+    # wf_cache = WorkflowCache()
+    # wf_cache.define_workflow("XCPS", dm_workflow)
     yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
 
-    def user_data_acquisition_wrapper_plan():
-        """Wrapper for user's data acquisition plan."""
-        # TODO: user_plan(args, kwargs)
-        uid = yield from bp.count([sensor], md=_md)
-        logger.debug("Bluesky RunEngine uid=%s", uid)
-        return uid
+    @bpp.run_decorator(md=_md)
+    def user_plan_too(*args, **kwargs):
+        yield from bps.trigger_and_read([sensor])
+        yield from bps.trigger_and_read([dm_workflow], "dm_workflow")
 
-    uid = yield from user_data_acquisition_wrapper_plan()
-    print(f"DIAGNOSTIC outer: {uid=}")
+    #
+    # *** Run the data acquisition. ***
+    #
+    if demo == 0:
+        uids = yield from count_sensor_plan(_md)
+    elif demo == 1:
+        uids = yield from example_scan(_md)
+    else:
+        uids = yield from user_plan_too()
 
+    if uids is None:
+        run = cat[-1]  # risky
+    elif isinstance(uids, str):
+        run = cat[uids]
+    else:
+        run = cat[uids[0]]
+
+    #
+    # *** Start this APS Data Management workflow after the run completes. ***
+    #
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
         wait=dm_wait,
@@ -135,14 +172,18 @@ def run_workflow_only(
         filePath=_md["data_management"]["storageDirectory"],
     )
 
-    yield from wf_cache.wait_workflows(wait=dm_wait)
+    # yield from wf_cache.wait_workflows(wait=dm_wait)
 
-    wf_cache._update_processing_data()
-    wf_cache.print_cache_summary()
-    wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
+    # wf_cache._update_processing_data()
+    # wf_cache.print_cache_summary()
+    # wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
 
     # upload bluesky run metadata to APS DM
-    run = cat[uid]
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
     logger.info("Finished: run_workflow_only()")
+
+
+def prj_test(demo: int = 0):
+    yield from setup_user("20240110-jemian")
+    yield from run_daq_and_wf(demo=demo, dm_wait=True)
