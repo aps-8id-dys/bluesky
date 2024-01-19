@@ -388,17 +388,20 @@ def share_bluesky_metadata_with_dm(
 
     Only upload if we have a workflow.
     """
+    import uuid
+
     from dm import InvalidArgument
 
     api = dm_api_dataset_cat()
 
     datasetInfo = {
         "experimentName": experimentName,
-        "datasetName": f"uid_{run.metadata['start']['uid'][:8]}",  # first part of run uid
+        "datasetName": f"run_uid8_{run.metadata['start']['uid'][:8]}",  # first part of run uid
         "workflow_name": workflow_name,
-        "metadata": {k: getattr(run, k).metadata for k in run},  # all streams
+        "time_iso8601": ts2iso(run.metadata.get("start", {}).get("time", 0)),
+        "bluesky_metadata": {k: getattr(run, k).metadata for k in run},  # all streams
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        "_id": f"0x{id(object()):x}",  # FIXME: dm must fix this upstream
+        "_id": str(uuid.uuid4()),  # FIXME: dm must fix this upstream
     }
 
     try:
