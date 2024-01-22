@@ -79,6 +79,8 @@ class FileBase_V34(FileBase):
 class EigerDetectorCam_V34(CamMixin_V34, EigerDetectorCam):
     """Revise EigerDetectorCam for ADCore revisions."""
 
+    initialize = ADComponent(EpicsSignal, "Initialize", kind="config")
+
     # These components not found on Eiger 4M at 8-ID-I
     file_number_sync = None
     file_number_write = None

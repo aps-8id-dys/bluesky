@@ -9,7 +9,9 @@ APS Data Management utility support.
     ~dm_api_daq
     ~dm_api_dataset_cat
     ~dm_api_ds
+    ~dm_api_file
     ~dm_api_proc
+    ~dm_files_ready_to_process
     ~dm_get_daq
     ~dm_get_experiment_path
     ~dm_get_experiments
@@ -42,7 +44,9 @@ __all__ = """
     dm_api_daq
     dm_api_dataset_cat
     dm_api_ds
+    dm_api_file
     dm_api_proc
+    dm_files_ready_to_process
     dm_get_daq
     dm_get_experiment_path
     dm_get_experiments
@@ -161,6 +165,15 @@ def dm_api_ds():
     return api
 
 
+def dm_api_file():
+    """Return the APS Data Management File API object."""
+    from dm import DsApiFactory
+
+    dm_source_environ()
+    api = DsApiFactory.getFileDsApi()
+    return api
+
+
 def dm_api_proc():
     """Return the APS Data Management Processing API object."""
     from dm import ProcApiFactory
@@ -212,6 +225,20 @@ def dm_isDaqActive(experimentName: str) -> bool:
     if daq is not None:
         return daq.get("status") in active_statuses
     return False  # not found is same as not active
+
+
+def dm_files_ready_to_process(
+    experimentFilePath: str,  # path (abs or rel) to a file
+    experimentName: str,
+    compression: str = "",
+    retrieveMd5Sum: bool = False,
+) -> bool:
+    """
+    Does DM determine the named file is ready for processing?
+    """
+    return dm_api_file().statFile(
+        experimentFilePath, experimentName, compression, retrieveMd5Sum
+    ).get("readyForProcessing", False)
 
 
 def dm_source_environ():

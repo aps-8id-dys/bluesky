@@ -32,7 +32,6 @@ from ..utils import get_workflow_last_stage
 from ..utils import share_bluesky_metadata_with_dm
 
 
-
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
@@ -160,6 +159,11 @@ def run_daq_and_wf(
         run = cat[uids]
     else:
         run = cat[uids[0]]
+
+    # TODO: Wait for file writing.
+    #   For any data transfers or file writing to complete before running the workflow.
+    # while not dm_files_ready_to_process(filename, experiment_name):
+    #     yield from bps.sleep(1)  # TODO: What interval?
 
     #
     # *** Start this APS Data Management workflow after the run completes. ***
