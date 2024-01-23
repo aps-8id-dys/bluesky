@@ -73,5 +73,5 @@ def eiger4M_daq_setup(
             yield from bps.abs_set(signal, value)
 
     # Python attributes (not ophyd Signals)
-    hdf.read_path_template = str(path)  # allow for a pathlib object
-    hdf.write_path_template = str(path)
+    # allow for a pathlib object
+    hdf.write_path_template = hdf.read_path_template = f"{path}/"
