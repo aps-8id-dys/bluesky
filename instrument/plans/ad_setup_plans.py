@@ -7,25 +7,38 @@ __all__ = """
 """.split()
 
 import logging
+
 from bluesky import plan_stubs as bps
+
 from ..devices import eiger4M
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+
 class DetectorStateError(RuntimeError):
     """For custom errors in this module."""
 
+
 def eiger4M_daq_setup(
-    acquire_time : float,
-    acquire_period : float,
-    num_capture : int = 1,
-    num_exposures : int = 1,
-    num_images : int = 10_000,
-    num_triggers : int = 1,
+    acquire_time: float = 0.01,
+    acquire_period: float = 0.01,
+    num_capture: int = 1,
+    num_exposures: int = 1,
+    num_images: int = 1_000,
+    num_triggers: int = 1,
+    path="",  # str or pathlib.Path
 ):
+    """
+    Prepare the Eiger4M detector for the next acquisition(s).
+
+    Each parameter should have a defined type and default value, for use in the
+    bluesky queueserver.  These parameters should be copied to the user-facing
+    plan that appears in the queueserver.
+    """
     det = eiger4M
     cam = det.cam
+    hdf = det.hdf1
 
     # Check the configuration of the detector now.
     attrs = {
@@ -47,11 +60,18 @@ def eiger4M_daq_setup(
             )
 
     # Make the settings.
-    yield from bps.mv(
-        cam.acquire_time, acquire_time,
-        cam.acquire_period, acquire_period,
-        cam.num_capture, num_capture,
-        cam.num_exposures, num_exposures,
-        cam.num_images, num_images,
-        cam.num_triggers, num_triggers,
-    )
+    settings = {
+        cam.acquire_time: acquire_time,
+        cam.acquire_period: acquire_period,
+        cam.num_capture: num_capture,
+        cam.num_exposures: num_exposures,
+        cam.num_images: num_images,
+        cam.num_triggers: num_triggers,
+    }
+    for signal, value in settings.items():
+        if signal.get() != value:  # write only if different
+            yield from bps.abs_set(signal, value)
+
+    # Python attributes (not ophyd Signals)
+    hdf.read_path_template = str(path)  # allow for a pathlib object
+    hdf.write_path_template = str(path)
