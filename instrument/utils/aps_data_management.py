@@ -11,8 +11,8 @@ APS Data Management utility support.
     ~dm_api_ds
     ~dm_api_file
     ~dm_api_proc
-    ~dm_files_ready_to_process
-    ~dm_get_daq
+    ~dm_file_ready_to_process
+    ~dm_get_daqs
     ~dm_get_experiment_path
     ~dm_get_experiments
     ~dm_get_workflow
@@ -46,8 +46,8 @@ __all__ = """
     dm_api_ds
     dm_api_file
     dm_api_proc
-    dm_files_ready_to_process
-    dm_get_daq
+    dm_file_ready_to_process
+    dm_get_daqs
     dm_get_experiment_path
     dm_get_experiments
     dm_get_workflow
@@ -183,9 +183,9 @@ def dm_api_proc():
     return api
 
 
-def dm_get_daq(experimentName: str):
+def dm_get_daqs(experimentName: str):
     """
-    Return named APS Data Management experiment DAQ.
+    Return list of APS Data Management DAQ(s) for this experiment.
 
     PARAMETERS
 
@@ -194,17 +194,21 @@ def dm_get_daq(experimentName: str):
 
     RETURNS
 
-        DAQ ``dict`` result or ``None`` if not found.
+        List of matching DAQ dictionaries.
     """
     api = dm_api_daq()
-    for daq in api.listDaqs():
-        if daq.get("experimentName") == experimentName:
-            return daq
+    # fmt: off
+    return [
+        daq
+        for daq in api.listDaqs()
+        if daq.get("experimentName") == experimentName
+    ]
+    # fmt: on
 
 
 def dm_isDaqActive(experimentName: str) -> bool:
     """
-    Return if a DAQ is active for the named APS Data Management experiment.
+    Return if all DAQ(s) are active for the named APS Data Management experiment.
 
     PARAMETERS
 
@@ -221,13 +225,16 @@ def dm_isDaqActive(experimentName: str) -> bool:
         dmProcessingStatus.DM_PROCESSING_STATUS_PENDING,
         dmProcessingStatus.DM_PROCESSING_STATUS_RUNNING,
     )
-    daq = dm_get_daq(experimentName)
-    if daq is not None:
-        return daq.get("status") in active_statuses
-    return False  # not found is same as not active
+    # fmt: off
+    statuses = [
+        daq.get("status") in active_statuses
+        for daq in dm_get_daqs(experimentName)
+    ]
+    # fmt: on
+    return False not in statuses
 
 
-def dm_files_ready_to_process(
+def dm_file_ready_to_process(
     experimentFilePath: str,  # path (abs or rel) to a file
     experimentName: str,
     compression: str = "",
@@ -236,9 +243,11 @@ def dm_files_ready_to_process(
     """
     Does DM determine the named file is ready for processing?
     """
-    return dm_api_file().statFile(
-        experimentFilePath, experimentName, compression, retrieveMd5Sum
-    ).get("readyForProcessing", False)
+    return (
+        dm_api_file()
+        .statFile(experimentFilePath, experimentName, compression, retrieveMd5Sum)
+        .get("readyForProcessing", False)
+    )
 
 
 def dm_source_environ():
