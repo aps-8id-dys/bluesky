@@ -38,6 +38,7 @@ from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import FileBase
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import OverlayPlugin_V34
+from ophyd.areadetector.plugins import ProcessPlugin_V34
 from ophyd.areadetector.plugins import PluginBase_V34
 from ophyd.areadetector.plugins import PvaPlugin_V34
 from ophyd.areadetector.plugins import ROIPlugin_V34
@@ -169,6 +170,10 @@ class XpcsAD_OverlayPlugin(XpcsAD_PluginMixin, OverlayPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
+class XpcsAD_ProcessPlugin(XpcsAD_PluginMixin, ProcessPlugin_V34):
+    """Remove property attribute found in AD IOCs now."""
+
+
 class XpcsAD_PvaPlugin(XpcsAD_PluginMixin, PvaPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
@@ -221,6 +226,7 @@ def XpcsAD_factory(
     labels=("area_detector",),
     use_image=True,
     use_overlay=True,
+    use_process=True,
     use_pva=True,
     use_roi=True,
     use_stats=True,
@@ -272,6 +278,8 @@ def XpcsAD_factory(
             pva = ADComponent(XpcsAD_PvaPlugin, "Pva1:")
 
         # If AD IOC sends codec1 to roi (& roi1?)
+        if use_process:
+            proc1 = ADComponent(XpcsAD_ProcessPlugin, "Proc1:")
         if use_overlay:
             over1 = ADComponent(XpcsAD_OverlayPlugin, "Over1:")
         if use_roi:
