@@ -27,6 +27,7 @@ APS Data Management utility support.
     ~get_workflow_last_stage
     ~share_bluesky_metadata_with_dm
     ~ts2iso
+    ~validate_experiment_dataDirectory
     ~SECOND
     ~MINUTE
     ~HOUR
@@ -62,6 +63,7 @@ __all__ = """
     get_workflow_last_stage
     share_bluesky_metadata_with_dm
     ts2iso
+    validate_experiment_dataDirectory
     SECOND
     MINUTE
     HOUR
@@ -113,6 +115,17 @@ def build_run_metadata_dict(user_md: dict, **dm_kwargs) -> dict:
     }
     _md.update(user_md)
     return _md
+
+
+def validate_experiment_dataDirectory(dm_experiment_name: str):
+    """These bluesky plans use the experiment's 'dataDirectory'."""
+    # Check that named experiment actually exists now.
+    # Raises dm.ObjectNotFound if does not exist.
+    experiment = dm_api_ds().getExperimentByName(dm_experiment_name)
+    if "dataDirectory" not in experiment:
+        # Cannot test that it exists since bluesky user might not have
+        # access to that file system or permission to read that directory.
+        raise KeyError(f"{dm_experiment_name=!r} does not have a 'dataDirectory'.")
 
 
 def dm_add_workflow(workflow_file):

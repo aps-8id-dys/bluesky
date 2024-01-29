@@ -14,3 +14,4 @@ from .listruns_plan import listruns
 from .acquire_plans import *
 from .qnw_plans import *
 from .bdp_demo import *
+from .ad_setup_plans import *
