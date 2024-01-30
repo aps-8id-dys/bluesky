@@ -3,9 +3,12 @@ Bluesky plans to setup various Area Detectors for acquisition.
 """
 
 __all__ = """
+    ad_acquire_setup
     eiger4M_acquire_setup
     setup_hdf5_plugin
     write_if_new
+    DetectorStateError
+    HDF5PluginError
 """.split()
 
 import logging
@@ -35,7 +38,8 @@ class HDF5PluginError(RuntimeError):
     """An error with configuration of the HDF5 plugin."""
 
 
-def eiger4M_acquire_setup(
+def ad_acquire_setup(
+    det,  # area detector object
     acquire_time: float = 0.01,
     acquire_period: float = 0.01,
     num_capture: int = 1,
@@ -45,15 +49,48 @@ def eiger4M_acquire_setup(
     path="",  # str or pathlib.Path
 ):
     """
-    Prepare the Eiger4M detector for the next acquisition(s).
+    Prepare any area detector for the next acquisition(s).
 
     Each parameter should have a defined type and default value, for use in the
     bluesky queueserver.  These parameters should be copied to the user-facing
     plan that appears in the queueserver.
     """
-    det = eiger4M
     cam = det.cam
     hdf = det.hdf1
+
+    # Make the settings.
+    settings = {
+        cam.acquire_time: acquire_time,
+        cam.acquire_period: acquire_period,
+        cam.num_exposures: num_exposures,
+        cam.num_images: num_images,
+    }
+    for signal, value in settings.items():
+        if signal.get() != value:  # write only if different
+            yield from bps.abs_set(signal, value)
+
+    # Python attributes (not ophyd Signals)
+    # allow for a pathlib object
+    hdf.write_path_template = hdf.read_path_template = f"{path}/"
+
+
+def eiger4M_acquire_setup(
+    det,  # area detector object
+    # acquire_time: float = 0.01,
+    # acquire_period: float = 0.01,
+    # num_capture: int = 1,
+    # num_exposures: int = 1,
+    # num_images: int = 1_000,
+    num_triggers: int = 1,
+    # path="",  # str or pathlib.Path
+):
+    """
+    Prepare the Eiger4M detector for the next acquisition(s).
+    """
+    det = eiger4M
+    cam = det.cam
+
+    yield from write_if_new(cam.num_triggers, num_triggers)
 
     # Check the configuration of the detector now.
     attrs = {
@@ -73,23 +110,6 @@ def eiger4M_acquire_setup(
             raise DetectorStateError(
                 f"{det.name} PV {getattr(cam, k).pvname!r} not in {v!r}"
             )
-
-    # Make the settings.
-    settings = {
-        cam.acquire_time: acquire_time,
-        cam.acquire_period: acquire_period,
-        cam.num_capture: num_capture,
-        cam.num_exposures: num_exposures,
-        cam.num_images: num_images,
-        cam.num_triggers: num_triggers,
-    }
-    for signal, value in settings.items():
-        if signal.get() != value:  # write only if different
-            yield from bps.abs_set(signal, value)
-
-    # Python attributes (not ophyd Signals)
-    # allow for a pathlib object
-    hdf.write_path_template = hdf.read_path_template = f"{path}/"
 
 
 def setup_hdf5_plugin(

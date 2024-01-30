@@ -4,11 +4,13 @@ APS BDP demo: 2024-02
 
 __all__ = """
     bdp_demo_acquire_and_workflow
+    bdp_demo_run_daq_and_wf
     bdp_developer_run_daq_and_wf
     prj_test
     reset_index
     setup_user
 """.split()
+    # bdp_developer_run_daq_and_wf
 __all__ += """
     _pick_area_detector
     _xpcsFileNameBase
@@ -43,7 +45,7 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
-# Could be in PVs, better to define in devices/
+# TODO: move to RE.md dictionary
 xpcs_header = Signal(name="xpcs_header", value="A001")
 xpcs_index = Signal(name="xpcs_index", value=0)
 
@@ -55,6 +57,12 @@ DEFAULT_RUN_METADATA = {"title": TITLE, "description": DESCRIPTION}
 DEFAULT_WAITING_TIME = 2 * MINUTE  # time limit for bluesky reporting
 # bluesky will raise TimeoutError if DM workflow is not done in this time
 DM_FILE_READY_CHECK_INTERVAL_S = 1.0
+
+QMAP_BASE = pathlib.Path("/home/beams/8IDIUSER/Documents/Miaoqi/standard_qmaps")
+QMAPS = {
+    "adsim4M": QMAP_BASE / "adsim4m_qmap_d36_s360.h5",
+    "eiger4M": QMAP_BASE / "eiger4m_qmap_d36_s360.h5",
+}
 
 
 def setup_user(dm_experiment_name: str):
@@ -206,6 +214,113 @@ def bdp_developer_run_daq_and_wf(
     logger.info("Finished: bdp_developer_run_daq_and_wf()")
 
 
+def bdp_demo_run_daq_and_wf(
+    # workflow_name: str = DM_WORKFLOW_NAME,
+    title: str = TITLE,
+    description: str = DESCRIPTION,
+    demo: int = 0,
+    # ------ workflow args
+    location: str = "local",  # or "polaris"
+    # internal kwargs ----------------------------------------
+    dm_waiting_time=DEFAULT_WAITING_TIME,
+    dm_wait=False,
+    dm_concise=False,
+    # user-supplied metadata ----------------------------------------
+    md: dict = DEFAULT_RUN_METADATA,
+):
+    """Run the named DM workflow with the Bluesky RE."""
+    workflow_name = f"xpcs8-apsu-dev-{location}"
+    experiment_name = dm_experiment.get()
+    if len(experiment_name) == 0:
+        raise RuntimeError("Must run setup_user() first.")
+    experiment = dm_api_ds().getExperimentByName(experiment_name)
+    logger.info("DM experiment: %s", experiment_name)
+
+    # _md is for a bluesky open run
+    _md = build_run_metadata_dict(
+        md,
+        owner=dm_api_proc().username,
+        workflow=workflow_name,
+        title=title,
+        description=description,
+        dataDir=experiment["dataDirectory"],
+        concise=dm_concise,
+        storageDirectory=experiment["storageDirectory"],
+    )
+
+    # Create an ophyd object to manage the workflow.
+    dm_workflow = DM_WorkflowConnector(name="dm_workflow")
+    yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
+
+    # # WorkflowCache is useful when a plan uses multiple workflows.
+    # # For XPCS, it is of little value but left here for demonstration.
+    # wf_cache = WorkflowCache()
+    # wf_cache.define_workflow("XCPS", dm_workflow)
+
+    @bpp.run_decorator(md=_md)
+    def user_plan_too(*args, **kwargs):
+        yield from bps.trigger_and_read([sensor])
+        yield from bps.trigger_and_read([dm_workflow], "dm_workflow")
+
+    #
+    # *** Run the data acquisition. ***
+    #
+    if demo == 0:
+        uids = yield from count_sensor_plan(_md)
+    elif demo == 1:
+        uids = yield from example_scan(_md)
+    else:
+        uids = yield from user_plan_too()
+
+    if uids is None:
+        run = cat[-1]  # risky
+    elif isinstance(uids, str):
+        run = cat[uids]
+    else:
+        run = cat[uids[0]]
+
+    # TODO: Wait for file writing.
+    #   For any data transfers or file writing to complete before running the workflow.
+    # while not dm_files_ready_to_process(filename, experiment_name):
+    #     yield from bps.sleep(1)  # TODO: What interval?
+
+    #
+    # *** Start this APS Data Management workflow after the run completes. ***
+    #
+    yield from dm_workflow.run_as_plan(
+        workflow=workflow_name,
+        wait=dm_wait,
+        timeout=dm_waiting_time,
+        # all kwargs after this line are DM argsDict content
+        # such as pete7.h5 (will also need pete7.hdf)
+        filePath=_md["data_management"]["storageDirectory"],  # FIXME: name of the raw file
+        experiment=dm_experiment.get(),
+        qmap="name of qmap file.h5",  # FIXME
+        smoooth="sqmap",
+        gpuID=-1,
+        beginFrame=1,
+        endFrame=-1,
+        strideFrame=1,
+        avgFrame=1,
+        type="Multitau",
+        dq="all",
+        verbose=False,
+        saveG2=False,
+        overwrite=False,
+    )
+
+    # yield from wf_cache.wait_workflows(wait=dm_wait)
+
+    # wf_cache._update_processing_data()
+    # wf_cache.print_cache_summary()
+    # wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
+
+    # upload bluesky run metadata to APS DM
+    share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
+
+    logger.info("Finished: bdp_developer_run_daq_and_wf()")
+
+
 def _pick_area_detector(detector_name):
     from ..devices import adsim4M
     from ..devices import eiger4M
@@ -219,22 +334,6 @@ def _pick_area_detector(detector_name):
             f"  Received: {detector_name!r}"
         )
     return det
-
-
-# def _get_experiment_data_path(experiment_name):
-#     import pathlib
-
-#     daqs = dm_get_daqs(experiment_name)
-#     if len(daqs) == 0:
-#         raise RuntimeError(
-#             f"No APS Data Management DAQ running for {experiment_name=!r}."
-#             "  Need at least one running."
-#         )
-#     # pick the path from the first one
-#     data_path = daqs[0]["dataDirectory"]
-#     if data_path.startswith("@voyager:"):
-#         data_path = data_path[len("@voyager:") :]
-#     return pathlib.Path(data_path)
 
 
 def _header_index():
@@ -265,7 +364,6 @@ def bdp_demo_acquire_and_workflow(
     detector_name: str = DEFAULT_DETECTOR_NAME,
     acquire_time: float = 0.01,
     acquire_period: float = 0.01,
-    num_capture: int = 1,
     num_exposures: int = 1,
     num_images: int = 1_000,
     num_triggers: int = 1,
@@ -300,10 +398,19 @@ def bdp_demo_acquire_and_workflow(
     data_path = pathlib.Path(_xpcsDataDir(safe_title, num_images))
     # AD will create this directory if not exists.
     file_name_base = _xpcsFileNameBase(safe_title, num_images)
-    yield from setup_hdf5_plugin(det.hdf1, data_path, file_name_base + ".hdf")
+    yield from setup_hdf5_plugin(
+        det.hdf1,
+        data_path,
+        file_name_base,
+        num_capture=num_images
+    )
+
+    if qmaps.strip() == "":
+        qmaps = QMAPS[det.name]
+    # TODO: copy to @voyager
 
     nxwriter.file_path = data_path
-    nxwriter.file_name = data_path / (file_name_base + ".hdf5")
+    nxwriter.file_name = data_path / (file_name_base + ".hdf")
 
     # _md is for a bluesky open run
     _md = build_run_metadata_dict(
@@ -311,7 +418,7 @@ def bdp_demo_acquire_and_workflow(
         detector_name=detector_name,
         acquire_time=acquire_time,
         acquire_period=acquire_period,
-        num_capture=num_capture,
+        num_capture=num_images,
         num_exposures=num_exposures,
         num_images=num_images,
         num_triggers=num_triggers,
@@ -335,22 +442,26 @@ def bdp_demo_acquire_and_workflow(
     #
     # *** Run the data acquisition. ***
     #
-    # @bpp.subs_decorator(nxwriter.receiver)
+    @bpp.subs_decorator(nxwriter.receiver)
     def acquire():
-        if detector_name == "eiger4M":
-            from .ad_setup_plans import eiger4M_acquire_setup
+        from .ad_setup_plans import ad_acquire_setup
+        from .ad_setup_plans import eiger4M_acquire_setup
 
-            # https://bcda-aps.github.io/apstools/latest/examples/de_1_adsim_hdf5_custom_names.html#HDF5:-AD_EpicsFileNameHDF5Plugin
-            yield from eiger4M_acquire_setup(
-                acquire_time=acquire_time,
-                acquire_period=acquire_period,
-                num_capture=num_capture,
-                num_exposures=num_exposures,
-                num_images=num_images,
-                num_triggers=num_triggers,
-                path=data_path,
-            )
-        # TODO: need similar for the other detectors
+        # https://bcda-aps.github.io/apstools/latest/examples/de_1_adsim_hdf5_custom_names.html#HDF5:-AD_EpicsFileNameHDF5Plugin
+        yield from ad_acquire_setup(
+            det,
+            acquire_time=acquire_time,
+            acquire_period=acquire_period,
+            num_capture=num_images,
+            num_exposures=num_exposures,
+            num_images=num_images,
+            num_triggers=num_triggers,
+            path=data_path,
+        )
+
+        if det.name == "eiger4M":
+            yield from eiger4M_acquire_setup(det)
+
         uid = yield from bp.count([det], md=_md)
         return uid
 
