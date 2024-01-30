@@ -3,7 +3,7 @@ APS BDP demo: 2024-02
 """
 
 __all__ = """
-    bdp_demo_acquire_and_workflow
+    bdp_demo_plan
     bdp_demo_run_daq_and_wf
     bdp_developer_run_daq_and_wf
     prj_test
@@ -354,7 +354,7 @@ def _xpcsFullFileName(title: str, suffix: str = ".hdf", nframes: int = 0):
     return f"{_xpcsDataDir(title, nframes)}/{base}{suffix}"
 
 
-def bdp_demo_acquire_and_workflow(
+def bdp_demo_plan(
     workflow_name: str = DM_WORKFLOW_NAME,
     title: str = TITLE,
     description: str = DESCRIPTION,
@@ -497,12 +497,10 @@ def bdp_demo_acquire_and_workflow(
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
-    logger.info("Finished: bdp_demo_acquire_and_workflow()")
+    logger.info("Finished: bdp_demo_plan()")
 
 
 def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME):
     """Developer shortcut plan."""
-    det = _pick_area_detector(detector_name)
-
     yield from setup_user("20240110-jemian")
-    yield from bdp_demo_acquire_and_workflow(dm_wait=True)
+    yield from bdp_demo_plan(dm_wait=True, detector_name=detector_name)
