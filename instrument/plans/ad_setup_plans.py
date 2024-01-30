@@ -116,7 +116,7 @@ def setup_hdf5_plugin(
     hdf,  # Area Detector's HDF5 plugin
     write_path: (str, pathlib.Path),  # Directory (as seen from the EPICS IOC)
     file_name: str,
-    template: str = "%s%s_%3.3d.h5",
+    template: str = "%s%s.h5",
     dir_depth: int = -5,
     file_number: (int, None) = None,  # next file number
     auto_increment: bool = True,

@@ -17,4 +17,5 @@ from .ad_common import XpcsAreaDetectorFactory  # noqa
 
 adsim4M = XpcsAreaDetectorFactory("ADSIM_4M", use_image=False)
 eiger4M = XpcsAreaDetectorFactory("EIGER_4M", use_image=False)
-lambda2M = XpcsAreaDetectorFactory("LAMBDA_2M", use_image=False)
+# lambda2M = XpcsAreaDetectorFactory("LAMBDA_2M", use_image=False)
+lambda2M = None  # TODO: re-enable?

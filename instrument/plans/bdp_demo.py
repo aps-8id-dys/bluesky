@@ -10,7 +10,7 @@ __all__ = """
     reset_index
     setup_user
 """.split()
-    # bdp_developer_run_daq_and_wf
+# bdp_developer_run_daq_and_wf
 __all__ += """
     _pick_area_detector
     _xpcsFileNameBase
@@ -20,8 +20,9 @@ __all__ += """
 import logging
 import pathlib
 
-from ophyd import Signal
 from apstools.utils import cleanupText
+from ophyd import Signal
+
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
@@ -32,6 +33,7 @@ from ..devices import DM_WorkflowConnector
 from ..devices import dm_experiment
 from ..devices import motor
 from ..devices import sim1d
+from ..framework import RE
 from ..framework import cat
 from ..utils import MINUTE
 from ..utils import build_run_metadata_dict
@@ -45,9 +47,8 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
-# TODO: move to RE.md dictionary
-xpcs_header = Signal(name="xpcs_header", value="A001")
-xpcs_index = Signal(name="xpcs_index", value=0)
+xpcs_header = Signal(name="xpcs_header", value=RE.md.get("xpcs_header", "A001"))
+xpcs_index = Signal(name="xpcs_index", value=RE.md.get("xpcs_index", 0))
 
 DEFAULT_DETECTOR_NAME = "eiger4M"
 DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
@@ -60,18 +61,20 @@ DM_FILE_READY_CHECK_INTERVAL_S = 1.0
 
 QMAP_BASE = pathlib.Path("/home/beams/8IDIUSER/Documents/Miaoqi/standard_qmaps")
 QMAPS = {
-    "adsim4M": QMAP_BASE / "adsim4m_qmap_d36_s360.h5",
-    "eiger4M": QMAP_BASE / "eiger4m_qmap_d36_s360.h5",
+    "adsim4M": QMAP_BASE / "adsim4M_qmap_d36_s360.h5",
+    "eiger4M": QMAP_BASE / "eiger4M_qmap_d36_s360.h5",
 }
 
 
-def setup_user(dm_experiment_name: str):
+def setup_user(dm_experiment_name: str, index: int = 0):
     """
     Configure bluesky session for this user.
 
     PARAMETERS
 
     dm_experiment_name *str*:
+
+    .. note:: Set ``index=-1`` to continue with current 'xpcs_index' value.
     """
     from ..utils import dm_isDaqActive
     from ..utils import dm_start_daq
@@ -79,6 +82,10 @@ def setup_user(dm_experiment_name: str):
 
     validate_experiment_dataDirectory(dm_experiment_name)
     yield from bps.mv(dm_experiment, dm_experiment_name)
+
+    if index >= 0:
+        yield from write_if_new(xpcs_index, index)
+    RE.md["xpcs_index"] = xpcs_index.get()
 
     # Needed when data acquisition (Bluesky, EPICS, ...) writes to Voyager.
     # Full path to directory where new data will be written.
@@ -293,7 +300,9 @@ def bdp_demo_run_daq_and_wf(
         timeout=dm_waiting_time,
         # all kwargs after this line are DM argsDict content
         # such as pete7.h5 (will also need pete7.hdf)
-        filePath=_md["data_management"]["storageDirectory"],  # FIXME: name of the raw file
+        filePath=_md["data_management"][
+            "storageDirectory"
+        ],  # FIXME: name of the raw file
         experiment=dm_experiment.get(),
         qmap="name of qmap file.h5",  # FIXME
         smoooth="sqmap",
@@ -355,11 +364,11 @@ def _xpcsFullFileName(title: str, suffix: str = ".hdf", nframes: int = 0):
 
 
 def bdp_demo_plan(
-    workflow_name: str = DM_WORKFLOW_NAME,
     title: str = TITLE,
     description: str = DESCRIPTION,
-    header: str = "A001",
-    qmap_file: str = "",
+    header: str = xpcs_header.get(),
+    location: str = "local",  # or "polaris"
+    qmap_file: str = str(QMAPS.get(DEFAULT_DETECTOR_NAME, "/path/to/qmap_file.hdf")),
     # detector parameters ----------------------------------------
     detector_name: str = DEFAULT_DETECTOR_NAME,
     acquire_time: float = 0.01,
@@ -367,10 +376,24 @@ def bdp_demo_plan(
     num_exposures: int = 1,
     num_images: int = 1_000,
     num_triggers: int = 1,
+    # DM workflow kwargs ----------------------------------------
+    wf_smooth="sqmap",
+    wf_gpuID=-1,
+    wf_beginFrame=1,
+    wf_endFrame=-1,
+    wf_strideFrame=1,
+    wf_avgFrame=1,
+    wf_type="Multitau",
+    wf_dq="all",
+    wf_verbose=False,
+    wf_saveG2=False,
+    wf_overwrite=False,
+    wf_analysisMachine="amazonite",  # or "adamite"
     # internal kwargs ----------------------------------------
     dm_waiting_time=DEFAULT_WAITING_TIME,
     dm_wait=False,
     dm_concise=False,
+    nxwriter_warn_missing: bool = False,
     # user-supplied metadata ----------------------------------------
     md: dict = DEFAULT_RUN_METADATA,
 ):
@@ -382,8 +405,9 @@ def bdp_demo_plan(
     #
     # *** Prepare. ***
     #
-    det = _pick_area_detector(detector_name)
+    workflow_name = f"xpcs8-apsu-dev-{location}"
 
+    det = _pick_area_detector(detector_name)
     experiment_name = dm_experiment.get()
     if len(experiment_name) == 0:
         raise RuntimeError("Must run setup_user() first.")
@@ -392,29 +416,38 @@ def bdp_demo_plan(
 
     yield from write_if_new(xpcs_header, header)
     yield from bps.mvr(xpcs_index, 1)
+    # update the RunEngine metadata (and store on disk)
+    RE.md["xpcs_header"] = xpcs_header.get()
+    RE.md["xpcs_index"] = xpcs_index.get()
 
     # 'title' must be safe to use as a file name (no spaces or special chars)
     safe_title = cleanupText(title)
     data_path = pathlib.Path(_xpcsDataDir(safe_title, num_images))
+    if data_path.exists():
+        raise FileExistsError(
+            # fmt: off
+            f"Found existing directory '{data_path}'."
+            "  Will not overwrite."
+            # fmt: on
+        )
     # AD will create this directory if not exists.
     file_name_base = _xpcsFileNameBase(safe_title, num_images)
     yield from setup_hdf5_plugin(
-        det.hdf1,
-        data_path,
-        file_name_base,
-        num_capture=num_images
+        det.hdf1, data_path, file_name_base, num_capture=num_images
     )
 
-    if qmaps.strip() == "":
-        qmaps = QMAPS[det.name]
-    # TODO: copy to @voyager
+    if str(qmap_file).strip() == "":
+        qmap_file = str(QMAPS[det.name])
+    if not pathlib.Path(qmap_file).exists():
+        raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
+    # TODO: copy to @voyager IF NEEDED by XPCS team
 
+    nxwriter.warn_on_missing_content = nxwriter_warn_missing
     nxwriter.file_path = data_path
     nxwriter.file_name = data_path / (file_name_base + ".hdf")
 
     # _md is for a bluesky open run
-    _md = build_run_metadata_dict(
-        md,
+    _md = dict(
         detector_name=detector_name,
         acquire_time=acquire_time,
         acquire_period=acquire_period,
@@ -433,8 +466,33 @@ def bdp_demo_plan(
         index=xpcs_index.get(),
         dataDir=str(data_path),
         concise=dm_concise,
-        storageDirectory=experiment["storageDirectory"],
+        # instrument metadata (expected by nxwriter)
+        # TODO: set from actual instrument values
+        # FIXME: not found in /entry/instrument/bluesky/metadata group
+        # it is reported in JSON text under metadata key: 'data_management'
+        X_energy=12.0,
+        incident_beam_size_nm_xy=1,
+        I0=1,
+        I1=1,
+        incident_energy_spread=1,
     )
+    _md = build_run_metadata_dict(
+        _md,
+        # ALL following kwargs are stored under RE.md["data_management"]
+        smooth=wf_smooth,
+        gpuID=wf_gpuID,
+        beginFrame=wf_beginFrame,
+        endFrame=wf_endFrame,
+        strideFrame=wf_strideFrame,
+        avgFrame=wf_avgFrame,
+        type=wf_type,
+        dq=wf_dq,
+        verbose=wf_verbose,
+        saveG2=wf_saveG2,
+        overwrite=wf_overwrite,
+        analysisMachine=wf_analysisMachine,
+    )
+    _md.update(md)  # user md takes highest priority
 
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
     yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
@@ -474,24 +532,51 @@ def bdp_demo_plan(
     else:
         run = cat[uids[0]]  # assumption
 
-    # TODO: copy file(s) to data_path
-    #     QMAP file  - 'qmap_file'
-    #     other file(s)
-
     #
     # *** Wait for data writing & transfers to complete. ***
     #
     yield from nxwriter.wait_writer_plan_stub()  # NeXus metadata file
 
+    # # TODO: copy file(s) to data_path
+    # #     QMAP file  - 'qmap_file'
+    # #     other file(s)
+    # daq_files = [
+    #     det.hdf1.full_file_name.get(),
+    #     nxwriter.file_name,
+    # ]
+    # # TODO: ask DAQ if the file is written
+
     #
     # *** Start the APS Data Management workflow. ***
     #
+    logger.info(
+        "DM workflow %r, filePath=%r",
+        workflow_name,
+        pathlib.Path(det.hdf1.full_file_name.get()).name,
+    )
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
         wait=dm_wait,
         timeout=dm_waiting_time,
         # all kwargs after this line are DM argsDict content
-        filePath=_md["data_management"]["storageDirectory"],
+        # such as pete7.h5 (will also need pete7.hdf)
+        # filePath=nxwriter.file_name.name,
+        filePath=pathlib.Path(det.hdf1.full_file_name.get()).name,
+        experiment=dm_experiment.get(),
+        qmap=qmap_file,
+        # from the plan's API
+        smooth=wf_smooth,
+        gpuID=wf_gpuID,
+        beginFrame=wf_beginFrame,
+        endFrame=wf_endFrame,
+        strideFrame=wf_strideFrame,
+        avgFrame=wf_avgFrame,
+        type=wf_type,
+        dq=wf_dq,
+        verbose=wf_verbose,
+        saveG2=wf_saveG2,
+        overwrite=wf_overwrite,
+        analysisMachine=wf_analysisMachine,
     )
 
     # upload bluesky run metadata to APS DM
@@ -500,7 +585,17 @@ def bdp_demo_plan(
     logger.info("Finished: bdp_demo_plan()")
 
 
-def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME):
+def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME, index: int = 0):
     """Developer shortcut plan."""
-    yield from setup_user("20240110-jemian")
-    yield from bdp_demo_plan(dm_wait=True, detector_name=detector_name)
+    yield from setup_user("20240110-jemian", index=index)
+    qmap = QMAPS.get(detector_name)
+    if qmap is None:
+        raise FileNotFoundError(f"QMAP file {qmap} not found.")
+    yield from bdp_demo_plan(
+        header="A002",
+        detector_name=detector_name,
+        qmap_file=str(qmap),
+        dm_wait=False,
+        dm_concise=True,
+        location="local",
+    )

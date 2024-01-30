@@ -8,12 +8,16 @@ https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks
 
 __all__ = ["nxwriter"]
 
+import logging
 import h5py
 from apstools.callbacks import NXWriterAPS
 
 from .._iconfig import iconfig
 
 # from ..framework.initialize import RE
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 XPCS_LAYOUT_VERSION = "APS-8IDI-202310"
 NEXUS_RELEASE = "v2022.07"  # NeXus release to which this file is written
@@ -49,6 +53,7 @@ class MyNXWriter(NXWriterAPS):
 
         nxbeam = self.write_beam(nxinstrument, "incident_beam")
         mdgroup = nxinstrument["bluesky/metadata"]
+
         ds = mdgroup["X_energy"]
         ds.attrs["units"] = "keV"
         nxbeam["incident_energy"] = ds
@@ -59,7 +64,6 @@ class MyNXWriter(NXWriterAPS):
 
         for k in "I0 I1 incident_energy_spread".split():
             nxbeam[k] = mdgroup[k]
-
 
         self.write_beam(nxinstrument, "BPM")
 
