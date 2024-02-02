@@ -100,22 +100,26 @@ class MyNXWriter(NXWriterAPS):
         nxdet["acquire_period"] = mdgroup["t0"]  # AD's acquire_period
 
     def write_sample(self, parent):
-        super().write_sample(parent)
-        nxsample = parent["sample"]
+        nxsample = super().write_sample(parent)
+        # nxsample = parent.get("sample")
+        if nxsample is None:
+            logger.debug("No '/entry/sample' group found.")
+            return
         mdgroup = parent["instrument/bluesky/metadata"]
 
-        nxsample["temperature1"] = mdgroup["sample_temperature1"]
-        nxsample["temperature2"] = mdgroup["sample_temperature2"]
-        nxsample["temperature3"] = mdgroup["sample_temperature3"]
-        nxsample["temperature1"].attrs["units"] = "C"
-        nxsample["temperature2"].attrs["units"] = "C"
-        nxsample["temperature3"].attrs["units"] = "C"
+        for chan in range(1, 4):
+            v = mdgroup.get(f"sample_temperature{chan}")
+            if v is not None:
+                nxsample[f"temperature{chan}"] = v
+                nxsample[f"temperature{chan}"].attrs["units"] = "C"
 
         def write_positioner(name, md_name, units):
             """Per NXsample, use NXpositioner group for each."""
-            group = self.create_NX_group(nxsample, f"{name}:NXpositioner")
-            group["value"] = mdgroup[md_name]
-            group["value"].attrs["units"] = units
+            v = mdgroup.get(name)
+            if v is not None:
+                group = self.create_NX_group(nxsample, f"{name}:NXpositioner")
+                group["value"] = v
+                group["value"].attrs["units"] = units
 
         write_positioner("x", "sample_x_mm", "mm")
         write_positioner("y", "sample_y_mm", "mm")
@@ -126,9 +130,12 @@ class MyNXWriter(NXWriterAPS):
         write_positioner("yaw", "sample_yaw_degrees", "degrees")
 
         nxbeam = self.write_beam(nxsample, "beam")
-        nxbeam["intensity"] = mdgroup["sample_beam_intensity"]
-        nxbeam["extent"] = mdgroup["sample_beam_size_nm_xy"]
-        nxbeam["extent"].attrs["units"] = "nm"
+        v = mdgroup.get("sample_beam_intensity")
+        if v is not None:
+            nxbeam["intensity"] = v
+        v = mdgroup.get("sample_beam_size_nm_xy")
+        if v is not None:
+            nxbeam["extent"].attrs["units"] = "nm"
 
     def get_sample_title(self):
         """
@@ -163,9 +170,9 @@ class MyNXWriter(NXWriterAPS):
         resource_id = self.get_unique_resource(d)
         fname = self.getResourceFile(resource_id)
 
-        # Link to image file in the same directory.
-        h5addr = "/entry/data/data"  # NeXus default data address.
-        subgroup["value"] = h5py.ExternalLink(fname.name, h5addr)
+        # # Link to image file in the same directory.
+        # h5addr = "/entry/data/data"  # NeXus default data address.
+        # subgroup["value"] = h5py.ExternalLink(fname.name, h5addr)
 
         ds = subgroup.create_dataset("image_file_name", data=fname.name)
         ds.attrs["bluesky_resource_id"] = resource_id

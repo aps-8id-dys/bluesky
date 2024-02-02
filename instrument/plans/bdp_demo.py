@@ -4,14 +4,14 @@ APS BDP demo: 2024-02
 
 __all__ = """
     bdp_demo_plan
-    bdp_demo_run_daq_and_wf
-    bdp_developer_run_daq_and_wf
-    prj_test
-    reset_index
+    reset_xpcs_index
     setup_user
 """.split()
 # bdp_developer_run_daq_and_wf
 __all__ += """
+    bdp_demo_run_daq_and_wf
+    bdp_developer_run_daq_and_wf
+    prj_test
     _pick_area_detector
     _xpcsFileNameBase
     _xpcsDataDir
@@ -36,6 +36,7 @@ from ..devices import sim1d
 from ..framework import RE
 from ..framework import cat
 from ..utils import MINUTE
+from ..utils import SECOND
 from ..utils import build_run_metadata_dict
 from ..utils import dm_api_ds
 from ..utils import dm_api_proc
@@ -56,8 +57,9 @@ TITLE = "BDP_XPCS_demo"  # keep this short, single-word
 DESCRIPTION = "Demonstrate XPCS data acquisition and analysis."
 DEFAULT_RUN_METADATA = {"title": TITLE, "description": DESCRIPTION}
 DEFAULT_WAITING_TIME = 2 * MINUTE  # time limit for bluesky reporting
-# bluesky will raise TimeoutError if DM workflow is not done in this time
-DM_FILE_READY_CHECK_INTERVAL_S = 1.0
+# bluesky will raise TimeoutError if DM workflow is not done by DEFAULT_WAITING_TIME
+DAQ_UPLOAD_WAIT_PERIOD = 1.0 * SECOND
+DAQ_UPLOAD_PREFIX = "ftp://s8ididm:2811"
 
 QMAP_BASE = pathlib.Path("/home/beams/8IDIUSER/Documents/Miaoqi/standard_qmaps")
 QMAPS = {
@@ -109,7 +111,15 @@ def setup_user(dm_experiment_name: str, index: int = 0):
     # TODO: What else?
 
 
-def reset_index(index: int = 0):
+def reset_xpcs_index(index: int = 0):
+    """
+    (Re)set the 'xpcs_index'.  Default=0.
+
+    Data directory and file names are defined by the 'xpcs_header' and
+    the`xpcs_index'.  The `xpcs_index' increments at the start of each
+    'bdp_demo_plan()', the data acquisition plan. The 'xpcs_header' is specified
+    as a kwarg, as in this example: 'bdp_demo_plan(header="B123")'
+    """
     yield from write_if_new(xpcs_index, index)
 
 
@@ -367,7 +377,7 @@ def bdp_demo_plan(
     title: str = TITLE,
     description: str = DESCRIPTION,
     header: str = xpcs_header.get(),
-    location: str = "local",  # or "polaris"
+    analysisMachine="amazonite",  # or "adamite", or "polaris"
     qmap_file: str = str(QMAPS.get(DEFAULT_DETECTOR_NAME, "/path/to/qmap_file.hdf")),
     # detector parameters ----------------------------------------
     detector_name: str = DEFAULT_DETECTOR_NAME,
@@ -388,7 +398,6 @@ def bdp_demo_plan(
     wf_verbose=False,
     wf_saveG2=False,
     wf_overwrite=False,
-    wf_analysisMachine="amazonite",  # or "adamite"
     # internal kwargs ----------------------------------------
     dm_waiting_time=DEFAULT_WAITING_TIME,
     dm_wait=False,
@@ -400,12 +409,23 @@ def bdp_demo_plan(
     """
     Acquire XPCS data with the chosen detector and run a DM workflow.
     """
+    from ..utils.aps_data_management import dm_api_daq
+    from ..utils.aps_data_management import dm_daq_wait_upload_plan
     from .ad_setup_plans import setup_hdf5_plugin
 
     #
     # *** Prepare. ***
     #
-    workflow_name = f"xpcs8-apsu-dev-{location}"
+    analysisMachine = analysisMachine.lower()  # to be safe
+    if analysisMachine in ("adamite", "amazonite"):
+        workflow_name = "xpcs8-apsu-dev-local"
+    elif analysisMachine in ("polaris"):
+        workflow_name = "xpcs8-apsu-dev-polaris"
+    else:
+        raise ValueError(
+            f"Received {analysisMachine=!r}."
+            '  Must be one of these: "adamite", "amazonite", "polaris"'
+        )
 
     det = _pick_area_detector(detector_name)
     experiment_name = dm_experiment.get()
@@ -436,11 +456,18 @@ def bdp_demo_plan(
         det.hdf1, data_path, file_name_base, num_capture=num_images
     )
 
+    qmap_path = QMAPS[det.name]
     if str(qmap_file).strip() == "":
-        qmap_file = str(QMAPS[det.name])
+        qmap_file = str(qmap_path)
     if not pathlib.Path(qmap_file).exists():
         raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
-    # TODO: copy to @voyager IF NEEDED by XPCS team
+    # upload QMAP to @voyager
+    daqInfo_qmap_upload = dm_api_daq().upload(
+        experimentName=experiment_name, 
+        dataDirectory=DAQ_UPLOAD_PREFIX + str(qmap_path.parent),
+        daqInfo={"experimentFilePath": qmap_path.name},
+    )
+    logger.info("DM DAQ upload id: %r", daqInfo_qmap_upload["id"])
 
     nxwriter.warn_on_missing_content = nxwriter_warn_missing
     nxwriter.file_path = data_path
@@ -455,7 +482,7 @@ def bdp_demo_plan(
         num_exposures=num_exposures,
         num_images=num_images,
         num_triggers=num_triggers,
-        qmap_file=qmap_file,
+        qmap_file=qmap_path.name,
         owner=dm_api_proc().username,
         workflow=workflow_name,
         title=title,
@@ -468,8 +495,6 @@ def bdp_demo_plan(
         concise=dm_concise,
         # instrument metadata (expected by nxwriter)
         # TODO: set from actual instrument values
-        # FIXME: not found in /entry/instrument/bluesky/metadata group
-        # it is reported in JSON text under metadata key: 'data_management'
         X_energy=12.0,
         incident_beam_size_nm_xy=1,
         I0=1,
@@ -490,7 +515,7 @@ def bdp_demo_plan(
         verbose=wf_verbose,
         saveG2=wf_saveG2,
         overwrite=wf_overwrite,
-        analysisMachine=wf_analysisMachine,
+        analysisMachine=analysisMachine,
     )
     _md.update(md)  # user md takes highest priority
 
@@ -536,15 +561,7 @@ def bdp_demo_plan(
     # *** Wait for data writing & transfers to complete. ***
     #
     yield from nxwriter.wait_writer_plan_stub()  # NeXus metadata file
-
-    # # TODO: copy file(s) to data_path
-    # #     QMAP file  - 'qmap_file'
-    # #     other file(s)
-    # daq_files = [
-    #     det.hdf1.full_file_name.get(),
-    #     nxwriter.file_name,
-    # ]
-    # # TODO: ask DAQ if the file is written
+    yield from dm_daq_wait_upload_plan(daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD)
 
     #
     # *** Start the APS Data Management workflow. ***
@@ -563,7 +580,7 @@ def bdp_demo_plan(
         # filePath=nxwriter.file_name.name,
         filePath=pathlib.Path(det.hdf1.full_file_name.get()).name,
         experiment=dm_experiment.get(),
-        qmap=qmap_file,
+        qmap=qmap_path.name,
         # from the plan's API
         smooth=wf_smooth,
         gpuID=wf_gpuID,
@@ -576,7 +593,7 @@ def bdp_demo_plan(
         verbose=wf_verbose,
         saveG2=wf_saveG2,
         overwrite=wf_overwrite,
-        analysisMachine=wf_analysisMachine,
+        analysisMachine=analysisMachine,
     )
 
     # upload bluesky run metadata to APS DM
@@ -587,15 +604,15 @@ def bdp_demo_plan(
 
 def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME, index: int = 0):
     """Developer shortcut plan."""
-    yield from setup_user("20240110-jemian", index=index)
-    qmap = QMAPS.get(detector_name)
-    if qmap is None:
-        raise FileNotFoundError(f"QMAP file {qmap} not found.")
+    yield from setup_user("20240131-jemian", index=index)
+    qmap_path = QMAPS.get(detector_name)
+    if qmap_path is None:
+        raise FileNotFoundError(f"QMAP file {qmap_path} not found.")
     yield from bdp_demo_plan(
         header="A002",
         detector_name=detector_name,
-        qmap_file=str(qmap),
+        qmap_file=str(qmap_path),
         dm_wait=False,
         dm_concise=True,
-        location="local",
+        analysisMachine="adamite",
     )

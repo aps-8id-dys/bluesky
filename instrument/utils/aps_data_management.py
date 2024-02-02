@@ -557,3 +557,20 @@ class WorkflowCache:
         """Update all the workflows in the cache (from the DM server)."""
         for wf in self.cache.values():
             wf._update_processing_data()
+
+
+def dm_daq_wait_upload_plan(id: str, period: float = DEFAULT_PERIOD):
+    """plan: Wait for DAQ uploads to finish."""
+    api = dm_api_daq()
+    uploadInfo = api.getUploadInfo(id)
+    uploadStatus = uploadInfo.get('status')
+    while uploadStatus not in "done failed skipped aborted aborting".split():
+        yield from bps.sleep(period)
+        uploadInfo = api.getUploadInfo(id)
+        uploadStatus = uploadInfo.get('status')
+    logger.debug("DM DAQ upload info: %s", uploadInfo)
+    if uploadStatus != "done":
+        raise ValueError(
+            f"DM DAQ upload status: {uploadStatus!r}, {id=!r}."
+            f"  Processing error message(s): {uploadInfo['errorMessage']}."
+        )

@@ -1,5 +1,17 @@
 """
 Aerotech motorized stages.
+
+Plan these demonstrations:
+
+Motivation: Move sample during measurement to avoid beam damage.
+
+1. step scan Eiger4M v. sample.x
+1. fly scan Eiger4M v. sample.x
+  1. start motor moving
+  2. start Eiger4M with one acquisition of n frames
+  3. Eiger4M completes acquisition
+  4. motor stops
+1. fly scan Eiger4M v. sample.x and run DM workflow
 """
 
 __all__ = """
@@ -21,7 +33,7 @@ logger.info(__file__)
 
 IOC = "8idiAerotech:"
 
-# TODO: refactor from labels to ophyd_registry?
+# TODO: refactor from labels to ophydregistry?
 
 
 class AerotechSampleStage(Device):
