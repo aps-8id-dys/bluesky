@@ -87,9 +87,9 @@ AREA_DETECTOR:
     PV_PREFIX: "8idLambda2m:"
   RIGAKU_3M:
     # IOC host: rigakusi3m (10.54.116.29)
-    # IOC_FILES_ROOT: "/extdisk/" ???
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
     NAME: rigaku3M
-    # PV_PREFIX: "8idRigaku3m:" ???
+    PV_PREFIX: "8idRigaku3m:"
 
 # ----------------------------------
 
