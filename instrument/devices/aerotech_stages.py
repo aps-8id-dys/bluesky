@@ -58,7 +58,14 @@ class AerotechRheometerStage(Device):
     pitch = Component(EpicsMotor, "m11", labels=("rheometer", "motor"))
     yaw = Component(EpicsMotor, "m12", labels=("rheometer", "motor"))
 
-
-sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
-detector = AerotechDetectorStage(IOC, name="detector", labels=("detector", "stage"))
-rheometer = AerotechRheometerStage(IOC, name="rheometer", labels=("rheometer", "stage"))
+try:
+    sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
+    detector = AerotechDetectorStage(IOC, name="detector", labels=("detector", "stage"))
+    rheometer = AerotechRheometerStage(IOC, name="rheometer", labels=("rheometer", "stage"))
+except Exception as exinfo:
+    logger.warning(
+        "Could not connect with Aerotech controller. %s", exinfo
+    )
+    sample = None
+    detector = 
+    rheometer = None

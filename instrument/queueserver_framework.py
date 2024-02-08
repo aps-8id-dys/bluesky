@@ -86,6 +86,19 @@ ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
 
+# update OS environment variables for APS Data Management
+def _chop(text):
+    return text.strip().split()[-1].split("=")
+
+# fmt: off
+_ev = {
+    _chop(line)[0]: _chop(line)[-1]
+    for line in open(iconfig["DM_SETUP_FILE"]).readlines()
+    if line.startswith("export ")
+}
+os.environ.update(_ev)
+
+
 def make_kv_table(data):
     table = pyRestTable.Table()
     table.labels = "key value".split()

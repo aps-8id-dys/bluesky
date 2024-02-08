@@ -2,6 +2,7 @@
 Configure for data collection using bluesky-queueserver.
 """
 
+import inspect
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ import pyRestTable
 from ophyd import Device, Signal
 
 from bluesky.plan_stubs import sleep
-from bluesky.plans import *
+# from bluesky.plans import *
 
 from .callbacks import *
 from .devices import *

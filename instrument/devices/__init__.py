@@ -15,14 +15,14 @@ local, custom Device definitions
 #     # 'ophyd.event_dispatcher' — issues regular summaries of the backlog of updates from the control layer that are being processed on background threads
 
 # ----- ----- ----- ----- -----
-from .aerotech_stages import *
+# TODO: from .aerotech_stages import *
 from .data_management import *
 from .meascomp_usb_ctr import *
-from .qnw_device import *
+# TODO: from .qnw_device import *
 
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
-from .simulated_1d_detector import *
+# TODO from .simulated_1d_detector import *
 
 # ----- ----- ----- ----- -----
 # imports that MUST come after the above devices

@@ -53,10 +53,6 @@ WRITE_SPEC_DATA_FILES: false
 # APS Data Management
 # Use bash shell, deactivate all conda environments, source this file:
 DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
-# TODO: DM_WORKFLOW_NAME: "xpcs-analysis"
-# actually two of them: local and polaris
-# local: see the notes (test apsu)
-# polaris: tbd
 
 AREA_DETECTOR:
   # TODO: switch to the Voyager-based path structure: "/gdata/..."

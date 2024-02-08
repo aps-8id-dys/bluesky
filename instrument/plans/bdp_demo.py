@@ -3,19 +3,16 @@ APS BDP demo: 2024-02
 """
 
 __all__ = """
-    bdp_demo_plan
-    reset_xpcs_index
-    setup_user
+    xpcs_bdp_demo_plan
+    xpcs_reset_index
+    xpcs_setup_user
 """.split()
-# bdp_developer_run_daq_and_wf
-__all__ += """
-    bdp_demo_run_daq_and_wf
-    bdp_developer_run_daq_and_wf
-    prj_test
-    _pick_area_detector
-    _xpcsFileNameBase
-    _xpcsDataDir
-""".split()
+# __all__ += """
+#     prj_test
+#     _pick_area_detector
+#     _xpcsFileNameBase
+#     _xpcsDataDir
+# """.split()
 
 import logging
 import pathlib
@@ -31,8 +28,6 @@ from .._iconfig import iconfig
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import DM_WorkflowConnector
 from ..devices import dm_experiment
-from ..devices import motor
-from ..devices import sim1d
 from ..framework import RE
 from ..framework import cat
 from ..utils import MINUTE
@@ -41,7 +36,6 @@ from ..utils import build_run_metadata_dict
 from ..utils import dm_api_ds
 from ..utils import dm_api_proc
 from ..utils import share_bluesky_metadata_with_dm
-from . import lineup2
 from .ad_setup_plans import write_if_new
 
 logger = logging.getLogger(__name__)
@@ -56,7 +50,9 @@ DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
 TITLE = "BDP_XPCS_demo"  # keep this short, single-word
 DESCRIPTION = "Demonstrate XPCS data acquisition and analysis."
 DEFAULT_RUN_METADATA = {"title": TITLE, "description": DESCRIPTION}
-DEFAULT_WAITING_TIME = 2 * MINUTE  # time limit for bluesky reporting
+DEFAULT_REPORTING_PERIOD = 10 * SECOND  # time between reports about an active DM workflow
+# DEFAULT_WAITING_TIME = 10 * MINUTE  # time limit for bluesky reporting
+DEFAULT_WAITING_TIME = 999_999_999_999 * SECOND  # unlimited (effectively)
 # bluesky will raise TimeoutError if DM workflow is not done by DEFAULT_WAITING_TIME
 DAQ_UPLOAD_WAIT_PERIOD = 1.0 * SECOND
 DAQ_UPLOAD_PREFIX = "ftp://s8ididm:2811"
@@ -68,7 +64,7 @@ QMAPS = {
 }
 
 
-def setup_user(dm_experiment_name: str, index: int = 0):
+def xpcs_setup_user(dm_experiment_name: str, index: int = -1):
     """
     Configure bluesky session for this user.
 
@@ -111,233 +107,16 @@ def setup_user(dm_experiment_name: str, index: int = 0):
     # TODO: What else?
 
 
-def reset_xpcs_index(index: int = 0):
+def xpcs_reset_index(index: int = 0):
     """
     (Re)set the 'xpcs_index'.  Default=0.
 
     Data directory and file names are defined by the 'xpcs_header' and
     the`xpcs_index'.  The `xpcs_index' increments at the start of each
-    'bdp_demo_plan()', the data acquisition plan. The 'xpcs_header' is specified
-    as a kwarg, as in this example: 'bdp_demo_plan(header="B123")'
+    'xpcs_bdp_demo_plan()', the data acquisition plan. The 'xpcs_header' is specified
+    as a kwarg, as in this example: 'xpcs_bdp_demo_plan(header="B123")'
     """
     yield from write_if_new(xpcs_index, index)
-
-
-def count_sensor_plan(md):
-    """Standard count plan with custom sensor."""
-    uids = yield from bp.count([sensor], md=md)
-    logger.debug("Bluesky RunEngine uids=%s", uids)
-    return uids
-
-
-def example_scan(md):
-    """Example data acquisition plan."""
-    # TODO: user_plan(args, kwargs)
-    yield from bps.mv(motor, 1.25)
-    uids = yield from lineup2(
-        [sim1d], motor, -0.55, 0.55, 79
-    )  # TODO: md=_md in apstools 1.6.18
-    logger.debug("Bluesky RunEngine uids=%s", uids)
-    return uids
-
-
-def bdp_developer_run_daq_and_wf(
-    workflow_name: str = DM_WORKFLOW_NAME,
-    title: str = TITLE,
-    description: str = DESCRIPTION,
-    demo: int = 0,
-    # internal kwargs ----------------------------------------
-    dm_waiting_time=DEFAULT_WAITING_TIME,
-    dm_wait=False,
-    dm_concise=False,
-    # user-supplied metadata ----------------------------------------
-    md: dict = DEFAULT_RUN_METADATA,
-):
-    """Run the named DM workflow with the Bluesky RE."""
-    experiment_name = dm_experiment.get()
-    if len(experiment_name) == 0:
-        raise RuntimeError("Must run setup_user() first.")
-    experiment = dm_api_ds().getExperimentByName(experiment_name)
-    logger.info("DM experiment: %s", experiment_name)
-
-    # _md is for a bluesky open run
-    _md = build_run_metadata_dict(
-        md,
-        owner=dm_api_proc().username,
-        workflow=workflow_name,
-        title=title,
-        description=description,
-        dataDir=experiment["dataDirectory"],
-        concise=dm_concise,
-        storageDirectory=experiment["storageDirectory"],
-    )
-
-    # Create an ophyd object to manage the workflow.
-    dm_workflow = DM_WorkflowConnector(name="dm_workflow")
-    yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
-
-    # # WorkflowCache is useful when a plan uses multiple workflows.
-    # # For XPCS, it is of little value but left here for demonstration.
-    # wf_cache = WorkflowCache()
-    # wf_cache.define_workflow("XCPS", dm_workflow)
-
-    @bpp.run_decorator(md=_md)
-    def user_plan_too(*args, **kwargs):
-        yield from bps.trigger_and_read([sensor])
-        yield from bps.trigger_and_read([dm_workflow], "dm_workflow")
-
-    #
-    # *** Run the data acquisition. ***
-    #
-    if demo == 0:
-        uids = yield from count_sensor_plan(_md)
-    elif demo == 1:
-        uids = yield from example_scan(_md)
-    else:
-        uids = yield from user_plan_too()
-
-    if uids is None:
-        run = cat[-1]  # risky
-    elif isinstance(uids, str):
-        run = cat[uids]
-    else:
-        run = cat[uids[0]]
-
-    # TODO: Wait for file writing.
-    #   For any data transfers or file writing to complete before running the workflow.
-    # while not dm_files_ready_to_process(filename, experiment_name):
-    #     yield from bps.sleep(1)  # TODO: What interval?
-
-    #
-    # *** Start this APS Data Management workflow after the run completes. ***
-    #
-    yield from dm_workflow.run_as_plan(
-        workflow=workflow_name,
-        wait=dm_wait,
-        timeout=dm_waiting_time,
-        # all kwargs after this line are DM argsDict content
-        filePath=_md["data_management"]["storageDirectory"],
-    )
-
-    # yield from wf_cache.wait_workflows(wait=dm_wait)
-
-    # wf_cache._update_processing_data()
-    # wf_cache.print_cache_summary()
-    # wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
-
-    # upload bluesky run metadata to APS DM
-    share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
-
-    logger.info("Finished: bdp_developer_run_daq_and_wf()")
-
-
-def bdp_demo_run_daq_and_wf(
-    # workflow_name: str = DM_WORKFLOW_NAME,
-    title: str = TITLE,
-    description: str = DESCRIPTION,
-    demo: int = 0,
-    # ------ workflow args
-    location: str = "local",  # or "polaris"
-    # internal kwargs ----------------------------------------
-    dm_waiting_time=DEFAULT_WAITING_TIME,
-    dm_wait=False,
-    dm_concise=False,
-    # user-supplied metadata ----------------------------------------
-    md: dict = DEFAULT_RUN_METADATA,
-):
-    """Run the named DM workflow with the Bluesky RE."""
-    workflow_name = f"xpcs8-apsu-dev-{location}"
-    experiment_name = dm_experiment.get()
-    if len(experiment_name) == 0:
-        raise RuntimeError("Must run setup_user() first.")
-    experiment = dm_api_ds().getExperimentByName(experiment_name)
-    logger.info("DM experiment: %s", experiment_name)
-
-    # _md is for a bluesky open run
-    _md = build_run_metadata_dict(
-        md,
-        owner=dm_api_proc().username,
-        workflow=workflow_name,
-        title=title,
-        description=description,
-        dataDir=experiment["dataDirectory"],
-        concise=dm_concise,
-        storageDirectory=experiment["storageDirectory"],
-    )
-
-    # Create an ophyd object to manage the workflow.
-    dm_workflow = DM_WorkflowConnector(name="dm_workflow")
-    yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
-
-    # # WorkflowCache is useful when a plan uses multiple workflows.
-    # # For XPCS, it is of little value but left here for demonstration.
-    # wf_cache = WorkflowCache()
-    # wf_cache.define_workflow("XCPS", dm_workflow)
-
-    @bpp.run_decorator(md=_md)
-    def user_plan_too(*args, **kwargs):
-        yield from bps.trigger_and_read([sensor])
-        yield from bps.trigger_and_read([dm_workflow], "dm_workflow")
-
-    #
-    # *** Run the data acquisition. ***
-    #
-    if demo == 0:
-        uids = yield from count_sensor_plan(_md)
-    elif demo == 1:
-        uids = yield from example_scan(_md)
-    else:
-        uids = yield from user_plan_too()
-
-    if uids is None:
-        run = cat[-1]  # risky
-    elif isinstance(uids, str):
-        run = cat[uids]
-    else:
-        run = cat[uids[0]]
-
-    # TODO: Wait for file writing.
-    #   For any data transfers or file writing to complete before running the workflow.
-    # while not dm_files_ready_to_process(filename, experiment_name):
-    #     yield from bps.sleep(1)  # TODO: What interval?
-
-    #
-    # *** Start this APS Data Management workflow after the run completes. ***
-    #
-    yield from dm_workflow.run_as_plan(
-        workflow=workflow_name,
-        wait=dm_wait,
-        timeout=dm_waiting_time,
-        # all kwargs after this line are DM argsDict content
-        # such as pete7.h5 (will also need pete7.hdf)
-        filePath=_md["data_management"][
-            "storageDirectory"
-        ],  # FIXME: name of the raw file
-        experiment=dm_experiment.get(),
-        qmap="name of qmap file.h5",  # FIXME
-        smoooth="sqmap",
-        gpuID=-1,
-        beginFrame=1,
-        endFrame=-1,
-        strideFrame=1,
-        avgFrame=1,
-        type="Multitau",
-        dq="all",
-        verbose=False,
-        saveG2=False,
-        overwrite=False,
-    )
-
-    # yield from wf_cache.wait_workflows(wait=dm_wait)
-
-    # wf_cache._update_processing_data()
-    # wf_cache.print_cache_summary()
-    # wf_cache.report_dm_workflow_output(get_workflow_last_stage(workflow_name))
-
-    # upload bluesky run metadata to APS DM
-    share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
-
-    logger.info("Finished: bdp_developer_run_daq_and_wf()")
 
 
 def _pick_area_detector(detector_name):
@@ -373,11 +152,11 @@ def _xpcsFullFileName(title: str, suffix: str = ".hdf", nframes: int = 0):
     return f"{_xpcsDataDir(title, nframes)}/{base}{suffix}"
 
 
-def bdp_demo_plan(
+def xpcs_bdp_demo_plan(
     title: str = TITLE,
     description: str = DESCRIPTION,
     header: str = xpcs_header.get(),
-    analysisMachine="amazonite",  # or "adamite", or "polaris"
+    analysisMachine: str = "amazonite",  # or "adamite", or "polaris"
     qmap_file: str = str(QMAPS.get(DEFAULT_DETECTOR_NAME, "/path/to/qmap_file.hdf")),
     # detector parameters ----------------------------------------
     detector_name: str = DEFAULT_DETECTOR_NAME,
@@ -399,9 +178,10 @@ def bdp_demo_plan(
     wf_saveG2=False,
     wf_overwrite=False,
     # internal kwargs ----------------------------------------
-    dm_waiting_time=DEFAULT_WAITING_TIME,
-    dm_wait=False,
     dm_concise=False,
+    dm_wait=False,
+    dm_reporting_period=DEFAULT_REPORTING_PERIOD,
+    dm_reporting_time_limit=DEFAULT_WAITING_TIME,
     nxwriter_warn_missing: bool = False,
     # user-supplied metadata ----------------------------------------
     md: dict = DEFAULT_RUN_METADATA,
@@ -430,7 +210,7 @@ def bdp_demo_plan(
     det = _pick_area_detector(detector_name)
     experiment_name = dm_experiment.get()
     if len(experiment_name) == 0:
-        raise RuntimeError("Must run setup_user() first.")
+        raise RuntimeError("Must run xpcs_setup_user() first.")
     experiment = dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
@@ -463,7 +243,7 @@ def bdp_demo_plan(
         raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
     # upload QMAP to @voyager
     daqInfo_qmap_upload = dm_api_daq().upload(
-        experimentName=experiment_name, 
+        experimentName=experiment_name,
         dataDirectory=DAQ_UPLOAD_PREFIX + str(qmap_path.parent),
         daqInfo={"experimentFilePath": qmap_path.name},
     )
@@ -489,17 +269,32 @@ def bdp_demo_plan(
         safe_title=safe_title,
         description=description,
         header=xpcs_header.get(),
-        metadatafile=str(nxwriter.file_name),
+        metadatafile=nxwriter.file_name.name,
         index=xpcs_index.get(),
         dataDir=str(data_path),
         concise=dm_concise,
         # instrument metadata (expected by nxwriter)
+        # values from pete7.hdf
         # TODO: set from actual instrument values
-        X_energy=12.0,
-        incident_beam_size_nm_xy=1,
+        absolute_cross_section_scale=1,
+        bcx=0,
+        bcy=0,
+        ccdx=1,
+        ccdx0=1,
+        ccdy=1,
+        ccdy0=1,
+        det_dist=4,
         I0=1,
         I1=1,
+        incident_beam_size_nm_xy=1,
         incident_energy_spread=1,
+        pix_dim_x=1,
+        pix_dim_y=1,
+        t0=0.005,  
+        t1=0.001,
+        X_energy=12.0,
+        xdim=1,
+        ydim=1,
     )
     _md = build_run_metadata_dict(
         _md,
@@ -520,7 +315,10 @@ def bdp_demo_plan(
     _md.update(md)  # user md takes highest priority
 
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
-    yield from bps.mv(dm_workflow.concise_reporting, dm_concise)
+    yield from bps.mv(
+        dm_workflow.concise_reporting, dm_concise,
+        dm_workflow.reporting_period, dm_reporting_period,
+    )
 
     #
     # *** Run the data acquisition. ***
@@ -574,10 +372,8 @@ def bdp_demo_plan(
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
         wait=dm_wait,
-        timeout=dm_waiting_time,
+        timeout=dm_reporting_time_limit,
         # all kwargs after this line are DM argsDict content
-        # such as pete7.h5 (will also need pete7.hdf)
-        # filePath=nxwriter.file_name.name,
         filePath=pathlib.Path(det.hdf1.full_file_name.get()).name,
         experiment=dm_experiment.get(),
         qmap=qmap_path.name,
@@ -599,16 +395,16 @@ def bdp_demo_plan(
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
-    logger.info("Finished: bdp_demo_plan()")
+    logger.info("Finished: xpcs_bdp_demo_plan()")
 
 
 def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME, index: int = 0):
     """Developer shortcut plan."""
-    yield from setup_user("20240131-jemian", index=index)
+    yield from xpcs_setup_user("20240131-jemian", index=index)
     qmap_path = QMAPS.get(detector_name)
     if qmap_path is None:
         raise FileNotFoundError(f"QMAP file {qmap_path} not found.")
-    yield from bdp_demo_plan(
+    yield from xpcs_bdp_demo_plan(
         header="A002",
         detector_name=detector_name,
         qmap_file=str(qmap_path),
