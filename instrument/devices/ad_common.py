@@ -118,6 +118,32 @@ class Lambda2MCam(CamBase_V34):
     EXT_TRIGGER = 0
 
 
+class Rigaku3MCam(CamBase_V34):
+    """Support for the RigakuSi3M camera controls."""
+
+    _html_docs = ["Rigaku3MCam.html"]
+
+    sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
+    fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
+    fast_file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True)
+    image_mode = ADComponent(EpicsSignalWithRBV, "ImageMode", string=True)
+    output_resolution = ADComponent(EpicsSignalWithRBV, "OutputResolution", string=True)
+    dual_threshold = ADComponent(EpicsSignal, "DualThreshold")
+    upper_threshold = ADComponent(EpicsSignalWithRBV, "UpperThreshold")
+    lower_threshold = ADComponent(EpicsSignalWithRBV, "LowerThreshold")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sparse_enable.kind = "config"
+        self.fast_file_name.kind = "config"
+        self.fast_file_path.kind = "config"
+        self.image_mode.kind = "config"
+        self.output_resolution.kind = "config"
+        self.dual_threshold.kind = "config"
+        self.upper_threshold.kind = "config"
+        self.lower_threshold.kind = "config"
+
+
 class SimDetectorCam_V34(CamMixin_V34, SimDetectorCam):
     """Revise SimDetectorCam for ADCore revisions."""
 
@@ -204,6 +230,7 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
         "ADSIM_16M": SimDetectorCam_V34,
         "EIGER_4M": EigerDetectorCam_V34,
         "LAMBDA_2M": Lambda2MCam,
+        "RIGAKU_3M": Rigaku3MCam,
     }[det_key]
 
     return XpcsAD_factory(
