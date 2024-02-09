@@ -25,5 +25,7 @@ lambda2M = None  # TODO: re-enable?
 rigaku3M = None  # TODO: IOC is still in development
 
 if eiger4M is not None:
+    # TODO: only on warmup?  Or in setup plan?
+    # Just not on startup, blindly like this.
     eiger4M.cam.data_source.put("Stream")
     eiger4M.cam.stream_decompress.put("Disable")
