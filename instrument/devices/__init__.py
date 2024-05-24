@@ -15,9 +15,22 @@ local, custom Device definitions
 #     # 'ophyd.event_dispatcher' — issues regular summaries of the backlog of updates from the control layer that are being processed on background threads
 
 # ----- ----- ----- ----- -----
-# TODO: from .aerotech_stages import *
+if False:  # 2024-05-14, prj: remove for this demo
+    try:
+        from .aerotech_stages import *
+    except Exception as excuse:
+        print(f"Could not import Aerotech: {excuse}")
+
+from .flight_tube import *
+# if False:  # 2024-05-14, prj: remove for this demo
+#     try:
+#         from .flight_tube import *
+#     except Exception as excuse:
+#         print(f"Could not import Flight Tube: {excuse}")
+
 from .data_management import *
 from .meascomp_usb_ctr import *
+
 # TODO: from .qnw_device import *
 
 # ----- ----- ----- ----- -----

@@ -15,3 +15,5 @@ from .listruns_plan import listruns
 # TODO: from .qnw_plans import *
 from .bdp_demo import *
 # TODO: from .ad_setup_plans import *
+
+from .mesh_plans import xpcs_mesh

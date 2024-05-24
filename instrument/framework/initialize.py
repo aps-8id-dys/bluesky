@@ -7,7 +7,7 @@ __all__ = """
     bp  bps  bpp
     summarize_plan
     np
-    registry
+    oregistry
     """.split()
 
 import logging
@@ -119,7 +119,7 @@ if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
     )
 
 # Create a registry of ophyd devices
-registry = Registry(auto_register=True)
+oregistry = Registry(auto_register=True)
 
 _pv = iconfig.get("RUN_ENGINE_SCAN_ID_PV")
 if _pv is None:

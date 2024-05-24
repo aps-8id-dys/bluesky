@@ -67,5 +67,5 @@ except Exception as exinfo:
         "Could not connect with Aerotech controller. %s", exinfo
     )
     sample = None
-    detector = 
+    detector = None
     rheometer = None
