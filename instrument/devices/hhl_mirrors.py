@@ -32,7 +32,7 @@ class HHL_Mirror2(Device):
     fine_pitch = Component(EpicsMotor, "FMBO:Piezo:m2")
     flag = Component(EpicsMotor, "CR8-A1:m6")
     bender1 = Component(EpicsMotor, "FMBO:m7")
-    bender1 = Component(EpicsMotor, "FMBO:m8")
+    bender2 = Component(EpicsMotor, "FMBO:m8")
 
 
 mr1 = HHL_Mirror1("8idaSoft:", name="mr1")
