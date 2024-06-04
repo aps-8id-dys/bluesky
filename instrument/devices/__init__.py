@@ -30,6 +30,7 @@ from .data_management import *
 from .hhl_mirrors import *
 from .meascomp_usb_ctr import *
 from .qnw_device import *
+from .hhl_slits import *
 
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
