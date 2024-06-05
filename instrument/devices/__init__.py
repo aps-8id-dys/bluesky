@@ -27,6 +27,7 @@ except Exception as excuse:
 	print(f"Could not import Flight Tube: {excuse}")
 
 from .data_management import *
+from .idt_mono import *
 from .hhl_mirrors import *
 from .meascomp_usb_ctr import *
 from .qnw_device import *
