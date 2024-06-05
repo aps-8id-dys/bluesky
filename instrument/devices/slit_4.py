@@ -57,4 +57,4 @@ class Slit6(Device):
     h_base = FCpt(EpicsMotor, "{motor_prefix}:{_h_base_motor}", labels={"motors"})
     v_base = FCpt(EpicsMotor, "{motor_prefix}:{_v_base_motor}", labels={"motors"})
 
-sl4 = Slit6(name="sl4", prefix="8iddSoft:CR8-D1:US", v_neg_motor: "m11", v_pos_motor: "m12", h_neg_motor: "m13", h_pos_motor: "m14", h_base_motor: "m15", v_base_motor: "m16")
+sl4 = Slit6(name="sl4", prefix="8iddSoft:CR8-D1:US", v_neg_motor="m11", v_pos_motor="m12", h_neg_motor="m13", h_pos_motor="m14", h_base_motor="m15", v_base_motor="m16")
