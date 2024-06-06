@@ -29,10 +29,10 @@ except Exception as excuse:
 from .data_management import *
 from .idt_mono import *
 from .hhl_mirrors import *
+from .hhl_slits import *
 from .meascomp_usb_ctr import *
 from .qnw_device import *
-from .hhl_slits import *
-
+from .slit_4 import *
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
 # TODO from .simulated_1d_detector import *
