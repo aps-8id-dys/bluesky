@@ -28,6 +28,7 @@ except Exception as excuse:
 
 from .data_management import *
 from .damm import *
+from .idt_mono import *
 from .hhl_mirrors import *
 from .meascomp_usb_ctr import *
 from .qnw_device import *
