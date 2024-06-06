@@ -1,5 +1,5 @@
 """
-HHL Slits in station 8-ID-A
+Slit 4 in station 8-ID-D
 """
 
 __all__ = """
@@ -11,8 +11,6 @@ import logging
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-# from apstools.devices.hhl_slits import HHLSlits
-
 from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd import FormattedComponent as FCpt
@@ -20,8 +18,6 @@ from ophyd import EpicsMotor
 
 
 class Slit6(Device):
-
-
     def __init__(
         self,
         prefix: str,
@@ -49,7 +45,6 @@ class Slit6(Device):
 
         super().__init__(prefix, *args, **kwargs)
 
-    
     v_neg = FCpt(EpicsMotor, "{motor_prefix}:{_v_neg_motor}", labels={"motors"})
     v_pos = FCpt(EpicsMotor, "{motor_prefix}:{_v_pos_motor}", labels={"motors"})
     h_neg = FCpt(EpicsMotor, "{motor_prefix}:{_h_neg_motor}", labels={"motors"})
@@ -57,4 +52,14 @@ class Slit6(Device):
     h_base = FCpt(EpicsMotor, "{motor_prefix}:{_h_base_motor}", labels={"motors"})
     v_base = FCpt(EpicsMotor, "{motor_prefix}:{_v_base_motor}", labels={"motors"})
 
-sl4 = Slit6(name="sl4", prefix="8iddSoft:CR8-D1:US", v_neg_motor="m11", v_pos_motor="m12", h_neg_motor="m13", h_pos_motor="m14", h_base_motor="m15", v_base_motor="m16")
+
+sl4 = Slit6(
+    name="sl4",
+    prefix="8iddSoft:CR8-D1:US",
+    v_neg_motor="m11",
+    v_pos_motor="m12",
+    h_neg_motor="m13",
+    h_pos_motor="m14",
+    h_base_motor="m15",
+    v_base_motor="m16",
+)
