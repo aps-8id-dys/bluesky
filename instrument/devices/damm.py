@@ -21,8 +21,8 @@ class Slit2(Device):
     def __init__(
         self,
         prefix: str,
-        h_motor: str,
-        v_motor: str,
+        x_motor: str,
+        y_motor: str,
         *args,
         **kwargs,
     ):
@@ -30,14 +30,14 @@ class Slit2(Device):
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])
 
-        self._h_motor = h_motor
-        self._v_motor = v_motor
+        self._x_motor = x_motor
+        self._y_motor = y_motor
 
         super().__init__(prefix, *args, **kwargs)
 
     # Real motors that directly control the slits
-    pitch = FCpt(EpicsMotor, "{motor_prefix}:{_h_motor}", labels={"motors"})
-    yaw = FCpt(EpicsMotor, "{motor_prefix}:{_v_motor}", labels={"motors"})
+    x = FCpt(EpicsMotor, "{motor_prefix}:{_x_motor}", labels={"motors"})
+    y = FCpt(EpicsMotor, "{motor_prefix}:{_y_motor}", labels={"motors"})
 
 
-damm = Slit2(name="damm", prefix="8iddSoft:CR8-D1:US", h_motor="m2", v_motor="m3")
+damm = Slit2(name="damm", prefix="8iddSoft:CR8-D1:US", x_motor="m2", y_motor="m3")
