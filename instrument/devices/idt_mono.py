@@ -22,7 +22,7 @@ class IDTMono(Device):
         self,
         prefix: str,
         bragg_motor: str,
-        xal_gap_motor: str,
+        xtal_gap_motor: str,
         flag_motor: str,
         coarse_pitch_motor: str,
         coarse_roll_motor: str,
@@ -36,7 +36,7 @@ class IDTMono(Device):
         self.motor_prefix = ":".join(pieces[:-1])
 
         self._bragg_motor = bragg_motor
-        self._xal_gap_motor = xal_gap_motor
+        self._xtal_gap_motor = xtal_gap_motor
         self._flag_motor = flag_motor
         self._coarse_pitch_motor = coarse_pitch_motor
         self._coarse_roll_motor = coarse_roll_motor
@@ -46,7 +46,7 @@ class IDTMono(Device):
         super().__init__(prefix, *args, **kwargs)
 
     bragg = FCpt(EpicsMotor, "{motor_prefix}:{_bragg_motor}", labels={"motors"})
-    xal_gap = FCpt(EpicsMotor, "{motor_prefix}:{_xal_gap_motor}", labels={"motors"})
+    xtal_gap = FCpt(EpicsMotor, "{motor_prefix}:{_xtal_gap_motor}", labels={"motors"})
     flag = FCpt(EpicsMotor, "{motor_prefix}:{_flag_motor}", labels={"motors"})
     coarse_pitch = FCpt(
         EpicsMotor, "{motor_prefix}:{_coarse_pitch_motor}", labels={"motors"}
@@ -62,7 +62,7 @@ idt_mono = IDTMono(
     name="mono_slit",
     prefix="8idaSoft:MONO:US",
     bragg_motor="m1",
-    xal_gap_motor="m2",
+    xtal_gap_motor="m2",
     flag_motor="m3",
     coarse_pitch_motor="m5",
     coarse_roll_motor="m6",
