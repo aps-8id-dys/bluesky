@@ -18,7 +18,6 @@ from ophyd import EpicsMotor
 
 
 class IDTMono(Device):
-
     def __init__(
         self,
         prefix: str,
@@ -29,7 +28,6 @@ class IDTMono(Device):
         coarse_roll_motor: str,
         x_pitch_motor: str,
         y_pitch_motor: str,
-        
         *args,
         **kwargs,
     ):
@@ -50,9 +48,24 @@ class IDTMono(Device):
     bragg = FCpt(EpicsMotor, "{motor_prefix}:{_bragg_motor}", labels={"motors"})
     xal_gap = FCpt(EpicsMotor, "{motor_prefix}:{_xal_gap_motor}", labels={"motors"})
     flag = FCpt(EpicsMotor, "{motor_prefix}:{_flag_motor}", labels={"motors"})
-    coarse_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_coarse_pitch_motor}", labels={"motors"})
-    coarse_roll = FCpt(EpicsMotor, "{motor_prefix}:{_coarse_roll_motor}", labels={"motors"})
+    coarse_pitch = FCpt(
+        EpicsMotor, "{motor_prefix}:{_coarse_pitch_motor}", labels={"motors"}
+    )
+    coarse_roll = FCpt(
+        EpicsMotor, "{motor_prefix}:{_coarse_roll_motor}", labels={"motors"}
+    )
     x_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_x_pitch_motor}", labels={"motors"})
     y_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_y_pitch_motor}", labels={"motors"})
 
-idt_mono = IDTMono(name="mono_slit", prefix="8idaSoft:MONO:US", bragg_motor="m1", xal_gap_motor="m2", flag_motor="m3", coarse_pitch_motor="m5", coarse_roll_motor="m6", x_pitch_motor="m7", y_pitch_motor="m8")
+
+idt_mono = IDTMono(
+    name="mono_slit",
+    prefix="8idaSoft:MONO:US",
+    bragg_motor="m1",
+    xal_gap_motor="m2",
+    flag_motor="m3",
+    coarse_pitch_motor="m5",
+    coarse_roll_motor="m6",
+    x_pitch_motor="m7",
+    y_pitch_motor="m8",
+)
