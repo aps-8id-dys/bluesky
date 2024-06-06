@@ -1,5 +1,5 @@
 """
-Damm in station 8-ID-D
+Damm (dynamic aperture) in station 8-ID-D
 """
 
 __all__ = """
