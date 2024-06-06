@@ -37,7 +37,7 @@ class Flag4(Device):
 
 
 fl4 = Flag4(
-    name="sl4",
+    name="fl4",
     prefix="8iddSoft:CR8-D1:US",
     flag_4_motor="m1",
 )
