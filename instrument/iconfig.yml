@@ -48,7 +48,7 @@ USE_PROGRESS_BAR: false
 WRITE_NEXUS_DATA_FILES: false
 NEXUS_WARN_MISSING_CONTENT: false
 NEXUS_FILE_EXTENSION: hdf
-WRITE_SPEC_DATA_FILES: false
+WRITE_SPEC_DATA_FILES: true
 
 # APS Data Management
 # Use bash shell, deactivate all conda environments, source this file:
