@@ -59,7 +59,7 @@ class IDTMono(Device):
 
 
 idt_mono = IDTMono(
-    name="mono_slit",
+    name="idt_mono",
     prefix="8idaSoft:MONO:US",
     bragg_motor="m1",
     xtal_gap_motor="m2",
