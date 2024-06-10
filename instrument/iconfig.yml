@@ -80,13 +80,13 @@ AREA_DETECTOR:
     # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
     # Same filesystem  ???
     IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
-    NAME: flag1
+    NAME: flag1ad
     PV_PREFIX: "8idaSoft:flag1:"
   FLAG2:
     # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
     # Same filesystem  ???
     IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
-    NAME: flag2
+    NAME: flag2ad
     PV_PREFIX: "8idaSoft:flag2:"
   LAMBDA_2M:
     # IOC host: lambda2m
@@ -121,7 +121,7 @@ LOGGING:
 # default timeouts (seconds)
 PV_READ_TIMEOUT: &TIMEOUT 30
 PV_WRITE_TIMEOUT: *TIMEOUT
-PV_CONNECTION_TIMEOUT: 10
+PV_CONNECTION_TIMEOUT: 5
 
 XMODE_DEBUG_LEVEL: Minimal
 
