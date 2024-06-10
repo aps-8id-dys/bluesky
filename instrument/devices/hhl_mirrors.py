@@ -16,6 +16,12 @@ from ophyd import Component, Device, EpicsMotor
 
 
 class HHL_Mirror1(Device):
+    """
+    High-Heat Load Mirror 1 in 8-ID-A.
+
+    The area detector on the 'flag' motor defined separately
+    (in ./area_detectors.py) as 'flag1'.
+    """
 
     x = Component(EpicsMotor, "FMBO:m4")
     y = Component(EpicsMotor, "FMBO:m2")
@@ -25,6 +31,12 @@ class HHL_Mirror1(Device):
 
 
 class HHL_Mirror2(Device):
+    """
+    High-Heat Load Mirror 2 in 8-ID-A.
+
+    The area detector on the 'flag' motor defined separately
+    (in ./area_detectors.py) as 'flag2'.
+    """
 
     x = Component(EpicsMotor, "FMBO:m3")
     y = Component(EpicsMotor, "FMBO:m1")

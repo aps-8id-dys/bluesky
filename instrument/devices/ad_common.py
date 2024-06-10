@@ -5,6 +5,7 @@ EPICS area_detector common support
 __all__ = """
     CamBase_V34
     FileBase_V34
+    FlagCam_V34
     SimDetectorCam_V34
     XpcsAD_EpicsFileNameHDF5Plugin
     XpcsAD_factory
@@ -92,6 +93,12 @@ class EigerDetectorCam_V34(CamMixin_V34, EigerDetectorCam):
     link_3 = None
     dcu_buff_free = None
     offset = None
+
+
+class FlagCam_V34(CamMixin_V34, CamBase_V34):
+    """Cameras on the HHL Mirrors in 8-ID-A."""
+
+    # TODO: What PVs to be connected?
 
 
 class Lambda2MCam(CamBase_V34):
@@ -229,6 +236,8 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
         "ADSIM_4M": SimDetectorCam_V34,
         "ADSIM_16M": SimDetectorCam_V34,
         "EIGER_4M": EigerDetectorCam_V34,
+        "FLAG1": FlagCam_V34,
+        "FLAG2": FlagCam_V34,
         "LAMBDA_2M": Lambda2MCam,
         "RIGAKU_3M": Rigaku3MCam,
     }[det_key]

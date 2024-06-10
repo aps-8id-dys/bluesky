@@ -76,6 +76,18 @@ AREA_DETECTOR:
     IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
     NAME: eiger4M
     PV_PREFIX: "8idEiger4m:"
+  FLAG1:
+    # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
+    # Same filesystem  ???
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: flag1
+    PV_PREFIX: "8idaSoft:flag1:"
+  FLAG2:
+    # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
+    # Same filesystem  ???
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: flag2
+    PV_PREFIX: "8idaSoft:flag2:"
   LAMBDA_2M:
     # IOC host: lambda2m
     IOC_FILES_ROOT: "/extdisk/"
