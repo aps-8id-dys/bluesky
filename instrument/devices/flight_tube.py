@@ -3,8 +3,8 @@ SAXS Flight Tube
 """
 
 __all__ = """
-    bs
-    det
+    bs_motors
+    det_motors
 """.split()
 
 import logging
@@ -25,5 +25,5 @@ class FlightTubeBeamStop(Device):
     ds_y = Component(EpicsMotor, "m6")
     us = Component(EpicsMotor, "m7")
 
-det = FlightTubeDetector("8idiFlight:", name="det") #TODO: "Ensure variable name is as desired"
-bs = FlightTubeBeamStop("8idiFlight:", name="bs") #TODO: "Ensure variable name is as desired"
+det_motors = FlightTubeDetector("8idiSoft:FLIGHT:", name="det_motors")
+bs_motors = FlightTubeBeamStop("8idiSoft:FLIGHT:", name="bs_motors")
