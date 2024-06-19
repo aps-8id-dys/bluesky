@@ -2,8 +2,6 @@
 Slit 4 in station 8-ID-D
 """
 
-from __future__ import annotations
-
 __all__ = """
     sl4
 """.split()

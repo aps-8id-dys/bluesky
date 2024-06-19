@@ -2,8 +2,6 @@
 SAXS Flight Tube
 """
 
-from __future__ import annotations
-
 __all__ = """
     bs
     det

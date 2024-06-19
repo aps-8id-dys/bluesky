@@ -12,8 +12,6 @@ To watch the EPICS PVs in a simple GUI:
         &
 """
 
-from __future__ import annotations
-
 __all__ = [
     "set_qnw",
 ]

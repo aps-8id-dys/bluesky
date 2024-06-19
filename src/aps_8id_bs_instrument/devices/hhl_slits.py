@@ -2,8 +2,6 @@
 HHL Slits in station 8-ID-A
 """
 
-from __future__ import annotations
-
 __all__ = """
     wb_slit
     mono_slit

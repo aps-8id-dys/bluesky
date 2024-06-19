@@ -3,7 +3,6 @@ APS BDP demo: 2024-02
 """
 
 # from apstools.plans.xpcs_mesh import mesh_list_grid_scan
-from __future__ import annotations
 
 import logging
 

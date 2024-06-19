@@ -4,8 +4,6 @@ Prepare an area detector for acquisition.
 see: https://bcda-aps.github.io/apstools/examples/de_1_adsim_hdf5_custom_names.html
 """
 
-from __future__ import annotations
-
 __all__ = ["prepare_count"]
 
 import logging

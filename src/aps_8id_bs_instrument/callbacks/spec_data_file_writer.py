@@ -2,8 +2,6 @@
 custom callbacks
 """
 
-from __future__ import annotations
-
 __all__ = [
     "specwriter",
     "spec_comment",

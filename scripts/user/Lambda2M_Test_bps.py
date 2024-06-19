@@ -6,8 +6,6 @@ Load this file::
     %run -i ./user/Lambda2M_Test_bps.py
 """
 
-from __future__ import annotations
-
 from aps_8id_bs_instrument.collection import *  # Yikes!  Starts the bluesky instrument!
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp

@@ -104,6 +104,9 @@ select = [
     # "RUF"
 ]
 ignore = [
+    "E402", ## REMOVE LATER
+    "F403", ## REMOVE LATER
+    "F405", ## REMOVE LATER
     "E501" # Line too long
 ]
 
@@ -135,17 +138,3 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::pottery.exceptions.InefficientAccessWarning",
 ]
-
-[tool.mypy]
-# https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
-show_error_codes = true
-check_untyped_defs = true
-follow_imports = "normal"
-strict_optional = true
-plugins = ["pydantic.mypy"]
-strict = true
-disallow_untyped_defs = true
-implicit_reexport = true
-
-
-[tool.pdm]

@@ -2,8 +2,6 @@
 Set default timeouts for EPICS and define an EPICS-based scan_id.
 """
 
-from __future__ import annotations
-
 __all__ = """
     epics_scan_id_source
     scan_id_epics

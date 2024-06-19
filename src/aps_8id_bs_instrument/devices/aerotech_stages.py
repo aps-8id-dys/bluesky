@@ -14,8 +14,6 @@ Motivation: Move sample during measurement to avoid beam damage.
 1. fly scan Eiger4M v. sample.x and run DM workflow
 """
 
-from __future__ import annotations
-
 __all__ = """
     sample
     detector

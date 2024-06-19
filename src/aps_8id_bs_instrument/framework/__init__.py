@@ -2,8 +2,6 @@
 configure the Bluesky framework
 """
 
-from __future__ import annotations
-
 
 def warn_if_not_aps_controls_subnet():
     """APS-U controls are on private subnets.  Check and advise as applicable."""

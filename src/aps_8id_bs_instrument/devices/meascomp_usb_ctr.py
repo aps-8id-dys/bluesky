@@ -29,8 +29,6 @@ dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, 
 
 """
 
-from __future__ import annotations
-
 __all__ = """
     daq1
     mcs

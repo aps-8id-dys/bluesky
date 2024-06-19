@@ -25,8 +25,6 @@ Example::
 from: https://github.com/APS-1ID-MPE/hexm-bluesky/blob/main/instrument/devices/data_management.py
 """
 
-from __future__ import annotations
-
 __all__ = """
     DM_WorkflowConnector
 """.split()

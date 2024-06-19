@@ -2,8 +2,6 @@
 lup: lineup
 """
 
-from __future__ import annotations
-
 __all__ = [
     "lup",  # simple logic (FWHM must be obtained) to center after scan
     "lineup",  # "smart" choice (peak must be a *peak*) to center after scan

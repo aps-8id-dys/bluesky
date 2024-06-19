@@ -2,8 +2,6 @@
 Configure matplotlib in interactive mode for Jupyter notebook
 """
 
-from __future__ import annotations
-
 __all__ = [
     "plt",
 ]

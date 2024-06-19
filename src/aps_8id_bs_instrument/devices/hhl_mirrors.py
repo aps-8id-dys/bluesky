@@ -2,8 +2,6 @@
 High-heat load mirrors in station 8-ID-A.
 """
 
-from __future__ import annotations
-
 __all__ = """
     mr1
     mr2

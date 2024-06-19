@@ -2,8 +2,6 @@
 Setup for for this beam line's APS Data Management Python API client.
 """
 
-from __future__ import annotations
-
 __all__ = """
     DM_WORKFLOW_OWNER
 """.split()

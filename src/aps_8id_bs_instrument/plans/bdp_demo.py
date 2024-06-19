@@ -2,8 +2,6 @@
 APS BDP demo: 2024-02
 """
 
-from __future__ import annotations
-
 __all__ = """
     xpcs_bdp_demo_plan
     xpcs_reset_index

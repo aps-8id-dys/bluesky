@@ -2,8 +2,6 @@
 EPICS area_detector common support
 """
 
-from __future__ import annotations
-
 __all__ = """
     CamBase_V34
     FileBase_V34

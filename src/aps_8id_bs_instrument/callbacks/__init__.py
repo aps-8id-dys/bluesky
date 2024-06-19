@@ -1,5 +1,5 @@
 # this file makes the .py files here importable
-from __future__ import annotations
+
 
 from aps_8id_bs_instrument import iconfig
 

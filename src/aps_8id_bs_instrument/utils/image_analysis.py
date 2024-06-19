@@ -2,8 +2,6 @@
 Statistical peak analysis functions
 """
 
-from __future__ import annotations
-
 __all__ = [
     "analyze_image",
     "analyze_peak",

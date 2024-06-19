@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 
 from bluesky import plan_stubs as bps

@@ -2,8 +2,6 @@
 Bluesky plans to acquire images.
 """
 
-from __future__ import annotations
-
 __all__ = """
     bdp_acquire
 """.split()

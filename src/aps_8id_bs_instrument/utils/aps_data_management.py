@@ -38,8 +38,6 @@ APS Data Management utility support.
 :see: https://git.aps.anl.gov/DM/dm-docs/-/wikis/DM/Beamline-Services/Workflow-Processing-Service
 """
 
-from __future__ import annotations
-
 __all__ = """
     build_run_metadata_dict
     dm_add_workflow

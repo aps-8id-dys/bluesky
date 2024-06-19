@@ -13,15 +13,6 @@ repos:
     rev: 0.7.1
     hooks:
       - id: nbstripout
-  - repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.12.0
-    hooks:
-    - id: reorder-python-imports
-      args: [
-          --application-directories, '.:src',
-          --py3-plus,
-          --add-import, 'from __future__ import annotations',
-      ]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.4.8

@@ -2,8 +2,6 @@
 initialize the bluesky framework
 """
 
-from __future__ import annotations
-
 __all__ = """
     RE  cat  sd  bec  peaks
     bp  bps  bpp

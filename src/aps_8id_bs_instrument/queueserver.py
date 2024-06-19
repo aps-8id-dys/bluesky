@@ -7,25 +7,23 @@ from __future__ import annotations
 import inspect
 import logging
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-print(__file__)
+import pyRestTable
+from ophyd import Device, Signal
 
 from aps_8id_bs_instrument import iconfig
+from aps_8id_bs_instrument.callbacks import *
+from aps_8id_bs_instrument.devices import *
+from aps_8id_bs_instrument.plans import *
 from aps_8id_bs_instrument.queueserver_framework import *
+from aps_8id_bs_instrument.utils import *
 
 # guides choice of module to import cat
 iconfig["framework"] = "queueserver"
 
-import pyRestTable
-from ophyd import Device, Signal
+logger = logging.getLogger(__name__)
 
-# from bluesky.plans import *
-from aps_8id_bs_instrument.callbacks import *
-from aps_8id_bs_instrument.devices import *
-from aps_8id_bs_instrument.plans import *
-from aps_8id_bs_instrument.utils import *
+logger.info(__file__)
+print(__file__)
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     if specwriter is not None:

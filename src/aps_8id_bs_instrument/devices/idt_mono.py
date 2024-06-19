@@ -2,8 +2,6 @@
 IDT Mono in station 8-ID-A
 """
 
-from __future__ import annotations
-
 __all__ = """
     idt_mono
 """.split()

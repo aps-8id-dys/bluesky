@@ -6,8 +6,6 @@ See the note about waiting for the nxwriter to finish AFTER EACH ACQUISITION!
 https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks.nexus_writer.NXWriter
 """
 
-from __future__ import annotations
-
 __all__ = ["nxwriter"]
 
 import logging

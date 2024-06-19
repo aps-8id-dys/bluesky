@@ -2,8 +2,6 @@
 make sure we have the software packages we need
 """
 
-from __future__ import annotations
-
 __all__ = []
 
 import logging

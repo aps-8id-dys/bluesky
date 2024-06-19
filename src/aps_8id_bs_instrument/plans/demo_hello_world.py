@@ -6,8 +6,6 @@ EXAMPLE::
     RE(hello_world())
 """
 
-from __future__ import annotations
-
 __all__ = """
     hello_world
 """.split()

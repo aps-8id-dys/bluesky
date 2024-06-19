@@ -28,8 +28,6 @@ References:
 * https://blueskyproject.io/bluesky/debugging.html#logger-names
 """
 
-from __future__ import annotations
-
 __all__ = [
     "logger",
 ]

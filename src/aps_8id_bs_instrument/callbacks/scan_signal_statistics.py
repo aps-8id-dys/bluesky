@@ -4,8 +4,6 @@ Collect statistics on the signals used in 1-D scans.
 .. caution:: This is an early draft and is subject to change!
 """
 
-from __future__ import annotations
-
 __all__ = """
 SignalStatsCallback
 """.split()

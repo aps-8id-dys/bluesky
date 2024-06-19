@@ -14,8 +14,6 @@ How to start the queueserver process::
 
 """
 
-from __future__ import annotations
-
 import pathlib
 import sys
 

@@ -2,8 +2,6 @@
 Define RE for bluesky-queueserver.
 """
 
-from __future__ import annotations
-
 __all__ = """
     cat
     make_kv_table

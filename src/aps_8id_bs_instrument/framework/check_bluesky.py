@@ -2,8 +2,6 @@
 ensure BlueSky is available
 """
 
-from __future__ import annotations
-
 __all__ = []
 
 import logging

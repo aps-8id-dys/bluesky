@@ -7,8 +7,6 @@ Replaces ``lineup()`` and ``lup()`` plans which could not be used with the
 queueserver.
 """
 
-from __future__ import annotations
-
 __all__ = [
     "lineup2",  # "smart" choice (peak must be a *peak*) to center after scan
     "signal_stats",

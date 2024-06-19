@@ -2,8 +2,6 @@
 Bluesky plans to setup various Area Detectors for acquisition.
 """
 
-from __future__ import annotations
-
 __all__ = """
     ad_acquire_setup
     eiger4M_acquire_setup

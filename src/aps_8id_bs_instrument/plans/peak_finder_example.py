@@ -4,8 +4,6 @@ example custom scan plan
 Find the peak of noisy v. m1 in the range of +/- 2.
 """
 
-from __future__ import annotations
-
 __all__ = [
     "two_pass_scan",
     "findpeak_multipass",

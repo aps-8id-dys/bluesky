@@ -15,17 +15,15 @@ from __future__ import annotations
 __all__ = [
     "iconfig",
 ]
-
 import logging
+import pathlib
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 print(__file__)
-
-import pathlib
-
-import yaml
 
 CONFIG_FILE = pathlib.Path(__file__).absolute().parent / "iconfig.yml"
 

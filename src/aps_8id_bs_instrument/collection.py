@@ -2,8 +2,6 @@
 configure for data collection in a console session
 """
 
-from __future__ import annotations
-
 from aps_8id_bs_instrument.session_logs import logger
 
 logger.info(__file__)

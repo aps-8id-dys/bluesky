@@ -11,8 +11,6 @@ Test Examples::
     RE(lineup([sim1d], sample.x, 0, 3, 21))
 """
 
-from __future__ import annotations
-
 __all__ = """
     sim1d
     motor

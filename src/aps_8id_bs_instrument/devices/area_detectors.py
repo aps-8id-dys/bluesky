@@ -2,8 +2,6 @@
 EPICS area_detectors
 """
 
-from __future__ import annotations
-
 __all__ = """
     adsim4M
     eiger4M

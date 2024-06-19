@@ -2,8 +2,6 @@
 start bluesky in IPython console session
 """
 
-from __future__ import annotations
-
 import pathlib
 import sys
 

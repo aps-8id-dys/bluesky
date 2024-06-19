@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # FIXME:
-from __future__ import annotations
+
 
 raise RuntimeError("Not ready for use.")
 

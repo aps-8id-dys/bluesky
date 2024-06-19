@@ -2,8 +2,6 @@
 QNW temperature controller
 """
 
-from __future__ import annotations
-
 import logging
 
 from apstools.devices import PVPositionerSoftDoneWithStop

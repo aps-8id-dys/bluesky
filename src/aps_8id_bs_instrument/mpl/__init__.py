@@ -3,8 +3,6 @@ configure matplotlib for console or notebook session
 MUST be run BEFORE other initializations
 """
 
-from __future__ import annotations
-
 
 def isnotebook():
     """
