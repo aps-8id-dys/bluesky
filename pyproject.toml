@@ -1,7 +1,7 @@
 [project]
-name = "8id_bs_instrument"
+name = "aps_8id_bs_instrument"
 version = "0.0.1"
-description='APS 8ID Beamline Bluesky Instrument Control',
+description='APS 8ID Beamline Bluesky Instrument Control'
 authors = [
     {name = "Eric Codrea", email = "ecodrea@anl.gov"},
     {name = "Rafael Vescovi", email = "ravescovi@anl.gov"},
@@ -10,7 +10,9 @@ requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
 dependencies = [
-
+    "apstools",
+    "bluesky",
+    "ophyd"
 ]
 
 [project.optional-dependencies]
@@ -23,19 +25,20 @@ dev = [
 ]
 
 [project.urls]
-Homepage = ""
-Downloads = ""
+Homepage = "https://github.com/aps-8id-dys/bluesky"
+Downloads = "https://github.com/aps-8id-dys/bluesky.git"
 
 ######################
 # Build Info + Tools #
 ######################
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"8id_bs_instrument" = "src/8id_bs_instrument"}
+package-dir = {"aps_8id_bs_instrument" = "src/aps_8id_bs_instrument"}
+
 
 #####################
 # Development Tools #
@@ -126,16 +129,12 @@ line-ending = "auto"
 
 [tool.pytest.ini_options]
 # https://docs.pytest.org/en/stable/customize.html
-addopts = "-x 
+addopts = "-x"
 junit_family="xunit1"
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::pottery.exceptions.InefficientAccessWarning",
 ]
-
-[tool:pytest]
-testpaths =
-    tests/
 
 [tool.mypy]
 # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
