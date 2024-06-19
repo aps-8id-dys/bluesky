@@ -32,5 +32,5 @@ you will use (if not already activated). Such as:
 
 ```bash
 (base) prjemian@zap:~$ conda activate bluesky_2023_2
-(bluesky_2023_2) prjemian@zap:~$ 
+(bluesky_2023_2) prjemian@zap:~$
 ```

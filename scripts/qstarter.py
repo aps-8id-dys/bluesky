@@ -14,16 +14,15 @@ How to start the queueserver process::
 
 """
 
+from __future__ import annotations
+
 import pathlib
 import sys
 
 sys.path.append(str(pathlib.Path(__file__).absolute().parent))
 
-from instrument import iconfig
-from instrument.queueserver import *
+from aps_8id_bs_instrument.queueserver import *
 from bluesky.plans import *
-from bluesky.plan_stubs import mv
-from bluesky.plan_stubs import abs_set
 
 print_instrument_configuration()
 print_devices_and_signals()

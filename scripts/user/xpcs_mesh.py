@@ -1,17 +1,24 @@
-from bluesky import plan_stubs as bps
-from bluesky import utils
-from bluesky import plan_patterns
-from bluesky import preprocessors as bpp
+from __future__ import annotations
 
 import inspect
-from itertools import zip_longest, cycle
-from collections import defaultdict
 import os
+from collections import defaultdict
+from itertools import cycle, zip_longest
 
+from bluesky import plan_patterns, utils
+from bluesky import plan_stubs as bps
+from bluesky import preprocessors as bpp
 from toolz import partition
 
 
-def mesh_list_grid_scan(detectors, *args, number_of_collection_points, snake_axes=False, per_step=None, md=None):
+def mesh_list_grid_scan(
+    detectors,
+    *args,
+    number_of_collection_points,
+    snake_axes=False,
+    per_step=None,
+    md=None,
+):
     """
     Scan over a multi-dimensional mesh, collecting a total of *n* points; each motor is on an independent trajectory.
 
@@ -64,9 +71,15 @@ def mesh_list_grid_scan(detectors, *args, number_of_collection_points, snake_axe
         motors.append(motor)
     _md = {
         "shape": tuple(len(pos_list) for motor, pos_list in partition(2, args)),
-        "extents": tuple([min(pos_list), max(pos_list)] for motor, pos_list in partition(2, args)),
+        "extents": tuple(
+            [min(pos_list), max(pos_list)] for motor, pos_list in partition(2, args)
+        ),
         "snake_axes": snake_axes,
-        "plan_args": {"detectors": list(map(repr, detectors)), "args": md_args, "per_step": repr(per_step)},
+        "plan_args": {
+            "detectors": list(map(repr, detectors)),
+            "args": md_args,
+            "per_step": repr(per_step),
+        },
         "plan_name": "list_grid_scan",
         "plan_pattern": "outer_list_product",
         "plan_pattern_args": dict(args=md_args, snake_axes=snake_axes),
@@ -76,16 +89,26 @@ def mesh_list_grid_scan(detectors, *args, number_of_collection_points, snake_axe
     }
     _md.update(md or {})
     try:
-        _md["hints"].setdefault("dimensions", [(m.hints["fields"], "primary") for m in motors])
+        _md["hints"].setdefault(
+            "dimensions", [(m.hints["fields"], "primary") for m in motors]
+        )
     except (AttributeError, KeyError):
         ...
 
     return (
-        yield from mesh_scan_nd(detectors, full_cycler, number_of_collection_points, per_step=per_step, md=_md)
+        yield from mesh_scan_nd(
+            detectors,
+            full_cycler,
+            number_of_collection_points,
+            per_step=per_step,
+            md=_md,
+        )
     )
 
 
-def mesh_scan_nd(detectors, cycler, number_of_collection_points, *, per_step=None, md=None):
+def mesh_scan_nd(
+    detectors, cycler, number_of_collection_points, *, per_step=None, md=None
+):
     """
     Scan over an arbitrary N-dimensional trajectory.
 
@@ -120,7 +143,11 @@ def mesh_scan_nd(detectors, cycler, number_of_collection_points, *, per_step=Non
         "motors": [motor.name for motor in cycler.keys],
         "num_points": len(cycler),
         "num_intervals": len(cycler) - 1,
-        "plan_args": {"detectors": list(map(repr, detectors)), "cycler": repr(cycler), "per_step": repr(per_step)},
+        "plan_args": {
+            "detectors": list(map(repr, detectors)),
+            "cycler": repr(cycler),
+            "per_step": repr(per_step),
+        },
         "plan_name": "scan_nd",
         "hints": {},
     }
@@ -173,7 +200,9 @@ def mesh_scan_nd(detectors, cycler, number_of_collection_points, *, per_step=Non
             # inner_product_scan was renamed scan).
             dims = len(list(cycler.keys))
             if dims != 1:
-                raise TypeError(f"Signature of per_step assumes 1D trajectory but {dims} motors are specified.")
+                raise TypeError(
+                    f"Signature of per_step assumes 1D trajectory but {dims} motors are specified."
+                )
             (motor,) = cycler.keys
             user_per_step = per_step
 

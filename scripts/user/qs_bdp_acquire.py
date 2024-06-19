@@ -38,6 +38,8 @@ Acquisition plan API::
 see: https://blueskyproject.io/bluesky-queueserver-api/usage.html
 """
 
+from __future__ import annotations
+
 import yaml
 from bluesky_queueserver_api import BPlan
 from bluesky_queueserver_api.zmq import REManagerAPI

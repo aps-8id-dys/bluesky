@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
 # FIXME:
+from __future__ import annotations
 
 raise RuntimeError("Not ready for use.")
 
@@ -20,12 +20,9 @@ Bluesky QS client program to initiate data acquisition.
 
 # https://blueskyproject.io/bluesky-queueserver-api/usage.html
 
-import datetime
 import pathlib
 import sys
 
-import h5py
-import ophyd
 import yaml
 from bluesky_queueserver_api import BPlan
 from bluesky_queueserver_api.comm_base import RequestFailedError

@@ -2,11 +2,14 @@
 start bluesky in IPython console session
 """
 
+from __future__ import annotations
+
 import pathlib
 import sys
 
-# start a Bluesky data collection console session
 from IPython import get_ipython
+
+# start a Bluesky data collection console session
 
 # find the "bluesky/" directory
 BLUESKY_DIRECTORY = pathlib.Path.home() / "bluesky"
@@ -22,4 +25,4 @@ sys.path.append(str(BLUESKY_DIRECTORY))
 # terse error dumps (Exception tracebacks)
 get_ipython().run_line_magic("xmode", "Minimal")
 
-from instrument.collection import *
+from aps_8id_bs_instrument.collection import *
