@@ -3,13 +3,13 @@ Prepare an area detector for acquisition.
 
 see: https://bcda-aps.github.io/apstools/examples/de_1_adsim_hdf5_custom_names.html
 """
+
 from __future__ import annotations
 
-__all__ = [
-    "prepare_count"
-]
+__all__ = ["prepare_count"]
 
 import logging
+
 from bluesky import plan_stubs as bps
 
 logger = logging.getLogger(__name__)
@@ -18,7 +18,9 @@ logger.info(__file__)
 
 def prepare_count(
     plugin,  # NOTE: NOT GENERAL, only the HDF5 writer plugin is expected
-    file_name, acquire_time, acquire_period,
+    file_name,
+    acquire_time,
+    acquire_period,
     n_images=1,
     auto_increment="Yes",
     auto_save="Yes",
@@ -36,25 +38,38 @@ def prepare_count(
     image_mode = "Multiple" if n_images > 1 else "Single"
 
     yield from bps.mv(
-        plugin.enable, 1
-        plugin.create_directory, create_directory,
+        plugin.enable,
+        1,
+        plugin.create_directory,
+        create_directory,
     )
     # MUST set create_directory BEFORE file_path
 
     yield from bps.mv(
-        plugin.file_path, file_path,
-        plugin.file_template, file_template,
+        plugin.file_path,
+        file_path,
+        plugin.file_template,
+        file_template,
     )
 
     # NOW, set the other components
     yield from bps.mv(
-        ad_det.cam.num_images, n_images,
-        ad_det.cam.acquire_time, acquire_time,
-        ad_det.cam.acquire_period, acquire_period,
-        ad_det.cam.image_mode, image_mode,
-        plugin.auto_increment, auto_increment,
-        plugin.auto_save, auto_save,
-        plugin.file_name, file_name,
-        plugin.num_capture, n_images,  # save all frames received
-        plugin.compression, compression,
+        ad_det.cam.num_images,
+        n_images,
+        ad_det.cam.acquire_time,
+        acquire_time,
+        ad_det.cam.acquire_period,
+        acquire_period,
+        ad_det.cam.image_mode,
+        image_mode,
+        plugin.auto_increment,
+        auto_increment,
+        plugin.auto_save,
+        auto_save,
+        plugin.file_name,
+        file_name,
+        plugin.num_capture,
+        n_images,  # save all frames received
+        plugin.compression,
+        compression,
     )
