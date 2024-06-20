@@ -13,7 +13,7 @@ logger.info(__file__)
 
 try:
     from aps_8id_bs_instrument.epics_signal_config import (
-        epics_scan_id_source,
+        # epics_scan_id_source,
         scan_id_epics,
     )
 except ImportError:

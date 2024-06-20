@@ -85,9 +85,12 @@ def bdp_acquire(
     n_images=DEFAULT_N_IMAGES,
     file_path="/home/8ididata/2023-1/bluesky202301",
     method="stream",
-    md={},
+    md=None,
 ):
     """Repeated Acquisition (using Lambda2M detector)."""
+
+    if md is None:
+        md = {}
 
     det = lambda2M
 

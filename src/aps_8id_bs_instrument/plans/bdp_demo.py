@@ -214,7 +214,7 @@ def xpcs_bdp_demo_plan(
     experiment_name = dm_experiment.get()
     if len(experiment_name) == 0:
         raise RuntimeError("Must run xpcs_setup_user() first.")
-    experiment = dm_api_ds().getExperimentByName(experiment_name)
+    # experiment = dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
     yield from write_if_new(xpcs_header, header)

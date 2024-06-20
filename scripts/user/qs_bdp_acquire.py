@@ -64,7 +64,7 @@ title = (
 )
 
 RM.item_add(BPlan("sleep", 3))
-for i in range(3):
+for _ in range(3):
     RM.item_add(
         BPlan(
             "bdp_acquire",

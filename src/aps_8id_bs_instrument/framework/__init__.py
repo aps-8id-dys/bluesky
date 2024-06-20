@@ -20,7 +20,8 @@ def warn_if_not_aps_controls_subnet():
                 f"Your APS workstation ({host_name}) has IP {host_ip_addr!r}."
                 "  If you experience EPICS connection timeouts,"
                 " consider switching to a workstation on the controls subnet"
-                f" which has an IP starting with {controls_subnet!r}"
+                f" which has an IP starting with {controls_subnet!r}",
+                stacklevel=2,
             )
 
 

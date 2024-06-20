@@ -19,7 +19,7 @@ from aps_8id_bs_instrument.framework import oregistry
 
 def xpcs_mesh(
     area_det_name="eiger4M",
-    detectors=[],
+    detectors=None,
     m1="sample.x",
     s1=0,
     e1=1,
@@ -39,6 +39,8 @@ def xpcs_mesh(
     # TODO: called for alignment or XPCS data collection
     # Area detector is configured different for each of these.
 
+    if detectors is None:
+        detectors = []
     m1_positions = np.linspace(s1, e1, n1).tolist()
     m2_positions = np.linspace(s2, e2, n2).tolist()
 
