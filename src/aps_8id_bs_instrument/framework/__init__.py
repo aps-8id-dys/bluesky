@@ -28,8 +28,8 @@ warn_if_not_aps_controls_subnet()
 
 # fmt: off
 
-from .check_bluesky import *
-from .check_python import *
-from .dm_setup import *
-from .initialize import *
-from .metadata import *
+from aps_8id_bs_instrument.framework.check_bluesky import *
+from aps_8id_bs_instrument.framework.check_python import *
+from aps_8id_bs_instrument.framework.dm_setup import *
+from aps_8id_bs_instrument.framework.initialize import *
+from aps_8id_bs_instrument.framework.metadata import *

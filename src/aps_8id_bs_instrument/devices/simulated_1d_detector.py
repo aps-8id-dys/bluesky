@@ -21,10 +21,11 @@ import random
 
 from ophyd.sim import SynGauss, motor
 
+from . import sample  # noqa
+
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-from . import sample  # noqa
 
 MOTOR = motor
 # MOTOR = sample.x

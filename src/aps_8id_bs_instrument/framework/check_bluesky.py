@@ -4,15 +4,14 @@ ensure BlueSky is available
 
 __all__ = []
 
+
 import logging
-
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
 import sys
 
 from aps_8id_bs_instrument import iconfig
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 # ensure BlueSky is available
 try:

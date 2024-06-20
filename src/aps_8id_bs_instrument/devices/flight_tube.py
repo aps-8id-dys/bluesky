@@ -7,12 +7,13 @@ __all__ = """
     det
 """.split()
 
+
 import logging
+
+from ophyd import Component, Device, EpicsMotor
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
-
-from ophyd import Component, Device, EpicsMotor
 
 
 class FlightTubeDetector(Device):

@@ -11,12 +11,12 @@ __all__ = """
     rigaku3M
 """.split()
 
+
+from .ad_common import XpcsAreaDetectorFactory  # noqa
 import logging
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
-
-from .ad_common import XpcsAreaDetectorFactory  # noqa
 
 adsim4M = XpcsAreaDetectorFactory("ADSIM_4M", use_image=False)
 # adsim16M = XpcsAreaDetectorFactory("ADSIM_16M", use_image=False)

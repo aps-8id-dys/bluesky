@@ -2,6 +2,12 @@
 QNW temperature controller
 """
 
+__all__ = [
+    "qnw_env1",
+    "qnw_env2",
+    "qnw_env3",
+]
+
 import logging
 
 from apstools.devices import PVPositionerSoftDoneWithStop
@@ -9,12 +15,6 @@ from ophyd import Component, EpicsSignal, EpicsSignalRO, Signal
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
-
-__all__ = [
-    "qnw_env1",
-    "qnw_env2",
-    "qnw_env3",
-]
 
 
 class QnwDevice(PVPositionerSoftDoneWithStop):

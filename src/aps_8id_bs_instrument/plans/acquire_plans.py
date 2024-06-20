@@ -6,10 +6,8 @@ __all__ = """
     bdp_acquire
 """.split()
 
-import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
+import logging
 
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
@@ -18,6 +16,9 @@ from ophyd.ophydobj import Kind
 from aps_8id_bs_instrument._iconfig import iconfig
 from aps_8id_bs_instrument.devices import lambda2M
 from aps_8id_bs_instrument.framework import bec
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 HDF5_FILE_TEMPLATE = iconfig["AREA_DETECTOR"].get("HDF5_FILE_TEMPLATE", "%s%s_%6.6d.h5")
 DEFAULT_DURATION = 10  # seconds

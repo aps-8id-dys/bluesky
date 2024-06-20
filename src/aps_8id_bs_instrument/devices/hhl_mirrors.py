@@ -7,12 +7,13 @@ __all__ = """
     mr2
 """.split()
 
+
 import logging
+
+from ophyd import Component, Device, EpicsMotor
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
-
-from ophyd import Component, Device, EpicsMotor
 
 
 class HHL_Mirror1(Device):

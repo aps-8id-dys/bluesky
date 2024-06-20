@@ -11,13 +11,13 @@ __all__ = """
     """.split()
 
 import logging
+import pathlib
+import sys
 
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
 
-import pathlib
-import sys
 
 sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent.parent))
 

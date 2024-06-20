@@ -6,14 +6,14 @@ __all__ = """
     idt_mono
 """.split()
 
+
 import logging
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 
 from ophyd import Device, EpicsMotor
 from ophyd import FormattedComponent as FCpt
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 class IDTMono(Device):

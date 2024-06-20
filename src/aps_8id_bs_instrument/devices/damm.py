@@ -6,13 +6,14 @@ __all__ = """
     damm
 """.split()
 
-import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
+import logging
 
 from ophyd import Device, EpicsMotor
 from ophyd import FormattedComponent as FCpt
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 class Slit2(Device):

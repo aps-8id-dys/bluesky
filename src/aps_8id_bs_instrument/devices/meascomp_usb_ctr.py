@@ -35,14 +35,14 @@ __all__ = """
     scaler1
 """.split()
 
+
 import logging
-
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
 
 from ophyd import Component, Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 from ophyd.scaler import ScalerCH
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 IOC = "8idDAQ1:"
 # The IOC has iocStats  f"{IOC}UPTIME" for example

@@ -7,15 +7,15 @@ __all__ = """
     mono_slit
 """.split()
 
-import logging
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
 
 # from apstools.devices.hhl_slits import HHLSlits
+import logging
 
 from ophyd import Device, EpicsMotor
 from ophyd import FormattedComponent as FCpt
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 class HHLSlits(Device):

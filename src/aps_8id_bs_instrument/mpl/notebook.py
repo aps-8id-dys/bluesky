@@ -6,12 +6,12 @@ __all__ = [
     "plt",
 ]
 
+
 import logging
 
 from IPython import get_ipython
 
 logger = logging.getLogger(__name__)
-
 logger.info(__file__)
 
 # %matplotlib notebook

@@ -20,12 +20,12 @@ __all__ = """
     rheometer
 """.split()
 
+
 import logging
 
 from ophyd import Component, Device, EpicsMotor
 
 logger = logging.getLogger(__name__)
-
 logger.info(__file__)
 
 

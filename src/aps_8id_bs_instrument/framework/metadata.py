@@ -6,11 +6,10 @@ __all__ = []
 
 import logging
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
 from aps_8id_bs_instrument import iconfig
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 try:
     from aps_8id_bs_instrument.epics_signal_config import (

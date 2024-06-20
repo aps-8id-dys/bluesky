@@ -4,15 +4,15 @@ make sure we have the software packages we need
 
 __all__ = []
 
+
 import logging
+import sys
+
+from aps_8id_bs_instrument import iconfig
 
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
-
-import sys
-
-from aps_8id_bs_instrument import iconfig
 
 # ensure minimum Python version
 
