@@ -130,3 +130,5 @@ def print_RE_metadata():
         print("")
         print("RunEngine metadata:")
         print(table)
+
+# Might be worth having a queserver folder with all the required things.

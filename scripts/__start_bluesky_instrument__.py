@@ -7,6 +7,8 @@ import sys
 
 from IPython import get_ipython
 
+# This is the Ipython profile
+
 # start a Bluesky data collection console session
 
 # find the "bluesky/" directory
