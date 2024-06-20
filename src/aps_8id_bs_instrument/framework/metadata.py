@@ -8,9 +8,6 @@ import logging
 
 from aps_8id_bs_instrument import iconfig
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 try:
     from aps_8id_bs_instrument.epics_signal_config import (
         # epics_scan_id_source,
@@ -34,7 +31,11 @@ import ophyd
 import pyRestTable
 import spec2nexus
 
-from .initialize import RE, cat
+from aps_8id_bs_instrument.framework.initialize import RE, cat
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
+
 
 HOSTNAME = socket.gethostname() or "localhost"
 USERNAME = getpass.getuser() or "Bluesky user"

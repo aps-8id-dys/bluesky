@@ -10,9 +10,6 @@ __all__ = [
 
 import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 try:
     import apstools.callbacks as APS_fw
 except ModuleNotFoundError:
@@ -24,6 +21,9 @@ import pathlib
 import apstools.utils
 
 from aps_8id_bs_instrument.framework.initialize import RE
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 # write scans to SPEC data file
 specwriter = APS_fw.SpecWriterCallback()

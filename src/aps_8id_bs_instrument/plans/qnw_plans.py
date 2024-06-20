@@ -18,12 +18,13 @@ __all__ = [
 
 import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 from bluesky import plan_stubs as bps
 
 from aps_8id_bs_instrument.devices import qnw_env1, qnw_env2, qnw_env3
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
+
 
 # Reference these controllers in a list by an index number with 1 offset.
 qnw_controllers = [qnw_env1, qnw_env2, qnw_env3]

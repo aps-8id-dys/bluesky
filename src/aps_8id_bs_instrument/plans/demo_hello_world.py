@@ -12,11 +12,11 @@ __all__ = """
 
 import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 from bluesky import plans as bp
 from ophyd import Component, Device, Signal
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 class HelloDevice(Device):

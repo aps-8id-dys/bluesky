@@ -15,12 +15,12 @@ local, custom Device definitions
 
 
 try:
-   from aps_8id_bs_instrument.aerotech_stages import *
+   from aps_8id_bs_instrument.devices.aerotech_stages import *
 except Exception as excuse:
    print(f"Could not import Aerotech: {excuse}")
 
 try:
-    from aps_8id_bs_instrument.flight_tube import *
+    from aps_8id_bs_instrument.devices.flight_tube import *
 except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")
 

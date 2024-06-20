@@ -14,11 +14,6 @@ How to start the queueserver process::
 
 """
 
-import pathlib
-import sys
-
-sys.path.append(str(pathlib.Path(__file__).absolute().parent))
-
 from aps_8id_bs_instrument.queueserver import *
 from bluesky.plans import *
 

@@ -9,15 +9,15 @@ __all__ = [
 
 import logging
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
 from apstools.plans import lineup
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
 from aps_8id_bs_instrument.framework.initialize import bec
+
+logger = logging.getLogger(__name__)
+
+logger.info(__file__)
 
 
 def lup(detectors, motor, start, finish, npts=5, key="cen"):

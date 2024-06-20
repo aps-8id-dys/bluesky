@@ -19,11 +19,11 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
+from aps_8id_bs_instrument.callbacks import SignalStatsCallback
+
 logger = logging.getLogger(__name__)
 
 logger.info(__file__)
-
-from ..callbacks import SignalStatsCallback
 
 factor_fwhm = 2 * math.sqrt(2 * math.log(2))  # FWHM = factor_fwhm * sigma
 signal_stats = SignalStatsCallback()

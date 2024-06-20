@@ -6,15 +6,14 @@ APS BDP demo: 2024-02
 
 import logging
 
-from user.xpcs_mesh import mesh_list_grid_scan
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 import numpy as np
 from bluesky import plan_stubs as bps
 
 from aps_8id_bs_instrument.framework import oregistry
+from aps_8id_bs_instrument.user.xpcs_mesh import mesh_list_grid_scan
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 def xpcs_mesh(

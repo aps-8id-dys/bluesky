@@ -12,15 +12,6 @@ __all__ = """
 
 import logging
 import pathlib
-import sys
-
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
-
-sys.path.append(str(pathlib.Path(__file__).absolute().parent.parent.parent))
-
 
 # convenience imports
 import databroker
@@ -30,10 +21,13 @@ from bluesky.callbacks.best_effort import BestEffortCallback
 from bluesky.magics import BlueskyMagics
 from bluesky.utils import PersistentDict, ProgressBarManager
 from IPython import get_ipython
+from ophyd.registry import Registry
 from ophyd.signal import EpicsSignalBase
-from ophydregistry import Registry
 
 from aps_8id_bs_instrument import iconfig
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 def get_md_path():

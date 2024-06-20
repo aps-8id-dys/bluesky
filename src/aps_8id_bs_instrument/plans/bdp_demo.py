@@ -189,7 +189,7 @@ def xpcs_bdp_demo_plan(
     """
     Acquire XPCS data with the chosen detector and run a DM workflow.
     """
-    from aps_8id_bs_instrument.utils.aps_data_management import (
+    from id8_bluesky.src.aps_8id_bs_instrument.dm.aps_data_management import (
         dm_api_daq,
         dm_daq_wait_upload_plan,
     )

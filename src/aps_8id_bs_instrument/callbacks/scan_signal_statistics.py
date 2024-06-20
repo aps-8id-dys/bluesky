@@ -10,11 +10,11 @@ SignalStatsCallback
 
 import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 import pyRestTable
 import pysumreg
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 class SignalStatsCallback:

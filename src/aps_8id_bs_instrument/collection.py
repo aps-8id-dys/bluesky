@@ -2,21 +2,20 @@
 configure for data collection in a console session
 """
 
+import os
+
+from IPython import get_ipython
+
+from aps_8id_bs_instrument import iconfig
 from aps_8id_bs_instrument.session_logs import logger
 
 logger.info(__file__)
 
 # conda environment name
-import os
-
 _conda_prefix = os.environ.get("CONDA_PREFIX")
 if _conda_prefix is not None:
     logger.info("CONDA_PREFIX = %s", _conda_prefix)
 del _conda_prefix
-
-from IPython import get_ipython
-
-from aps_8id_bs_instrument import iconfig
 
 # terse error dumps (Exception tracebacks)
 _ip = get_ipython()
@@ -54,6 +53,6 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
         logger.info("   to change SPEC file, use command:   newSpecFile('title')")
 
 # last line: ensure we have the console's logger
-from .session_logs import logger
+from aps_8id_bs_instrument.session_logs import logger
 
 logger.info("#### Startup is complete. ####")

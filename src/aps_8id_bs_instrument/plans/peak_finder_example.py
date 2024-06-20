@@ -12,10 +12,6 @@ __all__ = [
 
 import logging
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
 import pyRestTable
 from bluesky import plans as bp
 
@@ -27,6 +23,9 @@ if iconfig.get("framework", "unknown") == "queueserver":
     from aps_8id_bs_instrument.queueserver_framework import cat
 else:
     from aps_8id_bs_instrument.framework import cat
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 
 def _get_peak_stats(uid, yname, xname):
