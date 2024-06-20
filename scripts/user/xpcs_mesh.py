@@ -1,3 +1,7 @@
+"""
+xpcs mesh scan plans
+"""
+
 import inspect
 import os
 from collections import defaultdict
@@ -7,10 +11,6 @@ from bluesky import plan_patterns, utils
 from bluesky import plan_stubs as bps
 from bluesky import preprocessors as bpp
 from toolz import partition
-
-"""
-xpcs mesh scan plans
-"""
 
 
 def mesh_list_grid_scan(

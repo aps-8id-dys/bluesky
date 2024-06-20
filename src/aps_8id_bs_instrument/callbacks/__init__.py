@@ -1,5 +1,6 @@
-# this file makes the .py files here importable
-
+"""
+this file makes the .py files here importable
+"""
 
 from aps_8id_bs_instrument import iconfig
 

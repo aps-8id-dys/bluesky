@@ -45,6 +45,9 @@ except Exception:
 
 
 def spec_comment(comment, doc=None):
+    """
+    spec comment
+    """
     # supply our specwriter to the standard routine
     APS_fw.spec_comment(comment, doc, specwriter)
 

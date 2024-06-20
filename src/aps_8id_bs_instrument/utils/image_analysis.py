@@ -83,6 +83,9 @@ def analyze_peak(y_arr, x_arr=None):
 
 
 def analyze_image(image):
+    """
+    analyze image function
+    """
     horizontal = analyze_peak(image.sum(axis=0))
     vertical = analyze_peak(image.sum(axis=1))
 
