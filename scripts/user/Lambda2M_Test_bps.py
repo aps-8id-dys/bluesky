@@ -15,6 +15,9 @@ from bluesky import plans as bp
 
 
 def Rep_Acq(acq_rep=3):
+    """
+    plan that tests lambda detector
+    """
     yield from prepare_count(
         lambda2M.hdf1,
         "Test",

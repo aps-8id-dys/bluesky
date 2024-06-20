@@ -36,6 +36,9 @@ def xpcs_mesh(
     # header_index="A001",
     md=None,
 ):
+    """
+    xpcs_mesh plan
+    """
     # TODO: called for alignment or XPCS data collection
     # Area detector is configured different for each of these.
 

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # FIXME:
 
-
-raise RuntimeError("Not ready for use.")
-
 """
 Bluesky QS client program to initiate data acquisition.
 
@@ -19,6 +16,8 @@ Bluesky QS client program to initiate data acquisition.
 """
 
 # https://blueskyproject.io/bluesky-queueserver-api/usage.html
+
+raise RuntimeError("Not ready for use.")
 
 import pathlib
 import sys
@@ -46,6 +45,9 @@ def ready():
 
 
 def qs_status():
+    """
+    qs status
+    """
     try:
         status = RM.status(reload=True)
     except (
@@ -70,6 +72,9 @@ def qs_status():
 
 
 def reopen_environment():
+    """
+    re-open environmenrt
+    """
     try:
         RM.environment_close()
         RM.wait_for_idle()
@@ -89,6 +94,9 @@ def repeated_acquire(x, y, hfile=None):
 
 
 def get_user_parameters():
+    """
+    gets user params
+    """
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -127,6 +135,9 @@ def get_user_parameters():
 
 
 def command_line():
+    """
+    command line
+    """
     opts = get_user_parameters()
     if not hasattr(opts, "phase"):
         print("Error: MUST provide a subcommand.")

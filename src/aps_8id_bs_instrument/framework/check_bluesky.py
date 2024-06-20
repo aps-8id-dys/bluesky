@@ -16,13 +16,13 @@ logger.info(__file__)
 # ensure BlueSky is available
 try:
     import bluesky
-except ImportError:
+except ImportError as err:
     raise ImportError(
         "No module named `bluesky`\n"
         f"This python is from directory: {sys.prefix}\n"
         "\n"
         "You should exit now and find a Python with Bluesky."
-    )
+    ) from err
 
 # ensure minimum bluesky version
 

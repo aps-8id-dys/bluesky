@@ -27,6 +27,9 @@ def prepare_count(
     file_path=None,
     file_template=None,
 ):
+    """
+    prepare count
+    """
     ad_det = plugin.parent
     # compression should be "None" if CODEC1 plugin compresses the image
     compression = compression or "zlib"
