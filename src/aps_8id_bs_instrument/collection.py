@@ -56,3 +56,6 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
 from aps_8id_bs_instrument.session_logs import logger
 
 logger.info("#### Startup is complete. ####")
+
+
+# Setting up file writer

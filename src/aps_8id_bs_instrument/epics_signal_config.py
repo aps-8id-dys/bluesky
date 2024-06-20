@@ -55,3 +55,6 @@ def epics_scan_id_source(*args, **kwargs):
     new_scan_id = max(scan_id_epics.get(), 0) + 1
     scan_id_epics.put(new_scan_id)
     return new_scan_id
+
+
+# Creates a device signal. Might be worth putting in devices
