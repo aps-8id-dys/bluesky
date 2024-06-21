@@ -51,20 +51,6 @@ def check_ophyd_version():
             f", found version {bluesky.__version__}"
         )
 
-
-def check_ophyd_version():
-    req_version = tuple(iconfig.get("MINIMUM_OPHYD_VERSION", (1, 6)))
-    cur_version = tuple(map(int, ophyd.__version__.split(".")[:2]))
-    if cur_version < req_version:
-        ver_str = ".".join((map(str, req_version)))
-        # fmt: off
-        raise ValueError(
-            f"Need ophyd version {ver_str} or higher"
-            f", found version {ophyd.__version__}"
-        )
-        # fmt: on
-
-
 def check_databroker_version():
     req_version = tuple(iconfig.get("MINIMUM_DATABROKER_VERSION", (1, 2)))
     cur_version = tuple(map(int, databroker.__version__.split(".")[:2]))
