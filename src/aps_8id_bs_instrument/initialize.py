@@ -14,14 +14,13 @@ import databroker
 import ophyd
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
-from bluesky.magics import BlueskyMagics
 from bluesky.utils import PersistentDict, ProgressBarManager
-from IPython import get_ipython
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from . import iconfig
 from .run_engine import run_engine
+from .utils.ipy_helper import *  # noqa
 from .utils.metadata import MD_PATH
 
 logger = logging.getLogger(__name__)
@@ -57,12 +56,6 @@ if iconfig.get("USE_PROGRESS_BAR", False):
     pbar_manager = ProgressBarManager()
     RE.waiting_hook = pbar_manager
 
-# Register bluesky IPython magics.
-_ipython = get_ipython()
-if _ipython is not None:
-    _ipython.register_magics(BlueskyMagics)
-
-# Set up the BestEffortCallback.
 
 # At the end of every run, verify that files were saved and
 # print a confirmation message.

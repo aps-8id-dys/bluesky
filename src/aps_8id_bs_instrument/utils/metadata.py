@@ -57,7 +57,7 @@ def get_md_path():
 MD_PATH = get_md_path()
 
 
-def metadata(RE):
+def metadata(RE, cat):
     """Write metadata on the Run Engine"""
     # Set up default metadata
     RE.md["databroker_catalog"] = cat.name
