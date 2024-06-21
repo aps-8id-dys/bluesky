@@ -15,14 +15,9 @@ import logging
 import pyRestTable
 from bluesky import plans as bp
 
-from aps_8id_bs_instrument import iconfig
-from aps_8id_bs_instrument.devices import change_noisy_parameters, m1, noisy
-from aps_8id_bs_instrument.utils.image_analysis import analyze_peak
-
-if iconfig.get("framework", "unknown") == "queueserver":
-    from aps_8id_bs_instrument.queueserver_framework import cat
-else:
-    from id8_bluesky.scripts.check_environment import cat
+from ..devices import change_noisy_parameters, m1, noisy
+from ..qserver.queueserver import cat
+from ..utils.image_analysis import analyze_peak
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

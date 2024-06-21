@@ -28,8 +28,8 @@ Documentation | [How-to, examples, tutorials, reference](https://bcda-aps.github
 First, download the package from github:
 
 ```bash
-$ git clone https://github.com/...
-$ cd ...
+$ git clone https://github.com/aps-8id-dys/bluesky 8id_bluesky_instrument
+$ cd 8id_bluesky_instrument
 ```
 
 Then create the conda environment with mamba:
@@ -49,7 +49,12 @@ $ pip install -e ".[dev]"
 
 Loads the `instrument` [package](https://bcda-aps.github.io/bluesky_training/instrument) for use in an interactive IPython console session (or Jupyter notebook).
 
-Copy or link the `__start_bluesky_instrument__.py` file to the appropriate IPython profile `startup` directory, such as: `~/.ipython-bluesky/profile_bluesky/startup/__start_bluesky_instrument__.py`
+To load a Python module (filename without the traling `.py` extension) from this
+directory into ipython use a command such as this example:
+
+```bash
+In [1]: %run -im scripts.ipython_startup
+```
 
 ## Introduction to the Bluesky Queueserver
 

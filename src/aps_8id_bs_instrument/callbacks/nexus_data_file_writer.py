@@ -12,7 +12,7 @@ import logging
 
 from apstools.callbacks import NXWriterAPS
 
-from aps_8id_bs_instrument._iconfig import iconfig
+from .. import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -180,7 +180,7 @@ class MyNXWriter(NXWriterAPS):
     def get_ioc_file_path(self):
         import pathlib
 
-        from insaps_8id_bs_instrumenttrument.devices.ad_lambda2M import (
+        from ..devices.ad_lambda2M import (
             LAMBDA2M_FILES_ROOT,
         )
 

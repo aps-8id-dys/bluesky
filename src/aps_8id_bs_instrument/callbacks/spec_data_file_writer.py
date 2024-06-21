@@ -20,7 +20,7 @@ import pathlib
 
 import apstools.utils
 
-from aps_8id_bs_instrument.initialize import RE
+from ..initialize import RE
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

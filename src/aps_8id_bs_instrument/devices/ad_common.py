@@ -51,7 +51,7 @@ from ophyd.areadetector.plugins import (
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from aps_8id_bs_instrument import iconfig  # noqa
+from .. import iconfig  # noqa
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

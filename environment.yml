@@ -1,4 +1,4 @@
-name: bluesky_2024_2
+name: aps_8id_bluesky_2024_2
 
 # download:
 #   wget https://raw.githubusercontent.com/BCDA-APS/bluesky_training/main/bluesky/environments/environment_2024_2.yml
@@ -15,11 +15,7 @@ name: bluesky_2024_2
 # https://github.com/BCDA-APS/bluesky_training/blob/main/bluesky/environments/admin/bluesky.md#bash-environment-variables
 
 channels:
-  # To get epics-base compatible with both PyEpics _and_ pvapy, apsu channel first.
-  # BTW: apsu channel includes all of sveseli channel (no need for the extra).
   - apsu
-
-  # then conda-forge
   - conda-forge
   - aps-anl-tag
   - defaults
@@ -82,7 +78,6 @@ dependencies:
   - ophyd >=1.7
   - pydm
   - tiled
-  # https://github.com/pydata/xarray/issues/6818
   - xarray !=2022.6.0  # incompatible with numpy=1.20
 
   # --- user-requested packages
@@ -110,19 +105,12 @@ dependencies:
   - sphinxcontrib-napoleon
   - twine
   - versioneer
-
-  # if not using this environment at APS, then comment these (and apsbss below)
   - aps-dm-api >=5   # linux-64  osx-64
-  # - c2dataviewer  # --- linux-64
-  # LibMambaUnsatisfiableError: Encountered problems while solving:
-  #   - package c2dataviewer-1.7.6-py37_0 requires python >=3.7,<3.8.0a0, but none of the providers can be installed
+
 
   - pip:
     - apsbss  # only works on APS subnet
     - ophyd-registry
-    # - happi
-    # - tiled[all]
+    - happi
+    - tiled[all]
     - https://github.com/BCDA-APS/adl2pydm/archive/main.zip
-    # --- optional Bluesky framework packages for evaluation
-    # - bluesky-webclient is NOT Python software, don't install it this way
-    #    https://github.com/bluesky/bluesky-webclient

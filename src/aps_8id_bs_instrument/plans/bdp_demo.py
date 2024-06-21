@@ -23,18 +23,18 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ophyd import Signal
 
-from aps_8id_bs_instrument._iconfig import iconfig
-from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.devices import DM_WorkflowConnector, dm_experiment
-from aps_8id_bs_instrument.dm.aps_data_management import (
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices import DM_WorkflowConnector, dm_experiment
+from ..dm.aps_data_management import (
     SECOND,
     build_run_metadata_dict,
     dm_api_ds,
     dm_api_proc,
     share_bluesky_metadata_with_dm,
 )
-from aps_8id_bs_instrument.initialize import RE, cat
-from aps_8id_bs_instrument.plans.ad_setup_plans import write_if_new
+from ..initialize import RE, cat
+from ..plans.ad_setup_plans import write_if_new
+from ._iconfig._iconfig import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

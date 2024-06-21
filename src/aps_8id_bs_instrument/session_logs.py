@@ -42,7 +42,7 @@ from apstools.utils import (
     stream_log_handler,
 )
 
-from aps_8id_bs_instrument import iconfig
+from . import iconfig
 
 # fmt: on
 

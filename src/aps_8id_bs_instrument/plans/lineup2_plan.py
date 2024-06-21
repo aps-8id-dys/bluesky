@@ -19,7 +19,7 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
-from aps_8id_bs_instrument.callbacks import SignalStatsCallback
+from ..callbacks import SignalStatsCallback
 
 logger = logging.getLogger(__name__)
 

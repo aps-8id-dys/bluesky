@@ -2,13 +2,10 @@
 ensure BlueSky is available
 """
 
-__all__ = []
-
-
 import logging
 import sys
 
-from aps_8id_bs_instrument import iconfig
+from .. import iconfig
 
 try:
     import bluesky

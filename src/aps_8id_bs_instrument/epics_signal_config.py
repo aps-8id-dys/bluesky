@@ -11,7 +11,7 @@ import logging
 
 from ophyd.signal import EpicsSignal, EpicsSignalBase
 
-from aps_8id_bs_instrument import iconfig
+from . import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

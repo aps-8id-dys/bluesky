@@ -4,10 +4,17 @@ configure for data collection in a console session
 
 import os
 
+from apstools.utils import *
 from IPython import get_ipython
 
-from aps_8id_bs_instrument import iconfig
-from aps_8id_bs_instrument.session_logs import logger
+from . import iconfig
+from ._iconfig import iconfig
+from .callbacks import *
+from .devices import *
+from .initialize import *
+from .plans import *
+from .session_logs import logger
+from .utils.mpl import *
 
 logger.info(__file__)
 
@@ -26,18 +33,6 @@ if _ip is not None:
     del _ip
 
 
-from apstools.utils import *
-
-from aps_8id_bs_instrument._iconfig import iconfig
-from aps_8id_bs_instrument.callbacks import *
-from aps_8id_bs_instrument.devices import *
-from aps_8id_bs_instrument.initialize import *
-from aps_8id_bs_instrument.plans import *
-from aps_8id_bs_instrument.utils.mpl import *
-
-# from aps_8id_bs_instrument.utils import *
-
-
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     if specwriter is not None:
         RE.subscribe(specwriter.receiver)
@@ -46,8 +41,6 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
         logger.info("   file will be created when bluesky ends its next scan")
         logger.info("   to change SPEC file, use command:   newSpecFile('title')")
 
-# last line: ensure we have the console's logger
-from aps_8id_bs_instrument.session_logs import logger
 
 logger.info("#### Startup is complete. ####")
 

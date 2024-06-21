@@ -18,7 +18,7 @@ from apstools.devices import AD_EpicsFileNameHDF5Plugin
 from bluesky import plan_stubs as bps
 from ophyd import Kind
 
-from aps_8id_bs_instrument.devices import eiger4M
+from ..devices import eiger4M
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

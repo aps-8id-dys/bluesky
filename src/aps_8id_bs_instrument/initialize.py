@@ -21,7 +21,7 @@ from IPython import get_ipython
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
-from aps_8id_bs_instrument import iconfig
+from . import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

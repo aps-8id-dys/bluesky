@@ -11,7 +11,7 @@ import logging
 import os
 import pathlib
 
-from aps_8id_bs_instrument import iconfig
+from .. import iconfig
 
 logger = logging.getLogger(__name__)
 

@@ -82,10 +82,11 @@ from os import environ
 import pyRestTable
 from bluesky import plan_stubs as bps
 
+from .. import iconfig
+
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-from aps_8id_bs_instrument._iconfig import iconfig  # noqa
 
 SECOND = 1
 MINUTE = 60 * SECOND
