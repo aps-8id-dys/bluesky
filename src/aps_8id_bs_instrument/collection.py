@@ -26,19 +26,17 @@ if _ip is not None:
     del _ip
 
 
-logger.info("#### Bluesky Framework ####")
-from id8_bluesky.scripts.check_environment import *
 
-logger.info("#### Devices ####")
+# logger.info("#### Devices ####")
 from aps_8id_bs_instrument.devices import *
 
-logger.info("#### Callbacks ####")
+# logger.info("#### Callbacks ####")
 from aps_8id_bs_instrument.callbacks import *
 
-logger.info("#### Plans ####")
+# logger.info("#### Plans ####")
 from aps_8id_bs_instrument.plans import *
 
-logger.info("#### Utilities ####")
+# logger.info("#### Utilities ####")
 from apstools.utils import *
 
 from aps_8id_bs_instrument._iconfig import iconfig
