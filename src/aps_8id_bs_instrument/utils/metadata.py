@@ -21,7 +21,6 @@ import pyRestTable
 import spec2nexus
 
 from .. import iconfig
-from ..initialize import cat
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
