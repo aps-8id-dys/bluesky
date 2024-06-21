@@ -16,7 +16,6 @@ from bluesky.preprocessors import finalize_wrapper, msg_mutator
 # from bluesky.suspenders import SuspendBoolLow
 from bluesky.utils import Msg, make_decorator
 
-from .. import iconfig
 from .exceptions import ComponentNotFound
 from .instrument.instrument_registry import registry
 

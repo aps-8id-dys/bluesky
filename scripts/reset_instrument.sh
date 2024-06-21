@@ -36,10 +36,10 @@ touch ./src/$OLD_INSTRUMENT_NAME/plans/__init__.py
 rm -rf ./scripts/user
 
 ##rename src/instrument folder
-mv src/$OLD_INSTRUMENT_NAME src/$NEW_INSTRUMENT_NAME 
+mv src/$OLD_INSTRUMENT_NAME src/$NEW_INSTRUMENT_NAME
 
 ##rename qserver
-mv src/$OLD_QS_NAME src/$NEW_QS_NAME 
+mv src/$OLD_QS_NAME src/$NEW_QS_NAME
 
 ##rename parts inside pyproject.toml
 ## line 2 name
@@ -47,7 +47,7 @@ mv src/$OLD_QS_NAME src/$NEW_QS_NAME
 ## line 4 Description back to generic
 ## line 32 homepage to blank
 ## line 33 Downloads to blank
-## line 44 change package name 
+## line 44 change package name
 ##consider always calling the package folder "instrument"/"queue_server"
 
 ##rename README.md
