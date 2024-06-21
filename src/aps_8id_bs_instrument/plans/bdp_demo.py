@@ -21,12 +21,12 @@ from apstools.utils import cleanupText
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
+from id8_bluesky.scripts.check_environment import RE, cat
 from ophyd import Signal
 
 from aps_8id_bs_instrument._iconfig import iconfig
 from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
 from aps_8id_bs_instrument.devices import DM_WorkflowConnector, dm_experiment
-from aps_8id_bs_instrument.framework import RE, cat
 from aps_8id_bs_instrument.plans.ad_setup_plans import write_if_new
 from aps_8id_bs_instrument.utils import (
     SECOND,

@@ -27,7 +27,7 @@ if _ip is not None:
 
 
 logger.info("#### Bluesky Framework ####")
-from aps_8id_bs_instrument.framework import *
+from id8_bluesky.scripts.check_environment import *
 
 logger.info("#### Devices ####")
 from aps_8id_bs_instrument.devices import *

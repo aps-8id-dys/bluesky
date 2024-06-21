@@ -13,29 +13,33 @@ local, custom Device definitions
 #     # 'ophyd.event_dispatcher' — issues regular summaries of the backlog of updates from the control layer that are being processed on background threads
 # ----- ----- ----- ----- -----
 
+__all__ = ["load_instrument"]
 
 try:
-   from aps_8id_bs_instrument.devices.aerotech_stages import *
+    from aps_8id_bs_instrument.devices.aerotech_stages import (
+        AerotechDetectorStage,
+        AerotechRheometerStage,
+        AerotechSampleStage,
+    )
 except Exception as excuse:
-   print(f"Could not import Aerotech: {excuse}")
+    print(f"Could not import Aerotech: {excuse}")
 
 try:
-    from aps_8id_bs_instrument.devices.flight_tube import *
+    from aps_8id_bs_instrument.devices.flight_tube import (
+        FlightTubeBeamStop,
+        FlightTubeDetector,
+    )
 except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")
 
-# ----- ----- ----- ----- -----
-# simulator depends on (Aerotech stage) sample.x
-# TODO from .simulated_1d_detector import *
-# ----- ----- ----- ----- -----
-# imports that MUST come after the above devices
-from aps_8id_bs_instrument.area_detectors import *
-from aps_8id_bs_instrument.damm import *
-from aps_8id_bs_instrument.data_management import *
-from aps_8id_bs_instrument.flag_4 import *
-from aps_8id_bs_instrument.hhl_mirrors import *
-from aps_8id_bs_instrument.hhl_slits import *
-from aps_8id_bs_instrument.idt_mono import *
-from aps_8id_bs_instrument.meascomp_usb_ctr import *
-from aps_8id_bs_instrument.qnw_device import *
-from aps_8id_bs_instrument.slit_4 import *
+from aps_8id_bs_instrument import load_config
+from aps_8id_bs_instrument.devices.area_detectors import adsim4M
+from aps_8id_bs_instrument.devices.damm import damm
+from aps_8id_bs_instrument.devices.data_management import DM_WorkflowConnector
+from aps_8id_bs_instrument.devices.flag_4 import Flag4
+from aps_8id_bs_instrument.devices.hhl_mirrors import HHL_Mirror1, HHL_Mirror2
+from aps_8id_bs_instrument.devices.hhl_slits import HHLSlits
+from aps_8id_bs_instrument.devices.idt_mono import IDTMono
+from aps_8id_bs_instrument.devices.meascomp_usb_ctr import MeasCompCtr
+from aps_8id_bs_instrument.devices.qnw_device import QnwDevice
+from aps_8id_bs_instrument.devices.slit_4 import sl4

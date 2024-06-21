@@ -17,6 +17,34 @@ Conda environments | [`./environments/`](#managing-the-bluesky-environments)
 Unit tests | [`./tests/`](./tests/README.md)
 Documentation | [How-to, examples, tutorials, reference](https://bcda-aps.github.io/bluesky_training)
 
+## Installation
+
+
+### Development (Conda)
+
+*aps_8id_bs_instrument* can also use *conda* for dependency management, and
+*setuptools* for installation and development.
+
+First, download the package from github:
+
+```bash
+$ git clone https://github.com/...
+$ cd ...
+```
+
+Then create the conda environment with mamba:
+
+```bash
+$ conda create -n aps_8id_bs -f environment.yml
+```
+
+lastly install the package, in developer mode:
+
+```bash
+$ conda activate haven
+$ pip install -e ".[dev]"
+```
+
 ## Bluesky IPython Console Session
 
 Loads the `instrument` [package](https://bcda-aps.github.io/bluesky_training/instrument) for use in an interactive IPython console session (or Jupyter notebook).

@@ -22,7 +22,7 @@ from aps_8id_bs_instrument.utils.image_analysis import analyze_peak
 if iconfig.get("framework", "unknown") == "queueserver":
     from aps_8id_bs_instrument.queueserver_framework import cat
 else:
-    from aps_8id_bs_instrument.framework import cat
+    from id8_bluesky.scripts.check_environment import cat
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

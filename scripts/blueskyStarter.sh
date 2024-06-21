@@ -9,7 +9,7 @@ export ENV_NAME="${BLUESKY_CONDA_ENV:-${DEFAULT_ENV}}"
 export IPYTHON_PROFILE=bluesky
 export IPYTHONDIR="${HOME}/.ipython-bluesky"
 
-# TODO: find Ipython profile 
+# TODO: find Ipython profile
 pick () {  # activate ENV_NAME (using conda) from given arg
 
     ARG="${1}"

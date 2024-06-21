@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import logging
 import time
 
@@ -15,17 +17,21 @@ from bluesky.simulators import summarize_plan  # noqa: F401
 
 logging.basicConfig(level=logging.WARNING)
 
+# from IPython import get_ipython
+# get_ipython().run_line_magic("xmode", "Minimal")
+# from aps_8id_bs_instrument.collection import *
 
 # Allow best effort callback to update properly
 plt.ion()
 
 # # Prepare the BlueSky instrument
-# config = aps_8id_bs_instrument.load_config()
+config = aps_8id_bs_instrument.load_config()
 t0 = time.monotonic()
 # print(f"Initializing {config['beamline']['name']}…")
-# haven.load_instrument()
-# print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
-# RE = haven.run_engine()
+
+aps_8id_bs_instrument.load_instrument()
+print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
+RE = aps_8id_bs_instrument.run_engine()
 
 # # Save references to some commonly used things in the global namespace
 # registry = haven.registry

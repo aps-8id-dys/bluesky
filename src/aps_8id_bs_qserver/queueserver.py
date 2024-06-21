@@ -12,9 +12,10 @@ from aps_8id_bs_instrument import iconfig
 from aps_8id_bs_instrument.callbacks import *
 from aps_8id_bs_instrument.devices import *
 from aps_8id_bs_instrument.plans import *
-from aps_8id_bs_instrument.queueserver_framework import *
 from aps_8id_bs_instrument.utils import *
 from ophyd import Device, Signal
+
+from .queueserver_framework import *
 
 # guides choice of module to import cat
 iconfig["framework"] = "queueserver"

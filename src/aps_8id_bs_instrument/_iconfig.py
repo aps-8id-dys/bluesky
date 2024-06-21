@@ -13,6 +13,7 @@ Example YAML configuration file::
 from __future__ import annotations
 
 __all__ = [
+    "load_config",
     "iconfig",
 ]
 import logging
@@ -25,11 +26,18 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 print(__file__)
 
-CONFIG_FILE = pathlib.Path(__file__).absolute().parent / "iconfig.yml"
 
-if CONFIG_FILE.exists():
-    iconfig = yaml.load(open(CONFIG_FILE, "r").read(), yaml.Loader)
-else:
-    raise FileNotFoundError(
-        f"Could not find instrument configuration file: {CONFIG_FILE}"
-    )
+def load_config():
+    """Load iconfig.yml config files."""
+
+    CONFIG_FILE = pathlib.Path(__file__).absolute().parent / "iconfig.yml"
+
+    if CONFIG_FILE.exists():
+        iconfig = yaml.load(open(CONFIG_FILE, "r").read(), yaml.Loader)
+    else:
+        raise FileNotFoundError(
+            f"Could not find instrument configuration file: {CONFIG_FILE}"
+        )
+
+    # Load configuration from TOML files
+    return iconfig

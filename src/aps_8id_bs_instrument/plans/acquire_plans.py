@@ -11,11 +11,11 @@ import logging
 
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
+from id8_bluesky.scripts.check_environment import bec
 from ophyd.ophydobj import Kind
 
 from aps_8id_bs_instrument._iconfig import iconfig
 from aps_8id_bs_instrument.devices import lambda2M
-from aps_8id_bs_instrument.framework import bec
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
