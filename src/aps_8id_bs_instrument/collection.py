@@ -31,8 +31,12 @@ from apstools.utils import *
 from aps_8id_bs_instrument._iconfig import iconfig
 from aps_8id_bs_instrument.callbacks import *
 from aps_8id_bs_instrument.devices import *
+from aps_8id_bs_instrument.initialize import *
 from aps_8id_bs_instrument.plans import *
-from aps_8id_bs_instrument.utils import *
+from aps_8id_bs_instrument.utils.mpl import *
+
+# from aps_8id_bs_instrument.utils import *
+
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     if specwriter is not None:

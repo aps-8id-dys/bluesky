@@ -21,20 +21,20 @@ from apstools.utils import cleanupText
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-from id8_bluesky.scripts.check_environment import RE, cat
 from ophyd import Signal
 
 from aps_8id_bs_instrument._iconfig import iconfig
 from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
 from aps_8id_bs_instrument.devices import DM_WorkflowConnector, dm_experiment
-from aps_8id_bs_instrument.plans.ad_setup_plans import write_if_new
-from aps_8id_bs_instrument.utils import (
+from aps_8id_bs_instrument.dm.aps_data_management import (
     SECOND,
     build_run_metadata_dict,
     dm_api_ds,
     dm_api_proc,
     share_bluesky_metadata_with_dm,
 )
+from aps_8id_bs_instrument.initialize import RE, cat
+from aps_8id_bs_instrument.plans.ad_setup_plans import write_if_new
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

@@ -13,8 +13,6 @@ local, custom Device definitions
 #     # 'ophyd.event_dispatcher' — issues regular summaries of the backlog of updates from the control layer that are being processed on background threads
 # ----- ----- ----- ----- -----
 
-__all__ = ["load_instrument"]
-
 try:
     from aps_8id_bs_instrument.devices.aerotech_stages import (
         AerotechDetectorStage,
@@ -33,9 +31,13 @@ except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")
 
 from aps_8id_bs_instrument import load_config
-from aps_8id_bs_instrument.devices.area_detectors import adsim4M
+from aps_8id_bs_instrument.devices.ad_common import EigerDetectorCam_V34
+from aps_8id_bs_instrument.devices.area_detectors import adsim4M, eiger4M
 from aps_8id_bs_instrument.devices.damm import damm
-from aps_8id_bs_instrument.devices.data_management import DM_WorkflowConnector
+from aps_8id_bs_instrument.devices.data_management import (
+    DM_WorkflowConnector,
+    dm_experiment,
+)
 from aps_8id_bs_instrument.devices.flag_4 import Flag4
 from aps_8id_bs_instrument.devices.hhl_mirrors import HHL_Mirror1, HHL_Mirror2
 from aps_8id_bs_instrument.devices.hhl_slits import HHLSlits

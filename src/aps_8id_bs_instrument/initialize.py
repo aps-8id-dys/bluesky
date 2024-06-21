@@ -4,9 +4,6 @@ initialize the bluesky framework
 
 __all__ = """
     RE  cat  sd  bec  peaks
-    bp  bps  bpp
-    summarize_plan
-    np
     oregistry
     """.split()
 

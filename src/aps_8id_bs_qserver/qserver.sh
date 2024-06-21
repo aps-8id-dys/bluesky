@@ -8,7 +8,7 @@
 source "${HOME}/.bash_aliases"
 if [ "${DATABROKER_CATALOG}" == "" ]; then
     SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
-    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/instrument/iconfig.yml  | awk '{print $NF}')
+    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../aps_8id_bs_instrument/iconfig.yml  | awk '{print $NF}')
     # echo "Using catalog ${DATABROKER_CATALOG}"
 fi
 DEFAULT_SESSION_NAME="bluesky_queueserver-${DATABROKER_CATALOG}"
