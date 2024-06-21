@@ -1,1 +1,5 @@
-"""Analysis files"""
+"""
+Analysis files
+"""
+
+# flake8: noqa

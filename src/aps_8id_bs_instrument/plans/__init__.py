@@ -1,6 +1,7 @@
 """
 local, custom Bluesky plans (scans) and other functions
 """
+
 # flake8: noqa
 
 from .bdp_demo import xpcs_bdp_demo_plan

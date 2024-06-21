@@ -25,19 +25,19 @@ rm -rf __pycache__
 
 ##reset analysis folder
 rm -rf ./src/$OLD_INSTRUMENT_NAME/analysis/*
-touch ./src/$OLD_INSTRUMENT_NAME/analysis/__init__.py
+sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/analysis/__init__.py
 
 ##reset callbacks folder
 rm -rf ./src/$OLD_INSTRUMENT_NAME/callbacks/*
-touch ./src/$OLD_INSTRUMENT_NAME/callbacks/__init__.py
+sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/callbacks/__init__.py
 
 ##reset devices folder
 rm -rf ./src/$OLD_INSTRUMENT_NAME/devices/*
-touch ./src/$OLD_INSTRUMENT_NAME/devices/__init__.py
+sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/devices/__init__.py
 
 ##reset plans folder
 rm -rf ./src/$OLD_INSTRUMENT_NAME/plans/*
-touch ./src/$OLD_INSTRUMENT_NAME/plans/__init__.py
+sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/plans/__init__.py
 
 ##remove custom scripts
 rm -rf ./scripts/user
