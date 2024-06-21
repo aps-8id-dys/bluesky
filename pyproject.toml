@@ -44,7 +44,7 @@ build-backend = "setuptools.build_meta"
 package-dir = {"aps_8id_bs_instrument" = "src/aps_8id_bs_instrument"}
 
 [tool.setuptools.package-data]
-mypkg = ["*.txt", "*.yml"]
+"*" = ["*.txt", "*.yml"]
 
 #####################
 # Development Tools #
