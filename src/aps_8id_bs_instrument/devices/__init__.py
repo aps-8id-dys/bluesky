@@ -2,8 +2,8 @@
 local, custom Device definitions
 """
 
-# noqa
-# fmt: off
+# flake8: noqa
+
 # ----- ----- ----- ----- -----
 # from ophyd.log import config_ophyd_logging
 # config_ophyd_logging(level="DEBUG")

@@ -6,22 +6,17 @@ import databroker
 from bluesky import RunEngine as BlueskyRunEngine
 from bluesky import suspenders
 from bluesky.callbacks.best_effort import BestEffortCallback
+from ophydregistry import Registry
 
-from .exceptions import ComponentNotFound
-from .instrument.instrument_registry import registry
-from .preprocessors import inject_haven_md_wrapper
+from .utils.exceptions import ComponentNotFound
 
 log = logging.getLogger(__name__)
-
 
 catalog = None
 
 
 def save_data(name, doc):
     """save data for databroker"""
-    # This is a hack around a problem with garbage collection
-    # Has been fixed in main, maybe released in databroker v2?
-    # Create the databroker callback if necessary
     global catalog
     if catalog is None:
         catalog = databroker.catalog["bluesky"]
@@ -29,7 +24,9 @@ def save_data(name, doc):
     catalog.v1.insert(name, doc)
 
 
-def run_engine(connect_databroker=True, use_bec=True) -> BlueskyRunEngine:
+def run_engine(
+    connect_databroker=True, use_bec=True, extra_md=None
+) -> BlueskyRunEngine:
     """Start Bluesky RunEngine"""
     RE = BlueskyRunEngine()
     # Add the best-effort callback
@@ -37,7 +34,7 @@ def run_engine(connect_databroker=True, use_bec=True) -> BlueskyRunEngine:
         RE.subscribe(BestEffortCallback())
     # Install suspenders
     try:
-        aps = registry.find("APS")
+        aps = Registry().find("APS")
     except ComponentNotFound:
         log.warning("APS device not found, suspenders not installed.")
     else:
@@ -54,8 +51,11 @@ def run_engine(connect_databroker=True, use_bec=True) -> BlueskyRunEngine:
     # Install databroker connection
     if connect_databroker:
         RE.subscribe(save_data)
+
     # Add preprocessors
-    RE.preprocessors.append(inject_haven_md_wrapper)
+    if extra_md:
+        RE.preprocessors.append(extra_md)
+
     return RE
 
 

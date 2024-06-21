@@ -5,6 +5,7 @@ define standard experiment metadata
 import getpass
 import logging
 import os
+import pathlib
 import socket
 
 import apstools
@@ -41,6 +42,20 @@ VERSIONS = dict(
     pyRestTable=pyRestTable.__version__,
     spec2nexus=spec2nexus.__version__,
 )
+
+
+def get_md_path():
+    """Get metadata path on run_engine"""
+    path = iconfig.get("RUNENGINE_MD_PATH")
+    if path is None:
+        path = pathlib.Path.home() / "Bluesky_RunEngine_md"
+    else:
+        path = pathlib.Path(path)
+    logger.info("RunEngine metadata saved in directory: %s", str(path))
+    return str(path)
+
+
+MD_PATH = get_md_path()
 
 
 def metadata(RE):

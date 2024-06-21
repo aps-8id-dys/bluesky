@@ -6,7 +6,8 @@ Load this file::
     %run -i ./user/Lambda2M_Test_bps.py
 """
 
-from aps_8id_bs_instrument.collection import *
+from aps_8id_bs_instrument.devices.area_detectors import lambda2M
+from aps_8id_bs_instrument.plans.detector_prep import prepare_count
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 

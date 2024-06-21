@@ -1,3 +1,3 @@
 """Beamline Bluesky Instrument"""
 
-from ._iconfig import iconfig
+from ._iconfig import iconfig  # noqa

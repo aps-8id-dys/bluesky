@@ -8,12 +8,11 @@ __all__ = """
     """.split()
 
 import logging
-import pathlib
 
 # convenience imports
 import databroker
 import ophyd
-from bluesky import RunEngine, SupplementalData
+from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from bluesky.magics import BlueskyMagics
 from bluesky.utils import PersistentDict, ProgressBarManager
@@ -22,29 +21,25 @@ from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from . import iconfig
+from .run_engine import run_engine
+from .utils.metadata import MD_PATH
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+sd = SupplementalData()
 
-def get_md_path():
-    path = iconfig.get("RUNENGINE_MD_PATH")
-    if path is None:
-        path = pathlib.Path.home() / "Bluesky_RunEngine_md"
-    else:
-        path = pathlib.Path(path)
-    logger.info("RunEngine metadata saved in directory: %s", str(path))
-    return str(path)
-
+bec = BestEffortCallback()
+peaks = bec.peaks  # just as alias for less typing
+bec.disable_baseline()
 
 # Set up a RunEngine and use metadata backed PersistentDict
-RE = RunEngine({})
-RE.md = PersistentDict(get_md_path())
+RE = run_engine(connect_databroker=True, use_bec=True, extra_md=sd)
 
+RE.md = PersistentDict(MD_PATH)
 
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
-# databroker v2 api
 try:
     cat = databroker.catalog[catalog_name]
     logger.info("using databroker catalog '%s'", cat.name)
@@ -52,14 +47,10 @@ except KeyError:
     cat = databroker.temp().v2
     logger.info("using TEMPORARY databroker catalog '%s'", cat.name)
 
-
 # Subscribe metadatastore to documents.
 # If this is removed, data is not saved to metadatastore.
 RE.subscribe(cat.v1.insert)
 
-# Set up SupplementalData.
-sd = SupplementalData()
-RE.preprocessors.append(sd)
 
 if iconfig.get("USE_PROGRESS_BAR", False):
     # Add a progress bar.
@@ -72,10 +63,6 @@ if _ipython is not None:
     _ipython.register_magics(BlueskyMagics)
 
 # Set up the BestEffortCallback.
-bec = BestEffortCallback()
-RE.subscribe(bec)
-peaks = bec.peaks  # just as alias for less typing
-bec.disable_baseline()
 
 # At the end of every run, verify that files were saved and
 # print a confirmation message.

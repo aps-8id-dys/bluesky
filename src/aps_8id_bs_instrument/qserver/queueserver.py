@@ -6,17 +6,15 @@ import inspect
 import logging
 import os
 
-import bluesky
 import ophyd
 import pyRestTable
 from ophyd import Device, Signal
 
 from .. import iconfig
-from ..callbacks import *
-from ..devices import *
+from ..callbacks.spec_data_file_writer import specwriter
+from ..devices import *  # noqa
 from ..initialize import RE, cat
-from ..plans import *
-from ..utils.metadata import metadata
+from ..plans import *  # noqa
 
 # guides choice of module to import cat
 iconfig["framework"] = "queueserver"
@@ -26,14 +24,7 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 print(__file__)
 
-
-metadata = metadata()
-
 RE.subscribe(cat.v1.insert)
-
-# Set up SupplementalData.
-sd = bluesky.SupplementalData()
-RE.preprocessors.append(sd)
 
 ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
@@ -51,7 +42,6 @@ _ev = {
     if line.startswith("export ")
 }
 os.environ.update(_ev)
-
 
 def make_kv_table(data):
     '''make kv table'''
@@ -84,6 +74,7 @@ def print_RE_metadata():
         print("")
         print("RunEngine metadata:")
         print(table)
+
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     if specwriter is not None:
@@ -135,4 +126,4 @@ def print_plans():
 
 
 if iconfig.get("APS_IN_BASELINE", False):
-    sd.baseline.append(aps)
+    sd.baseline.append(aps) # noqa #???
