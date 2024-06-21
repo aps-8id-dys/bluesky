@@ -1,6 +1,10 @@
 import logging
 import time
 
+import aps_8id_bs_instrument  # noqa: F401
+import aps_8id_bs_instrument.initialize  # noqa: F401
+from aps_8id_bs_instrument.collection import *  # noqa
+
 # import databroker  # noqa: F401
 # import matplotlib.pyplot as plt  # noqa: F401
 # from bluesky import (
@@ -11,11 +15,6 @@ import time
 # from bluesky import plans as bp  # noqa: F401
 # from bluesky.callbacks.best_effort import BestEffortCallback  # noqa: F401
 from IPython import get_ipython
-
-import aps_8id_bs_instrument  # noqa: F401
-import aps_8id_bs_instrument.initialize  # noqa: F401
-from aps_8id_bs_instrument.collection import * # noqa
-
 
 logging.basicConfig(level=logging.WARNING)
 
