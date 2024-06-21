@@ -8,13 +8,12 @@ from apstools.utils import *
 from IPython import get_ipython
 
 from . import iconfig
-from ._iconfig import iconfig
 from .callbacks import *
 from .devices import *
 from .initialize import *
 from .plans import *
-from .session_logs import logger
 from .utils.mpl import *
+from .utils.session_logs import logger
 
 logger.info(__file__)
 
@@ -43,6 +42,3 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
 
 
 logger.info("#### Startup is complete. ####")
-
-
-# Setting up file writer

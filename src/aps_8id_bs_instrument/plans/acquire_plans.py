@@ -13,7 +13,7 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from ophyd.ophydobj import Kind
 
-from .._iconfig import iconfig
+from .. import iconfig
 from ..devices import lambda2M
 from ..initialize import bec
 

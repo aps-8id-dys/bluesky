@@ -35,13 +35,9 @@ $ cd 8id_bluesky_instrument
 Then create the conda environment with mamba:
 
 ```bash
-$ conda create -n aps_8id_bs -f environment.yml
-```
-
-lastly install the package, in developer mode:
-
-```bash
-$ conda activate haven
+$ export ENV_NAME="aps_bs_env"
+$ conda create -n $ENV_NAME -f environment.yml
+$ conda activate $ENV_NAME
 $ pip install -e ".[dev]"
 ```
 

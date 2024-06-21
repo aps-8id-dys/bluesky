@@ -23,18 +23,23 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ophyd import Signal
 
+from .. import iconfig
 from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices import DM_WorkflowConnector, dm_experiment
+from ..devices import DM_WorkflowConnector, adsim4M, dm_experiment, eiger4M, lambda2M
 from ..dm.aps_data_management import (
     SECOND,
     build_run_metadata_dict,
+    dm_api_daq,
     dm_api_ds,
     dm_api_proc,
+    dm_daq_wait_upload_plan,
+    dm_isDaqActive,
+    dm_start_daq,
     share_bluesky_metadata_with_dm,
+    validate_experiment_dataDirectory,
 )
 from ..initialize import RE, cat
-from ..plans.ad_setup_plans import write_if_new
-from ._iconfig._iconfig import iconfig
+from ..plans.ad_setup_plans import setup_hdf5_plugin, write_if_new
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -74,11 +79,6 @@ def xpcs_setup_user(dm_experiment_name: str, index: int = -1):
 
     .. note:: Set ``index=-1`` to continue with current 'xpcs_index' value.
     """
-    from aps_8id_bs_instrument.utils import (
-        dm_isDaqActive,
-        dm_start_daq,
-        validate_experiment_dataDirectory,
-    )
 
     validate_experiment_dataDirectory(dm_experiment_name)
     yield from bps.mv(dm_experiment, dm_experiment_name)
@@ -122,8 +122,6 @@ def xpcs_reset_index(index: int = 0):
 
 
 def _pick_area_detector(detector_name):
-    from aps_8id_bs_instrument.devices import adsim4M, eiger4M, lambda2M
-
     detectors = {d.name: d for d in (adsim4M, eiger4M, lambda2M) if d is not None}
     det = detectors.get(detector_name)
     if det is None:
@@ -189,12 +187,6 @@ def xpcs_bdp_demo_plan(
     """
     Acquire XPCS data with the chosen detector and run a DM workflow.
     """
-    from id8_bluesky.src.aps_8id_bs_instrument.dm.aps_data_management import (
-        dm_api_daq,
-        dm_daq_wait_upload_plan,
-    )
-
-    from .ad_setup_plans import setup_hdf5_plugin
 
     #
     # *** Prepare. ***

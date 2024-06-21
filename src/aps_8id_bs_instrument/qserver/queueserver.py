@@ -2,26 +2,21 @@
 Configure for data collection using bluesky-queueserver.
 """
 
-
 import inspect
 import logging
 import os
 
 import bluesky
 import ophyd
-from ophyd import Device, Signal
 import pyRestTable
+from ophyd import Device, Signal
 
 from .. import iconfig
 from ..callbacks import *
 from ..devices import *
+from ..initialize import RE, cat
 from ..plans import *
 from ..utils.metadata import metadata
-from ..initialize import RE, cat
-
-
-
-
 
 # guides choice of module to import cat
 iconfig["framework"] = "queueserver"
@@ -43,9 +38,11 @@ RE.preprocessors.append(sd)
 ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
+
 # update OS environment variables for APS Data Management
 def _chop(text):
     return text.strip().split()[-1].split("=")
+
 
 # fmt: off
 _ev = {

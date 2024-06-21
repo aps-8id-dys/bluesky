@@ -1,3 +1,3 @@
-"""8ID Beamline Bluesky Instrument"""
+"""Beamline Bluesky Instrument"""
 
-from ._iconfig import iconfig, load_config
+from ._iconfig import iconfig

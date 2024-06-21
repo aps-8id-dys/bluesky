@@ -4,6 +4,7 @@ import aps_8id_bs_instrument  # noqa: F401
 import aps_8id_bs_instrument.initialize  # noqa: F401
 import databroker  # noqa: F401
 import matplotlib.pyplot as plt  # noqa: F401
+from aps_8id_bs_instrument.collection import *
 from bluesky import (
     RunEngine,  # noqa: F401
     suspenders,  # noqa: F401
@@ -14,24 +15,12 @@ from bluesky.callbacks.best_effort import BestEffortCallback  # noqa: F401
 
 logging.basicConfig(level=logging.WARNING)
 
-# get_ipython().run_line_magic("xmode", "Minimal")
-from aps_8id_bs_instrument.collection import *
+get_ipython().run_line_magic("xmode", "Minimal")
 
-# Allow best effort callback to update properly
-# plt.ion()
 
 # # # Prepare the BlueSky instrument
-# config = aps_8id_bs_instrument.load_config()
-# t0 = time.monotonic()
+config = aps_8id_bs_instrument.iconfig
+t0 = time.monotonic()
 # print(f"Initializing {config['beamline']['name']}…")
-
-# aps_8id_bs_instrument.initialize()
-# print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
-# RE = aps_8id_bs_instrument.run_engine()
-
-# # Save references to some commonly used things in the global namespace
-# registry = haven.registry
-# ion_chambers = haven.registry.findall("ion_chambers")
-
-# # Add metadata to the run engine
-# RE.preprocessors.append(haven.preprocessors.inject_haven_md_wrapper)
+aps_8id_bs_instrument.initialize()
+print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")

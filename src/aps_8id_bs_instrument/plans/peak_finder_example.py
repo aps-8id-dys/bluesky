@@ -15,9 +15,9 @@ import logging
 import pyRestTable
 from bluesky import plans as bp
 
+from ..analisys.image_analysis import analyze_peak
 from ..devices import change_noisy_parameters, m1, noisy
 from ..qserver.queueserver import cat
-from ..utils.image_analysis import analyze_peak
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
