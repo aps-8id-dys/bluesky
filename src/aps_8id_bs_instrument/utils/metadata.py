@@ -44,6 +44,7 @@ VERSIONS = dict(
 
 
 def metadata(RE):
+    """Write metadata on the Run Engine"""
     # Set up default metadata
     RE.md["databroker_catalog"] = cat.name
     RE.md["login_id"] = USERNAME + "@" + HOSTNAME

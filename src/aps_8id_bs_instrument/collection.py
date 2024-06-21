@@ -4,15 +4,15 @@ configure for data collection in a console session
 
 import os
 
-from apstools.utils import *
+from apstools.utils import *  # noqa
 from IPython import get_ipython
 
 from . import iconfig
-from .callbacks import *
-from .devices import *
-from .initialize import *
-from .plans import *
-from .utils.mpl import *
+from .callbacks import *  # noqa
+from .devices import *  # noqa
+from .initialize import *  # noqa
+from .plans import *  # noqa
+from .utils.mpl import *  # noqa
 from .utils.session_logs import logger
 
 logger.info(__file__)

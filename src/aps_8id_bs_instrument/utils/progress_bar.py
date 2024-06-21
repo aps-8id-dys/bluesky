@@ -1,22 +1,24 @@
+"""progress bar helper functionality"""
+
 from bluesky.callbacks import CallbackBase
 from tqdm import tqdm
 
 
 class ProgressBar(CallbackBase):
-    num_points: int = 0
-
     """A progress bar that tracks a scan."""
 
-    def start(self, doc):
+    num_points: int = 0
+
+    def start(self, doc):  # noqa D102
         self.num_points = doc["num_points"]
         self.plan_name = doc.get("plan_name", "Scanning")
         # Set up the tqdm bar
         self.pbar = tqdm(total=self.num_points, unit="pt", desc=self.plan_name)
 
-    def event(self, doc):
+    def event(self, doc):  # noqa D102
         self.pbar.update(1)
 
-    def stop(self, doc):
+    def stop(self, doc):  # noqa D102
         self.pbar.close()
 
 

@@ -1,5 +1,5 @@
 """
-ensure BlueSky is available
+Helper functions to sanity check current environment
 """
 
 import logging
@@ -24,6 +24,7 @@ logger.info(__file__)
 
 
 def check_python_version():
+    """check python version on current environment"""
     req_version = tuple(iconfig.get("MINIMUM_PYTHON_VERSION", (3, 7)))
     cur_version = sys.version_info
     if cur_version < req_version:
@@ -38,6 +39,7 @@ def check_python_version():
 
 
 def check_ophyd_version():
+    """check ophyd version on current environment"""
     req_version = tuple(iconfig.get("MINIMUM_BLUESKY_VERSION", (1, 8)))
     cur_version = tuple(map(int, bluesky.__version__.split(".")[:2]))
     if cur_version < req_version:
@@ -49,6 +51,7 @@ def check_ophyd_version():
 
 
 def check_databroker_version():
+    """Check databroker version on current environment"""
     req_version = tuple(iconfig.get("MINIMUM_DATABROKER_VERSION", (1, 2)))
     cur_version = tuple(map(int, databroker.__version__.split(".")[:2]))
     if cur_version < req_version:

@@ -1,3 +1,5 @@
+"""Exception specific files for Bluesky engine"""
+
 from ophydregistry.exceptions import (  # noqa: F401
     ComponentNotFound,
     InvalidComponentLabel,
@@ -77,7 +79,8 @@ class SignalNotFound(KeyError):
     ...
 
 
-class EmptySignalName(ValueError): ...
+class EmptySignalName(ValueError):
+    """The Signal name is empty."""
 
 
 class InvalidTransformation(TypeError):

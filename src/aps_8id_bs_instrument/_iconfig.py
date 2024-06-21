@@ -13,7 +13,6 @@ Example YAML configuration file::
 from __future__ import annotations
 
 __all__ = [
-    "load_config",
     "iconfig",
 ]
 import logging
@@ -27,7 +26,7 @@ logger.info(__file__)
 print(__file__)
 
 
-def load_config():
+def load_config_yaml():
     """Load iconfig.yml config files."""
 
     CONFIG_FILE = pathlib.Path(__file__).absolute().parent / "iconfig.yml"
@@ -43,4 +42,4 @@ def load_config():
     return iconfig
 
 
-iconfig = load_config()
+iconfig = load_config_yaml()

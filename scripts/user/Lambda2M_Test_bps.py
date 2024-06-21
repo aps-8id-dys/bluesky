@@ -6,12 +6,9 @@ Load this file::
     %run -i ./user/Lambda2M_Test_bps.py
 """
 
-from aps_8id_bs_instrument.collection import *  # Yikes!  Starts the bluesky instrument!
+from aps_8id_bs_instrument.collection import *
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
-
-# from aps_8id_bs_instrument.devices import *  # imported with collection
-# from aps_8id_bs_instrument.framework import RE  # imported with collection
 
 
 def Rep_Acq(acq_rep=3):

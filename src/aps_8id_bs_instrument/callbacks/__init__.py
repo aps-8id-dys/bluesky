@@ -10,6 +10,6 @@ if iconfig.get("WRITE_NEXUS_DATA_FILES", False):
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     from .spec_data_file_writer import *
 
-del iconfig
-
 from .scan_signal_statistics import *
+
+del iconfig

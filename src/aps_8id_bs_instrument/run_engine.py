@@ -1,3 +1,5 @@
+"""Run Engine Specific file"""
+
 import logging
 
 import databroker
@@ -16,6 +18,7 @@ catalog = None
 
 
 def save_data(name, doc):
+    """save data for databroker"""
     # This is a hack around a problem with garbage collection
     # Has been fixed in main, maybe released in databroker v2?
     # Create the databroker callback if necessary
@@ -27,6 +30,7 @@ def save_data(name, doc):
 
 
 def run_engine(connect_databroker=True, use_bec=True) -> BlueskyRunEngine:
+    """Start Bluesky RunEngine"""
     RE = BlueskyRunEngine()
     # Add the best-effort callback
     if use_bec:

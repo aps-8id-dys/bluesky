@@ -1,0 +1,27 @@
+import logging
+import time
+
+# import databroker  # noqa: F401
+# import matplotlib.pyplot as plt  # noqa: F401
+# from bluesky import (
+#     RunEngine,  # noqa: F401
+#     suspenders,  # noqa: F401
+# )
+# from bluesky import plan_stubs as bps  # noqa: F401
+# from bluesky import plans as bp  # noqa: F401
+# from bluesky.callbacks.best_effort import BestEffortCallback  # noqa: F401
+from IPython import get_ipython
+
+import aps_8id_bs_instrument  # noqa: F401
+import aps_8id_bs_instrument.initialize  # noqa: F401
+from aps_8id_bs_instrument.collection import * # noqa
+
+
+logging.basicConfig(level=logging.WARNING)
+
+get_ipython().run_line_magic("xmode", "Minimal")
+
+config = aps_8id_bs_instrument.iconfig
+t0 = time.monotonic()
+aps_8id_bs_instrument.initialize()
+print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")

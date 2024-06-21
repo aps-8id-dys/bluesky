@@ -1,20 +1,27 @@
+#!/usr/bin/env bash
 
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+BASE_DIR=$SCRIPT_DIR/..
 
+echo $BASE_DIR
+cd $BASE_DIR
+pwd
 
+OLD_INSTRUMENT_PREFIX=aps_8id
+NEW_INSTRUMENT_PREFIX=empty
 
-OLD_INSTRUMENT_PREFIX = aps_8id
-NEW_INSTRUMENT_PREFIX = empty
+OLD_INSTRUMENT_NAME=${OLD_INSTRUMENT_PREFIX}_bs_instrument
+NEW_INSTRUMENT_NAME=${NEW_INSTRUMENT_PREFIX}_bs_instrument
+OLD_QS_NAME=${OLD_INSTRUMENT_PREFIX}_bs_qserver
+NEW_QS_NAME=${NEW_INSTRUMENT_PREFIX}_bs_qserver
 
-OLD_INSTRUMENT_NAME = {$OLD_INSTRUMENT_PREFIX}_bs_instrument
-NEW_INSTRUMENT_NAME = {$NEW_INSTRUMENT_PREFIX}_bs_instrument
-OLD_QS_NAME =  {$OLD_INSTRUMENT_PREFIX}_bs_qserver
-NEW_QS_NAME =  {$NEW_INSTRUMENT_PREFIX}_bs_qserver
 
 ##remove extra folders
 rm -rf .ruff_cache
 rm -rf *.egg-info
 rm -rf build
+rm -rf __pycache__
 
 ##reset analysis folder
 rm -rf ./src/$OLD_INSTRUMENT_NAME/analysis/*
@@ -40,6 +47,9 @@ mv src/$OLD_INSTRUMENT_NAME src/$NEW_INSTRUMENT_NAME
 
 ##rename qserver
 mv src/$OLD_QS_NAME src/$NEW_QS_NAME
+
+##rename absolute calls to the new package in scripts
+
 
 ##rename parts inside pyproject.toml
 ## line 2 name

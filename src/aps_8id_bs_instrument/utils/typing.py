@@ -1,3 +1,5 @@
+"""pydantic extra classes"""
+
 from typing import Sequence, Union
 
 from ophyd import Component, Device, Signal

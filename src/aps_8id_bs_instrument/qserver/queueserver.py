@@ -54,6 +54,7 @@ os.environ.update(_ev)
 
 
 def make_kv_table(data):
+    '''make kv table'''
     table = pyRestTable.Table()
     table.labels = "key value".split()
     for k, v in sorted(data.items()):
@@ -65,6 +66,8 @@ def make_kv_table(data):
 
 
 def print_instrument_configuration():
+    '''print instrument config on table
+    move this to instrument utils'''
     if len(iconfig) > 0:
         table = make_kv_table(iconfig)
         print("")
