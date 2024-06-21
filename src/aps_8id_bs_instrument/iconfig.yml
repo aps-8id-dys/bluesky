@@ -1,0 +1,144 @@
+# iconfig.yml
+
+# Configuration for the Bluesky instrument package.
+# simple key:value pairs
+
+CONTROLS_SUBNET: 116
+
+DATABROKER_CATALOG: &databroker_catalog 8idi_xpcs
+
+# default RunEngine metadata
+RUNENGINE_METADATA:
+  beamline_id: 8idi_XPCS
+  instrument_name: 8-ID-I XPCS
+  proposal_id: XPCS Development
+  databroker_catalog: *databroker_catalog
+
+# workstation   subnet  /gdata  DM LDAP   /APSshare comments
+# ------------  ------  ------  -------   --------- --------
+# 8idpixirad    private no      no        yes       IOC for adsim4M
+# adamite       private yes     no        yes       analysis (multiple GPUs)
+# agate         public  no      no        yes
+# amazonite     private yes     no        yes       analysis (multiple GPUs)
+# amber         private yes     no        yes       hosts tiled server
+# beryl         private yes     no        yes       IOC for eiger4M
+# bixbite       private yes     no        yes       will move to CSSI
+# califone      private no      yes       no        analysis (multiple GPUs)
+# kouga         public  no      no        yes       QZ's desktop
+# lambda2m      private no      no        yes       IOC for lambda2M
+# onyx          private yes     no        yes       will move next year to PtychoProbe Eiger IOC
+# s8ididm       private yes     yes       no        APS DM server
+# axinite       private yes     no        yes       analysis (multiple GPUs)
+# tanzanite     private yes     no        yes       analysis (multiple GPUs)
+# rigaku[1-6]   private yes     yes?      no        Rigaku detector
+
+TILED_SERVER: amber
+
+# Uncomment and edit to define a PV to use for the `scan_id`.
+# The default behavior is to use `RE.md["scan_id"]`.
+# RUN_ENGINE_SCAN_ID_PV: f"{IOC}bluesky_scan_id"
+# PV hosted on the adsim4M IOC (for now)
+#RUN_ENGINE_SCAN_ID_PV: "8idi:bluesky_scan_id"
+
+# permissions
+ALLOW_AREA_DETECTOR_WARMUP: true
+ENABLE_AREA_DETECTOR_IMAGE_PLUGIN: true
+ENABLE_CALCS: false
+USE_PROGRESS_BAR: false
+WRITE_NEXUS_DATA_FILES: false
+NEXUS_WARN_MISSING_CONTENT: false
+NEXUS_FILE_EXTENSION: hdf
+WRITE_SPEC_DATA_FILES: true
+
+# APS Data Management
+# Use bash shell, deactivate all conda environments, source this file:
+DM_SETUP_FILE: "/home/dm/etc/dm.setup.sh"
+
+AREA_DETECTOR:
+  # TODO: switch to the Voyager-based path structure: "/gdata/..."
+  BLUESKY_FILES_ROOT: &BLUESKY_DATA_ROOT "/home/8ididata/"
+  IMAGE_DIR: "2023-2/pvaccess_test"
+  HDF5_FILE_TEMPLATE: "%s%s_%6.6d.h5"
+  ADSIM_4M:
+    # IOC host: beryl
+    # /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idSimDetectors/iocBoot/ioc8idSimDetector4m/softioc/8idSimDetector4m.pl start
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: adsim4M
+    PV_PREFIX: "8idSimDetector4m:"
+  ADSIM_16M:
+    # IOC host: 8idpixirad
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: simdet16M
+    PV_PREFIX: "8idSimDetector16m:"
+  EIGER_4M:
+    # IOC host: beryl:/net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idEiger4m/iocBoot/ioc8idEiger4m/softioc/8idEiger4m.pl status
+    # Same filesystem
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: eiger4M
+    PV_PREFIX: "8idEiger4m:"
+  FLAG1:
+    # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
+    # Same filesystem  ???
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: flag1ad
+    PV_PREFIX: "8idaSoft:flag1:"
+  FLAG2:
+    # IOC host: s8idioc02:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idaSoft/iocBoot/ioc8idaSoft/
+    # Same filesystem  ???
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: flag2ad
+    PV_PREFIX: "8idaSoft:flag2:"
+  LAMBDA_2M:
+    # IOC host: lambda2m
+    IOC_FILES_ROOT: "/extdisk/"
+    NAME: lambda2M
+    PV_PREFIX: "8idLambda2m:"
+  RIGAKU_3M:
+    # IOC host: rigakusi3m (10.54.116.29)
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: rigaku3M
+    PV_PREFIX: "8idRigaku3m:"
+
+# ----------------------------------
+
+# Directory to "autosave" the RE.md dictionary (uses PersistentDict)
+# Uncomment and modify to change from the default.
+RUNENGINE_MD_PATH: /home/beams/8IDIUSER/.config/Bluesky_RunEngine_md
+
+# override default control layer for ophyd
+# if undefined, defaults to PyEpics
+# OPHYD_CONTROL_LAYER: PyEpics
+# OPHYD_CONTROL_LAYER: caproto
+
+# Uncomment any of these to override the defaults
+LOGGING:
+  # MAX_BYTES: 1000000
+  NUMBER_OF_PREVIOUS_BACKUPS: 9
+  # LOG_PATH: /tmp
+  # If LOG_PATH undefined, this session will log into PWD/logs/
+  # where PWD is present working directory when session is started
+
+# default timeouts (seconds)
+PV_READ_TIMEOUT: &TIMEOUT 30
+PV_WRITE_TIMEOUT: *TIMEOUT
+PV_CONNECTION_TIMEOUT: 5
+
+XMODE_DEBUG_LEVEL: Minimal
+
+# Minimum software package version checks: MAJOR.minor (no .patch).
+# These will be converted to tuple() for comparisons.
+MINIMUM_PYTHON_VERSION:
+  - 3
+  - 10
+MINIMUM_BLUESKY_VERSION:
+  - 1
+  - 10
+MINIMUM_DATABROKER_VERSION:
+  - 1
+  - 2
+MINIMUM_OPHYD_VERSION:
+  - 1
+  - 7
+
+# identify the version of this iconfig.yml file
+ICONFIG_VERSION: 1.0.1
