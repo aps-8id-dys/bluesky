@@ -12,4 +12,4 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
 
 del iconfig
 
-from aps_8id_bs_instrument.calbacks.scan_signal_statistics import *
+from aps_8id_bs_instrument.callbacks.scan_signal_statistics import *

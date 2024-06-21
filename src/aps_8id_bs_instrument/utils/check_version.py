@@ -21,7 +21,6 @@ except ImportError as err:
     ) from err
 
 import databroker
-import ophyd
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -50,6 +49,7 @@ def check_ophyd_version():
             f"Need bluesky version {ver_str} or higher"
             f", found version {bluesky.__version__}"
         )
+
 
 def check_databroker_version():
     req_version = tuple(iconfig.get("MINIMUM_DATABROKER_VERSION", (1, 2)))

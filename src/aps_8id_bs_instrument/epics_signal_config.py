@@ -9,12 +9,12 @@ __all__ = """
 
 import logging
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
 from ophyd.signal import EpicsSignal, EpicsSignalBase
 
 from aps_8id_bs_instrument import iconfig
+
+logger = logging.getLogger(__name__)
+logger.info(__file__)
 
 # set default timeout for all EpicsSignal connections & communications
 # always first, before ANY ophyd EPICS-based signals are created

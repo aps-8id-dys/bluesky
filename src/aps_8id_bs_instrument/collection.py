@@ -26,17 +26,11 @@ if _ip is not None:
     del _ip
 
 
-# logger.info("#### Devices ####")
-# logger.info("#### Utilities ####")
 from apstools.utils import *
 
 from aps_8id_bs_instrument._iconfig import iconfig
-
-# logger.info("#### Callbacks ####")
 from aps_8id_bs_instrument.callbacks import *
 from aps_8id_bs_instrument.devices import *
-
-# logger.info("#### Plans ####")
 from aps_8id_bs_instrument.plans import *
 from aps_8id_bs_instrument.utils import *
 

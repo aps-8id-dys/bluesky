@@ -13,7 +13,7 @@ from apstools.plans import lineup
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-from aps_8id_bs_instrument.framework.initialize import bec
+from aps_8id_bs_instrument.initialize import bec
 
 logger = logging.getLogger(__name__)
 

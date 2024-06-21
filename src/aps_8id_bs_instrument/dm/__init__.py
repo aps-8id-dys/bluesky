@@ -1,5 +1,3 @@
 """
-any extra commands or utility functions here
+DM functionality
 """
-
-from aps_8id_bs_instrument.utils.image_analysis import *
