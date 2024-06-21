@@ -2,14 +2,10 @@
 define standard experiment metadata
 """
 
-__all__ = ['metadata']
-
-import logging
-
-from aps_8id_bs_instrument import iconfig
-
+__all__ = ["metadata"]
 
 import getpass
+import logging
 import os
 import socket
 
@@ -25,6 +21,7 @@ import ophyd
 import pyRestTable
 import spec2nexus
 
+from aps_8id_bs_instrument import iconfig
 from aps_8id_bs_instrument.initialize import RE, cat
 
 logger = logging.getLogger(__name__)

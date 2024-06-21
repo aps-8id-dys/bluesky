@@ -21,8 +21,8 @@ from bluesky.callbacks.best_effort import BestEffortCallback
 from bluesky.magics import BlueskyMagics
 from bluesky.utils import PersistentDict, ProgressBarManager
 from IPython import get_ipython
-from ophyd.registry import Registry
 from ophyd.signal import EpicsSignalBase
+from ophydregistry import Registry
 
 from aps_8id_bs_instrument import iconfig
 
