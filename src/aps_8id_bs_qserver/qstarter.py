@@ -14,8 +14,9 @@ How to start the queueserver process::
 
 """
 
-from .queueserver import *
 from bluesky.plans import *
+
+from .queueserver import *
 
 print_instrument_configuration()
 print_devices_and_signals()

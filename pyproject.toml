@@ -4,6 +4,7 @@ version = "0.0.1"
 description='APS 8ID Beamline Bluesky Instrument Control'
 authors = [
     {name = "Eric Codrea", email = "ecodrea@anl.gov"},
+    {name = "Pete Damian", email = "pdamien@anl.gov"},
     {name = "Rafael Vescovi", email = "ravescovi@anl.gov"},
 ]
 requires-python = ">=3.9"
@@ -78,8 +79,8 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-# Assume Python 3.9
-target-version = "py39"
+# Assume Python 3.10
+target-version = "py310"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.

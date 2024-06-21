@@ -41,3 +41,6 @@ def load_config():
 
     # Load configuration from TOML files
     return iconfig
+
+
+iconfig = load_config()

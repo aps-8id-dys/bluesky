@@ -36,5 +36,5 @@ if isnotebook():
     plt.ion()
 else:
     import matplotlib.pyplot as plt
-    plt.ion()
 
+    plt.ion()
