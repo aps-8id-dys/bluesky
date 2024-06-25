@@ -31,8 +31,6 @@ if _ip is not None:
 config = aps_8id_bs_instrument.iconfig
 t0 = time.monotonic()
 
-# aps_8id_bs_instrument.initialize_bs_tools()
-
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 
 # gets loaded from ipython profile.
