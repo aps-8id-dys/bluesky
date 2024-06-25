@@ -7,10 +7,10 @@ from functools import partial
 import databroker
 import numpy as np
 import pandas as pd
-from tiled.client import from_uri
-from tiled.client.cache import Cache
+# from tiled.client import from_uri
+# from tiled.client.cache import Cache
 
-from ._iconfig import load_config
+# from ._iconfig import load_config
 
 log = logging.getLogger(__name__)
 
