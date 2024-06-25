@@ -1,7 +1,7 @@
 import logging
 import time
 
-import aps_8id_bs_instrument  # noqa: F401
+import aps_8id_bs_instrument
 from aps_8id_bs_instrument.data_collection import *  # noqa
 from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
     RE,
@@ -11,7 +11,6 @@ from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
     peaks,
     sd,
 )
-from aps_8id_bs_instrument.utils.config_utils import iconfig
 from aps_8id_bs_instrument.utils.session_logs import logger
 from bluesky.magics import BlueskyMagics
 from IPython import get_ipython
@@ -20,6 +19,7 @@ logging.basicConfig(level=logging.WARNING)
 
 logger.info(__file__)
 _ip = get_ipython()
+iconfig = aps_8id_bs_instrument.iconfig
 
 if _ip is not None:
     _xmode_level = iconfig.get("XMODE_DEBUG_LEVEL", "Minimal")
@@ -28,7 +28,7 @@ if _ip is not None:
     logger.info("xmode exception level: '%s'", _xmode_level)
     del _ip
 
-config = aps_8id_bs_instrument.iconfig
+config = iconfig
 t0 = time.monotonic()
 
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")

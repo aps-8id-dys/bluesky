@@ -6,8 +6,8 @@ from apstools.utils import *  # noqa
 
 from . import iconfig
 from .callbacks.spec_data_file_writer import specwriter
-from .devices import *  # noqa
 from .initialize_bs_tools import RE
+from .devices import *  # noqa
 from .plans import *  # noqa
 
 ## ipython helpers
