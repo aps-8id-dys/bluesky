@@ -21,7 +21,7 @@ try:
 except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")
 
-from .. import load_config
+# from .. import load_config
 from .ad_common import EigerDetectorCam_V34
 from .area_detectors import adsim4M, eiger4M
 from .damm import damm
