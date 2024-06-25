@@ -15,7 +15,7 @@ from ophyd.ophydobj import Kind
 
 from .. import iconfig
 from ..devices import lambda2M
-from ..initialize import bec
+from ..initialize_bs_tools import bec
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

@@ -38,7 +38,7 @@ from ..dm.aps_data_management import (
     share_bluesky_metadata_with_dm,
     validate_experiment_dataDirectory,
 )
-from ..initialize import RE, cat
+from ..initialize_bs_tools import RE, cat
 from ..plans.ad_setup_plans import setup_hdf5_plugin, write_if_new
 
 logger = logging.getLogger(__name__)

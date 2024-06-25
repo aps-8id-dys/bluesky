@@ -13,7 +13,7 @@ from ophyd import Device, Signal
 from .. import iconfig
 from ..callbacks.spec_data_file_writer import specwriter
 from ..devices import *  # noqa
-from ..initialize import RE, cat
+from ..initialize_bs_tools import RE, cat
 from ..plans import *  # noqa
 
 # guides choice of module to import cat

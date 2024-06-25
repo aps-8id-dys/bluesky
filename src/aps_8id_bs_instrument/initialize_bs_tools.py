@@ -1,5 +1,5 @@
 """
-initialize the bluesky framework
+Initialize bluesky tools
 """
 
 __all__ = """
@@ -14,14 +14,14 @@ import databroker
 import ophyd
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
-from bluesky.utils import PersistentDict, ProgressBarManager
+from bluesky.utils import PersistentDict
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
-from . import iconfig
-from .run_engine import run_engine
-from .utils.ipy_helper import *  # noqa
+from .utils.catalog import load_catalog
+from .utils.config_utils import iconfig
 from .utils.metadata import MD_PATH
+from .utils.run_engine import run_engine
 
 # TODO: This is not inside init because, there are aspects that do not work with qserver.
 
@@ -34,17 +34,14 @@ bec = BestEffortCallback()
 peaks = bec.peaks  # just as alias for less typing
 bec.disable_baseline()
 
-# TODO: USE RUN_ENGINE.PY
 # Set up a RunEngine and use metadata backed PersistentDict
 RE = run_engine(connect_databroker=True, use_bec=True, extra_md=sd)
-
 RE.md = PersistentDict(MD_PATH)
 
-# TODO: SEPERATE CALLBACK
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
 try:
-    cat = databroker.catalog[catalog_name]
+    cat = load_catalog(catalog_name)
     logger.info("using databroker catalog '%s'", cat.name)
 except KeyError:
     cat = databroker.temp().v2
@@ -54,20 +51,7 @@ except KeyError:
 # If this is removed, data is not saved to metadatastore.
 RE.subscribe(cat.v1.insert)
 
-# TODO: CAN LIVE WITH RUN ENGINE
-if iconfig.get("USE_PROGRESS_BAR", False):
-    # Add a progress bar.
-    pbar_manager = ProgressBarManager()
-    RE.waiting_hook = pbar_manager
-
-# diagnostics
-# RE.msg_hook = ts_msg_hook # for debugging if you need
-
-# Uncomment the following lines to turn on
-# verbose messages for debugging.
-# ophyd.logger.setLevel(logging.DEBUG)
-
-ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower()) # TODO: ASK MARK
+ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())  # TODO: ASK MARK
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
 # set default timeout for all EpicsSignal connections & communications
@@ -116,4 +100,4 @@ else:
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
 
-# this is where run engine gets created
+logger.info("#### Bluesky tools are loaded is complete. ####")
