@@ -9,7 +9,7 @@ import logging
 import numpy as np
 from bluesky import plan_stubs as bps
 
-from ..initialize import oregistry
+from ..initialize_bs_tools import oregistry
 from ..plans.xpcs_mesh import mesh_list_grid_scan
 
 logger = logging.getLogger(__name__)

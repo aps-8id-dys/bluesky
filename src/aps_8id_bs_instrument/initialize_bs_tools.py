@@ -24,7 +24,7 @@ from .run_engine import run_engine
 from .utils.ipy_helper import *  # noqa
 from .utils.metadata import MD_PATH
 
-from data_collection import *
+# from data_collection import *
 
 # TODO: This is not inside init because, there are aspects that do not work with qserver.
 
