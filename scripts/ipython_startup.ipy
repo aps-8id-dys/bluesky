@@ -3,7 +3,14 @@ import time
 
 import aps_8id_bs_instrument  # noqa: F401
 from aps_8id_bs_instrument.data_collection import *  # noqa
-from aps_8id_bs_instrument.initialize_bs_tools import RE, bec, cat, oregistry, peaks, sd
+from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
+    RE,
+    bec,
+    cat,
+    oregistry,
+    peaks,
+    sd,
+)
 from aps_8id_bs_instrument.utils.config_utils import iconfig
 from aps_8id_bs_instrument.utils.session_logs import logger
 from bluesky.magics import BlueskyMagics
@@ -23,7 +30,9 @@ if _ip is not None:
 
 config = aps_8id_bs_instrument.iconfig
 t0 = time.monotonic()
+
 # aps_8id_bs_instrument.initialize_bs_tools()
+
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 
 # gets loaded from ipython profile.
