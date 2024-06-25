@@ -9,8 +9,8 @@ from bluesky.callbacks.best_effort import BestEffortCallback
 from bluesky.utils import ProgressBarManager
 from ophydregistry import Registry
 
-from .utils.config_utils import iconfig
-from .utils.exceptions import ComponentNotFound
+from .config_utils import iconfig
+from .exceptions import ComponentNotFound
 
 log = logging.getLogger(__name__)
 

@@ -18,7 +18,8 @@ from bluesky.utils import PersistentDict
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
-from .run_engine import run_engine
+from .utils.run_engine import run_engine
+from .utils.catalog import load_catalog
 from .utils.config_utils import iconfig
 from .utils.metadata import MD_PATH
 
@@ -39,11 +40,10 @@ bec.disable_baseline()
 RE = run_engine(connect_databroker=True, use_bec=True, extra_md=sd)
 RE.md = PersistentDict(MD_PATH)
 
-# TODO: SEPERATE CALLBACK
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
 try:
-    cat = databroker.catalog[catalog_name]
+    cat = load_catalog(catalog_name)
     logger.info("using databroker catalog '%s'", cat.name)
 except KeyError:
     cat = databroker.temp().v2
@@ -70,40 +70,36 @@ if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
 # Create a registry of ophyd devices
 oregistry = Registry(auto_register=True)
 
-# _pv = iconfig.get("RUN_ENGINE_SCAN_ID_PV")
-# if _pv is None:
-#     logger.info("Using RunEngine metadata for scan_id")
-# else:
-#     from ophyd import EpicsSignal
+_pv = iconfig.get("RUN_ENGINE_SCAN_ID_PV")
+if _pv is None:
+    logger.info("Using RunEngine metadata for scan_id")
+else:
+    from ophyd import EpicsSignal
 
-#     logger.info("Using EPICS PV %s for scan_id", _pv)
-#     scan_id_epics = EpicsSignal(_pv, name="scan_id_epics")
+    logger.info("Using EPICS PV %s for scan_id", _pv)
+    scan_id_epics = EpicsSignal(_pv, name="scan_id_epics")
 
-#     def epics_scan_id_source(_md):
-#         """
-#         Callback function for RunEngine.  Returns *next* scan_id to be used.
+    def epics_scan_id_source(_md):
+        """
+        Callback function for RunEngine.  Returns *next* scan_id to be used.
 
-#         * Ignore metadata dictionary passed as argument.
-#         * Get current scan_id from PV.
-#         * Apply lower limit of zero.
-#         * Increment (so that scan_id numbering starts from 1).
-#         * Set PV with new value.
-#         * Return new value.
+        * Ignore metadata dictionary passed as argument.
+        * Get current scan_id from PV.
+        * Apply lower limit of zero.
+        * Increment (so that scan_id numbering starts from 1).
+        * Set PV with new value.
+        * Return new value.
 
-#         Exception will be raised if PV is not connected when next
-#         ``bps.open_run()`` is called.
-#         """
-#         new_scan_id = max(scan_id_epics.get(), 0) + 1
-#         scan_id_epics.put(new_scan_id)
-#         return new_scan_id
+        Exception will be raised if PV is not connected when next
+        ``bps.open_run()`` is called.
+        """
+        new_scan_id = max(scan_id_epics.get(), 0) + 1
+        scan_id_epics.put(new_scan_id)
+        return new_scan_id
 
-#     # tell RunEngine to use the EPICS PV to provide the scan_id.
-#     RE.scan_id_source = epics_scan_id_source
-#     scan_id_epics.wait_for_connection()
-#     RE.md["scan_id"] = scan_id_epics.get()
-
-
-
-# this is where run engine gets created
+    # tell RunEngine to use the EPICS PV to provide the scan_id.
+    RE.scan_id_source = epics_scan_id_source
+    scan_id_epics.wait_for_connection()
+    RE.md["scan_id"] = scan_id_epics.get()
 
 logger.info("#### Bluesky tools are loaded is complete. ####")
