@@ -18,8 +18,6 @@ from bluesky.utils import PersistentDict, ProgressBarManager
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
-from . import iconfig
-from .callbacks.spec_data_file_writer import specwriter
 from .run_engine import run_engine
 from .utils.ipy_helper import *  # noqa
 from .utils.metadata import MD_PATH
@@ -119,13 +117,7 @@ else:
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
 
-if iconfig.get("WRITE_SPEC_DATA_FILES", False):
-    if specwriter is not None:
-        RE.subscribe(specwriter.receiver)  # noqa
-        logger.info(f"writing to SPEC file: {specwriter.spec_filename}")
-        logger.info("   >>>>   Using default SPEC file name   <<<<")
-        logger.info("   file will be created when bluesky ends its next scan")
-        logger.info("   to change SPEC file, use command:   newSpecFile('title')")
+
 
 # this is where run engine gets created
 
