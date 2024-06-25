@@ -51,7 +51,7 @@ except KeyError:
 # If this is removed, data is not saved to metadatastore.
 RE.subscribe(cat.v1.insert)
 
-ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower()) # TODO: ASK MARK
+ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())  # TODO: ASK MARK
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
 # set default timeout for all EpicsSignal connections & communications

@@ -2,8 +2,6 @@
 configure for data collection in a console session
 """
 
-import os
-
 from apstools.utils import *  # noqa
 
 from . import iconfig
