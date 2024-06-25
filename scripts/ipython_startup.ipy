@@ -2,7 +2,7 @@ import logging
 import time
 
 import aps_8id_bs_instrument  # noqa: F401
-import aps_8id_bs_instrument.initialize  # noqa: F401
+import aps_8id_bs_instrument.initialize_bs_tools  # noqa: F401
 from aps_8id_bs_instrument.data_collection import *  # noqa
 from IPython import get_ipython
 
@@ -12,7 +12,7 @@ get_ipython().run_line_magic("xmode", "Minimal")
 
 config = aps_8id_bs_instrument.iconfig
 t0 = time.monotonic()
-aps_8id_bs_instrument.initialize()
+aps_8id_bs_instrument.initialize_bs_tools()
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 
 
