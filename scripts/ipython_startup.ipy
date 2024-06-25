@@ -4,17 +4,27 @@ import time
 import aps_8id_bs_instrument  # noqa: F401
 import aps_8id_bs_instrument.initialize_bs_tools  # noqa: F401
 from aps_8id_bs_instrument.data_collection import *  # noqa
+from aps_8id_bs_instrument.utils.config_utils import iconfig
+from aps_8id_bs_instrument.utils.session_logs import logger
+from bluesky.magics import BlueskyMagics
 from IPython import get_ipython
 
 logging.basicConfig(level=logging.WARNING)
 
-get_ipython().run_line_magic("xmode", "Minimal")
+logger.info(__file__)
+_ip = get_ipython()
+
+if _ip is not None:
+    _xmode_level = iconfig.get("XMODE_DEBUG_LEVEL", "Minimal")
+    _ip.register_magics(BlueskyMagics)
+    _ip.run_line_magic("xmode", _xmode_level)
+    logger.info("xmode exception level: '%s'", _xmode_level)
+    del _ip
 
 config = aps_8id_bs_instrument.iconfig
 t0 = time.monotonic()
 aps_8id_bs_instrument.initialize_bs_tools()
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
-
 
 # gets loaded from ipython profile.
 # Add simlink and make own ipython profile each time
