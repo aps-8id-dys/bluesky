@@ -6,8 +6,10 @@ import databroker
 from bluesky import RunEngine as BlueskyRunEngine
 from bluesky import suspenders
 from bluesky.callbacks.best_effort import BestEffortCallback
+from bluesky.utils import ProgressBarManager
 from ophydregistry import Registry
 
+from .utils.config_utils import iconfig
 from .utils.exceptions import ComponentNotFound
 
 log = logging.getLogger(__name__)
@@ -55,6 +57,11 @@ def run_engine(
     # Add preprocessors
     if extra_md:
         RE.preprocessors.append(extra_md)
+
+    if iconfig.get("USE_PROGRESS_BAR", False):
+        # Add a progress bar.
+        pbar_manager = ProgressBarManager()
+        RE.waiting_hook = pbar_manager
 
     return RE
 

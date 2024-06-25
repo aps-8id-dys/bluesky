@@ -14,7 +14,7 @@ import databroker
 import ophyd
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
-from bluesky.utils import PersistentDict, ProgressBarManager
+from bluesky.utils import PersistentDict
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
@@ -35,10 +35,8 @@ bec = BestEffortCallback()
 peaks = bec.peaks  # just as alias for less typing
 bec.disable_baseline()
 
-# TODO: USE RUN_ENGINE.PY
 # Set up a RunEngine and use metadata backed PersistentDict
 RE = run_engine(connect_databroker=True, use_bec=True, extra_md=sd)
-
 RE.md = PersistentDict(MD_PATH)
 
 # TODO: SEPERATE CALLBACK
@@ -54,19 +52,6 @@ except KeyError:
 # Subscribe metadatastore to documents.
 # If this is removed, data is not saved to metadatastore.
 RE.subscribe(cat.v1.insert)
-
-# TODO: CAN LIVE WITH RUN ENGINE
-if iconfig.get("USE_PROGRESS_BAR", False):
-    # Add a progress bar.
-    pbar_manager = ProgressBarManager()
-    RE.waiting_hook = pbar_manager
-
-# diagnostics
-# RE.msg_hook = ts_msg_hook # for debugging if you need
-
-# Uncomment the following lines to turn on
-# verbose messages for debugging.
-# ophyd.logger.setLevel(logging.DEBUG)
 
 ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower()) # TODO: ASK MARK
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
