@@ -19,7 +19,7 @@ from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from .run_engine import run_engine
-# from .utils.ipy_helper import *  # noqa
+from .utils.config_utils import iconfig
 from .utils.metadata import MD_PATH
 
 # from data_collection import *
