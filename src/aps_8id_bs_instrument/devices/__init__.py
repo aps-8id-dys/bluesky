@@ -23,7 +23,7 @@ except Exception as excuse:
 
 # from .. import load_config
 from .ad_common import EigerDetectorCam_V34
-from .area_detectors import adsim4M, eiger4M
+from .area_detectors import adsim4M, eiger4M, lambda2M
 from .damm import damm
 from .data_management import (
     DM_WorkflowConnector,

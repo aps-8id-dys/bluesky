@@ -1,5 +1,5 @@
 """
-initialize the bluesky framework
+Initialize bluesky tools
 """
 
 __all__ = """
