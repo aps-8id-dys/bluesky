@@ -2,8 +2,8 @@ import logging
 import time
 
 import aps_8id_bs_instrument  # noqa: F401
-import aps_8id_bs_instrument.initialize_bs_tools  # noqa: F401
 from aps_8id_bs_instrument.data_collection import *  # noqa
+from aps_8id_bs_instrument.initialize_bs_tools import RE, bec, cat, oregistry, peaks, sd
 from aps_8id_bs_instrument.utils.config_utils import iconfig
 from aps_8id_bs_instrument.utils.session_logs import logger
 from bluesky.magics import BlueskyMagics

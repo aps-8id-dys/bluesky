@@ -18,12 +18,10 @@ from bluesky.utils import PersistentDict
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
-from .utils.run_engine import run_engine
 from .utils.catalog import load_catalog
 from .utils.config_utils import iconfig
 from .utils.metadata import MD_PATH
-
-# from data_collection import *
+from .utils.run_engine import run_engine
 
 # TODO: This is not inside init because, there are aspects that do not work with qserver.
 

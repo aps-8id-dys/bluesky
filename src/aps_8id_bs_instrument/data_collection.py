@@ -16,8 +16,6 @@ from .plans import *  # noqa
 from .utils.mpl_helper import *  # noqa
 from .utils.session_logs import logger
 
-# from .initialize import *  # noqa
-
 logger.info(__file__)
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
