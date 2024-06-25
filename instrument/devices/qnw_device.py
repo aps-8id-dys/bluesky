@@ -29,9 +29,9 @@ class QnwDevice(PVPositionerSoftDoneWithStop):
 
 # Use readback_pv=None since readback and setpoint were defined above.
 # Works even though it looks ugglee.
-qnw_env1 = QnwDevice("8idi:QNWenv_1:", readback_pv=None, name="qnw_env1")
-qnw_env2 = QnwDevice("8idi:QNWenv_2:", readback_pv=None, name="qnw_env2")
-qnw_env3 = QnwDevice("8idi:QNWenv_3:", readback_pv=None, name="qnw_env3")
+qnw_env1 = QnwDevice("8idiSoft:QNWenv_1:", readback_pv=None, name="qnw_env1")
+qnw_env2 = QnwDevice("8idiSoft:QNWenv_2:", readback_pv=None, name="qnw_env2")
+qnw_env3 = QnwDevice("8idiSoft:QNWenv_3:", readback_pv=None, name="qnw_env3")
 
 
 # TODO:
