@@ -2,7 +2,7 @@ import logging
 import time
 
 import aps_8id_bs_instrument
-from aps_8id_bs_instrument.data_collection import *  # noqa
+# from aps_8id_bs_instrument.data_collection import *  # noqa
 from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
     RE,
     bec,
@@ -36,3 +36,5 @@ print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 # gets loaded from ipython profile.
 # Add simlink and make own ipython profile each time
 # happi requires db underneath: might be overkill
+
+from aps_8id_bs_instrument.data_collection import *  # noqa
