@@ -229,13 +229,14 @@ class XpcsAD_TransformPlugin(XpcsAD_PluginMixin, TransformPlugin_V34):
 
 def XpcsAreaDetectorFactory(det_key, **kwargs):
     """Simpler than XpcsAD_factory().  Use detector key from iconfig."""
-
     ad_conf = iconfig["AREA_DETECTOR"][det_key]
     IOC_FILES_ROOT = PurePath(ad_conf["IOC_FILES_ROOT"])
 
     WRITE_PATH_TEMPLATE = f"{IOC_FILES_ROOT / IMAGE_DIR}/"
     READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
-
+    print("adconf:")
+    print(ad_conf)
+    print("here:" + str(det_key))
     cam_class = {
         "ADSIM_4M": SimDetectorCam_V34,
         "ADSIM_16M": SimDetectorCam_V34,
@@ -300,7 +301,7 @@ def XpcsAD_factory(
 
     class AreaDetector(SingleTrigger, DetectorBase):
         cam = ADComponent(cam_class, "cam1:")
-
+        print("creating class")
         # In the AD IOC, cam --> codec & image
         codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
         if use_image:

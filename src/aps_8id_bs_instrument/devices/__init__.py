@@ -37,4 +37,10 @@ from .qnw_device import QnwDevice
 from .slit_4 import sl4
 
 
-from .area_detectors import adsim4M, eiger4M, lambda2M, flag1ad, flag2ad # for some reason must come after certain devices
+from .area_detectors import (
+    adsim4M,
+    eiger4M,
+    lambda2M,
+    flag2ad,
+)  # for some reason must come after certain devices
+from .ad_flag1 import flag1ad
