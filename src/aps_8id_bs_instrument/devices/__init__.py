@@ -28,7 +28,7 @@ from .data_management import (
     DM_WorkflowConnector,
     dm_experiment,
 )
-from .flag_4 import Flag4
+from .flag_4 import fl4
 from .hhl_mirrors import HHL_Mirror1, HHL_Mirror2
 from .hhl_slits import wb_slit
 from .idt_mono import IDTMono

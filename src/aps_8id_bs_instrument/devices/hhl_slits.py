@@ -109,11 +109,11 @@ wb_slit = HHLSlits(
     vcen_motor="vCenter",
 )
 
-mono_slit = HHLSlits(
-    name="mono_slit",
-    prefix="8idaSoft:CR8-A1:US",
-    pitch_motor="m11",
-    yaw_motor="m12",
-    horizontal_motor="m9",
-    diagonal_motor="m10",
-)
+# mono_slit = HHLSlits(
+#     name="mono_slit",
+#     prefix="8idaSoft:CR8-A1:US",
+#     pitch_motor="m11",
+#     yaw_motor="m12",
+#     horizontal_motor="m9",
+#     diagonal_motor="m10",
+# )
