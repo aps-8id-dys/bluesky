@@ -23,7 +23,6 @@ except Exception as excuse:
 
 # from .. import load_config
 from .ad_common import EigerDetectorCam_V34
-from .area_detectors import adsim4M, eiger4M, lambda2M, flag1ad, flag2ad
 from .damm import damm
 from .data_management import (
     DM_WorkflowConnector,
@@ -36,3 +35,6 @@ from .idt_mono import IDTMono
 from .meascomp_usb_ctr import MeasCompCtr
 from .qnw_device import QnwDevice
 from .slit_4 import sl4
+
+
+from .area_detectors import adsim4M, eiger4M, lambda2M, flag1ad, flag2ad # for some reason must come after certain devices
