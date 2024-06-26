@@ -21,7 +21,7 @@ logger.info(__file__)
 adsim4M = XpcsAreaDetectorFactory("ADSIM_4M", use_image=False)
 # adsim16M = XpcsAreaDetectorFactory("ADSIM_16M", use_image=False)
 eiger4M = XpcsAreaDetectorFactory("EIGER_4M", use_image=False)
-# flag1ad = XpcsAreaDetectorFactory("FLAG1")  # all configured plugins enabled
+flag1ad = XpcsAreaDetectorFactory("FLAG1")  # all configured plugins enabled
 flag2ad = XpcsAreaDetectorFactory("FLAG2")  # all configured plugins enabled
 # lambda2M = XpcsAreaDetectorFactory("LAMBDA_2M", use_image=False)
 lambda2M = None  # TODO: re-enable?
