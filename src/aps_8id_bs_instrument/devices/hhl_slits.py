@@ -13,6 +13,7 @@ import logging
 
 from ophyd import Device, EpicsMotor
 from ophyd import FormattedComponent as FCpt
+from ophyd import Component as Cpt
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -67,13 +68,13 @@ class HHLSlits(Device):
 
         super().__init__(prefix, *args, **kwargs)
 
-    # class SlitAxis(Device):
-    #     size = Cpt(EpicsMotor, "Size", labels={"motors"})
-    #     center = Cpt(EpicsMotor, "Center", labels={"motors"})
+    class SlitAxis(Device):
+        size = Cpt(EpicsMotor, "Size", labels={"motors"})
+        center = Cpt(EpicsMotor, "Center", labels={"motors"})
 
-    # # Individual slit directions
-    # h = Cpt(SlitAxis, "h")
-    # v = Cpt(SlitAxis, "v")
+    # Individual slit directions
+    h = Cpt(SlitAxis, "h")
+    v = Cpt(SlitAxis, "v")
 
     # Real motors that directly control the slits
     pitch = FCpt(EpicsMotor, "{motor_prefix}:{_pitch_motor}", labels={"motors"})
