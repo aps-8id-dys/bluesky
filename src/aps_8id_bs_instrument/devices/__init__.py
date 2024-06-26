@@ -30,7 +30,7 @@ from .data_management import (
 )
 from .flag_4 import Flag4
 from .hhl_mirrors import HHL_Mirror1, HHL_Mirror2
-from .hhl_slits import HHLSlits
+from .hhl_slits import wb_slit
 from .idt_mono import IDTMono
 from .meascomp_usb_ctr import MeasCompCtr
 from .qnw_device import QnwDevice
