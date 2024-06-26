@@ -50,10 +50,15 @@ class HHLSlits(Device):
     def __init__(
         self,
         prefix: str,
+        secondary_prefix: str,
         pitch_motor: str,
         yaw_motor: str,
         horizontal_motor: str,
         diagonal_motor: str,
+        hgap_motor: str,
+        hcen_motor: str,
+        vgap_motor: str,
+        vcen_motor: str,
         *args,
         **kwargs,
     ):
@@ -61,20 +66,21 @@ class HHLSlits(Device):
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])
 
+        pieces = secondary_prefix.strip(":").split(":")
+        self.secondary_motor_prefix = ":".join(pieces[:-1])
+
         self._pitch_motor = pitch_motor
         self._yaw_motor = yaw_motor
         self._horizontal_motor = horizontal_motor
         self._diagonal_motor = diagonal_motor
 
+        self._hgap_motor = hgap_motor
+        self._hcen_motor = hcen_motor
+        self._vgap_motor = vgap_motor
+        self._vcen_motor = vcen_motor
+
         super().__init__(prefix, *args, **kwargs)
 
-    class SlitAxis(Device):
-        size = Cpt(EpicsMotor, "Size", labels={"motors"})
-        center = Cpt(EpicsMotor, "Center", labels={"motors"})
-
-    # Individual slit directions
-    h = Cpt(SlitAxis, "h")
-    v = Cpt(SlitAxis, "v")
 
     # Real motors that directly control the slits
     pitch = FCpt(EpicsMotor, "{motor_prefix}:{_pitch_motor}", labels={"motors"})
@@ -84,15 +90,25 @@ class HHLSlits(Device):
     )
     diagonal = FCpt(EpicsMotor, "{motor_prefix}:{_diagonal_motor}", labels={"motors"})
 
+    hgap = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_hgap_motor}", labels={"motors"})
+    hcen = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_hcen_motor}", labels={"motors"})
+    vgap = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_vgap_motor}", labels={"motors"})
+    vcen = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_vcen_motor}", labels={"motors"})
 
 wb_slit = HHLSlits(
     name="wb_slit",
     prefix="8idaSoft:CR8-A1:US",
+    secondary_prefix="8idaSoft:SL-1:US",
     pitch_motor="m3",
     yaw_motor="m4",
     horizontal_motor="m1",
     diagonal_motor="m2",
+    hgap_motor="hSize",
+    hcen_motor="hCenter",
+    vgap_motor="vSize",
+    vcen_motor="vCenter",
 )
+
 mono_slit = HHLSlits(
     name="mono_slit",
     prefix="8idaSoft:CR8-A1:US",
