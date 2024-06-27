@@ -11,12 +11,6 @@ pwd
 OLD_INSTRUMENT_PREFIX=aps_8id
 NEW_INSTRUMENT_PREFIX=empty
 
-OLD_INSTRUMENT_NAME=${OLD_INSTRUMENT_PREFIX}_bs_instrument
-NEW_INSTRUMENT_NAME=${NEW_INSTRUMENT_PREFIX}_bs_instrument
-OLD_QS_NAME=${OLD_INSTRUMENT_PREFIX}_bs_qserver
-NEW_QS_NAME=${NEW_INSTRUMENT_PREFIX}_bs_qserver
-
-
 ##remove extra folders
 rm -rf .ruff_cache
 rm -rf *.egg-info
@@ -24,29 +18,23 @@ rm -rf build
 rm -rf __pycache__
 
 ##reset analysis folder
-rm -rf ./src/$OLD_INSTRUMENT_NAME/analysis/*
-sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/analysis/__init__.py
+rm -rf ./src/instrument/analysis/*
+sed -i '6,$d' ./src/instrument/analysis/__init__.py
 
 ##reset callbacks folder
-rm -rf ./src/$OLD_INSTRUMENT_NAME/callbacks/*
-sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/callbacks/__init__.py
+rm -rf ./src/instrument/callbacks/*
+sed -i '6,$d' ./src/instrument/callbacks/__init__.py
 
 ##reset devices folder
-rm -rf ./src/$OLD_INSTRUMENT_NAME/devices/*
-sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/devices/__init__.py
+rm -rf ./src/instrument/devices/*
+sed -i '6,$d' ./src/instrument/devices/__init__.py
 
 ##reset plans folder
-rm -rf ./src/$OLD_INSTRUMENT_NAME/plans/*
-sed -i '6,$d' ./src/$OLD_INSTRUMENT_NAME/plans/__init__.py
+rm -rf ./src/instrument/plans/*
+sed -i '6,$d' ./src/instrument/plans/__init__.py
 
 ##remove custom scripts
 rm -rf ./scripts/user
-
-##rename src/instrument folder
-mv src/$OLD_INSTRUMENT_NAME src/$NEW_INSTRUMENT_NAME
-
-##rename qserver
-mv src/$OLD_QS_NAME src/$NEW_QS_NAME
 
 ##rename absolute calls to the new package in scripts
 

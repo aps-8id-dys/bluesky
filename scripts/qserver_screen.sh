@@ -5,10 +5,11 @@
 
 #--------------------
 # change the program defaults here
-source "${HOME}/.bash_aliases"
+
+source "${HOME}/.bash_aliases" #not included on the package, must be deleted
 if [ "${DATABROKER_CATALOG}" == "" ]; then
     SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
-    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../aps_8id_bs_instrument/iconfig.yml  | awk '{print $NF}')
+    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../src/instrument/iconfig.yml  | awk '{print $NF}')
     # echo "Using catalog ${DATABROKER_CATALOG}"
 fi
 DEFAULT_SESSION_NAME="bluesky_queueserver-${DATABROKER_CATALOG}"
@@ -36,10 +37,10 @@ fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# echo "SESSION_NAME = ${SESSION_NAME}"
-# echo "SHELL_SCRIPT_NAME = ${SHELL_SCRIPT_NAME}"
-# echo "STARTUP_COMMAND = ${STARTUP_COMMAND}"
-# echo "STARTUP_DIR = ${STARTUP_DIR}"
+echo "SESSION_NAME = ${SESSION_NAME}"
+echo "SHELL_SCRIPT_NAME = ${SHELL_SCRIPT_NAME}"
+echo "STARTUP_COMMAND = ${STARTUP_COMMAND}"
+echo "STARTUP_DIR = ${STARTUP_DIR}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
