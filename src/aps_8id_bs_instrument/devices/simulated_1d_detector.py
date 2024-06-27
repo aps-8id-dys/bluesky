@@ -5,10 +5,10 @@ Test Examples::
 
     from apstools.plans import lineup
 
-    RE(bp.scan([sim_1d], sample.x, 0, 3, 21))
-    RE(bp.rel_scan([sim_1d], sample.x, 0, 3, 21))
-    RE(lup([sim_1d], sample.x, 0, 3, 21))
-    RE(lineup([sim_1d], sample.x, 0, 3, 21))
+    RE(bp.scan([sim_1d], sim_motor, 0, 3, 21))
+    RE(bp.rel_scan([sim_1d], sim_motor, 0, 3, 21))
+    RE(lup([sim_1d], sim_motor, 0, 3, 21))
+    RE(lineup([sim_1d], sim_motor, 0, 3, 21))
 """
 
 __all__ = """

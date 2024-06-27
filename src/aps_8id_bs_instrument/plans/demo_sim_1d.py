@@ -22,4 +22,4 @@ logger.info(__file__)
 
 def demo_sim_1d():
     """Simple plan for testing purposes."""
-    yield from bp.rel_scan([sim_1d], sim_motor, -0.5, 0.5, 11)
+    yield from bp.rel_scan([sim_1d], sim_motor, 0, 3, 21)
