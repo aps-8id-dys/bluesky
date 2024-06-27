@@ -124,21 +124,3 @@ PV_WRITE_TIMEOUT: *TIMEOUT
 PV_CONNECTION_TIMEOUT: 5
 
 XMODE_DEBUG_LEVEL: Minimal
-
-# Minimum software package version checks: MAJOR.minor (no .patch).
-# These will be converted to tuple() for comparisons.
-MINIMUM_PYTHON_VERSION:
-  - 3
-  - 10
-MINIMUM_BLUESKY_VERSION:
-  - 1
-  - 10
-MINIMUM_DATABROKER_VERSION:
-  - 1
-  - 2
-MINIMUM_OPHYD_VERSION:
-  - 1
-  - 7
-
-# identify the version of this iconfig.yml file
-ICONFIG_VERSION: 1.0.1
