@@ -14,7 +14,7 @@ How to start the queueserver process::
 
 """
 
-from .queueserver import (
+from ..src.aps_8id_bs_instrument.qserver.queueserver import (
     print_devices_and_signals,
     print_instrument_configuration,
     print_plans,

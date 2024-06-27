@@ -11,7 +11,7 @@ import pyRestTable
 from ophyd import Device, Signal
 
 from .. import iconfig
-from ..callbacks.spec_data_file_writer import specwriter
+from ..callbacks import *  # noqa
 from ..devices import *  # noqa
 from ..initialize_bs_tools import RE, cat
 from ..plans import *  # noqa
@@ -77,9 +77,9 @@ def print_RE_metadata():
 
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
-    if specwriter is not None:
-        RE.subscribe(specwriter.receiver)
-        logger.info(f"writing to SPEC file: {specwriter.spec_filename}")
+    if specwriter is not None: # noqa
+        RE.subscribe(specwriter.receiver) # noqa
+        logger.info(f"writing to SPEC file: {specwriter.spec_filename}") # noqa
         logger.info("   >>>>   Using default SPEC file name   <<<<")
         logger.info("   file will be created when bluesky ends its next scan")
         logger.info("   to change SPEC file, use command:   newSpecFile('title')")
