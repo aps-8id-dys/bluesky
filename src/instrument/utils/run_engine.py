@@ -21,7 +21,7 @@ def save_data(name, doc):
     """save data for databroker"""
     global catalog
     if catalog is None:
-        catalog = databroker.catalog["8idi_xpcs"]
+        catalog = databroker.catalog["bluesky"]
     # Save the document
     catalog.v1.insert(name, doc)
 
