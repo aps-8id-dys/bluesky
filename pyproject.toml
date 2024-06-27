@@ -16,7 +16,8 @@ dependencies = [
     "bluesky-queueserver",
     "ophyd",
     "ophyd-registry",
-    "ipython"
+    "ipython",
+    "hdf5plugin"
 ]
 
 [project.optional-dependencies]
