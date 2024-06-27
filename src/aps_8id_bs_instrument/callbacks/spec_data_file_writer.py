@@ -8,16 +8,11 @@ __all__ = [
     "newSpecFile",
 ]
 
-import logging
-
-try:
-    import apstools.callbacks as APS_fw
-except ModuleNotFoundError:
-    import apstools.filewriters as APS_fw
-
 import datetime
+import logging
 import pathlib
 
+import apstools.callbacks as APS_fw
 import apstools.utils
 
 from ..initialize_bs_tools import RE
