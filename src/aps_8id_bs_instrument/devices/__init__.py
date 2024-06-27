@@ -31,6 +31,8 @@ from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_4 import sl4
+
+from .simulated_1d_detector import sim1d, motor
 from .ad_eiger_4M import eiger4M
 from .ad_flag1 import flag1ad
 from .ad_flag2 import flag2ad
