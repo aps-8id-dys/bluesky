@@ -35,7 +35,7 @@ peaks = bec.peaks  # just as alias for less typing
 bec.disable_baseline()
 
 # Set up a RunEngine and use metadata backed PersistentDict
-RE = run_engine(connect_databroker=True, use_bec=True, extra_md=sd)
+RE = run_engine(connect_databroker=True, use_bec=False, extra_md=sd)
 RE.md = PersistentDict(MD_PATH)
 
 # Connect with our mongodb database
