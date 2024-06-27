@@ -35,7 +35,7 @@ from .idt_mono import IDTMono
 from .meascomp_usb_ctr import MeasCompCtr
 from .qnw_device import QnwDevice
 from .slit_4 import sl4
-from .simulated_1d_detector import sim1d,motor
+from .simulated_1d_detector import sim1d, motor
 
 from .area_detectors import (
     adsim4M,
