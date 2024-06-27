@@ -234,9 +234,7 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
 
     WRITE_PATH_TEMPLATE = f"{IOC_FILES_ROOT / IMAGE_DIR}/"
     READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
-    print("adconf:")
-    print(ad_conf)
-    print("here:" + str(det_key))
+
     cam_class = {
         "ADSIM_4M": SimDetectorCam_V34,
         "ADSIM_16M": SimDetectorCam_V34,
