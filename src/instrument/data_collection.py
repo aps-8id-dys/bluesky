@@ -9,6 +9,7 @@ from .callbacks.spec_data_file_writer import specwriter
 from .initialize_bs_tools import RE
 from .devices import *  # noqa
 from .plans import *  # noqa
+import hdf5plugin # noqa
 
 ## ipython helpers
 from .utils.mpl_helper import *  # noqa
@@ -25,3 +26,5 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
         logger.info("   to change SPEC file, use command:   newSpecFile('title')")
 
 logger.info("#### data collection tools are loaded is complete. ####")
+
+
