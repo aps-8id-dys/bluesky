@@ -14,7 +14,6 @@ import databroker
 import ophyd
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
-from bluesky.utils import PersistentDict
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
@@ -23,7 +22,7 @@ from .utils.config_utils import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
 
-# TODO: This is not inside init because, there are aspects that do not work with qserver.
+# TODO: This is not inside init. Some aspects do not work with qserver.
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -31,12 +30,9 @@ logger.info(__file__)
 sd = SupplementalData()
 
 bec = BestEffortCallback()
-peaks = bec.peaks  # just as alias for less typing
+peaks = bec.peaks  # just an alias for less typing
 bec.disable_baseline()
-
-# Set up a RunEngine and use metadata backed PersistentDict
-RE = run_engine(connect_databroker=True, use_bec=False, extra_md=sd)
-RE.md = PersistentDict(MD_PATH)
+bec.disable_plots()
 
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
@@ -47,16 +43,21 @@ except KeyError:
     cat = databroker.temp().v2
     logger.info("using TEMPORARY databroker catalog '%s'", cat.name)
 
-# Subscribe metadatastore to documents.
-# If this is removed, data is not saved to metadatastore.
-RE.subscribe(cat.v1.insert)
+# Set up a RunEngine.
+RE = run_engine(cat=cat, bec=bec, preprocessors=sd, md_path=MD_PATH)
 
-ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())  # TODO: ASK MARK
+# OPHYD_CONTROL_LAYER is an application of "lessons learned."
+# The next line can be used to switch from PyEpics to caproto.
+# Only used in a couple rare cases where PyEpics code was failing.
+# It's defined here since it was difficult to find how to do this
+# in the ophyd documentation.
+ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
-# set default timeout for all EpicsSignal connections & communications
-TIMEOUT = 60
+# Set default timeout for all EpicsSignal connections & communications.
+TIMEOUT = 60  # default used next...
 if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
+    # Only BEFORE any EpicsSignalBase (or subclass) are created!
     EpicsSignalBase.set_defaults(
         auto_monitor=True,
         timeout=iconfig.get("PV_READ_TIMEOUT", TIMEOUT),
@@ -67,6 +68,7 @@ if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
 
 # Create a registry of ophyd devices
 oregistry = Registry(auto_register=True)
+
 
 _pv = iconfig.get("RUN_ENGINE_SCAN_ID_PV")
 if _pv is None:
@@ -99,5 +101,6 @@ else:
     RE.scan_id_source = epics_scan_id_source
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
+
 
 logger.info("#### Bluesky tools are loaded is complete. ####")
