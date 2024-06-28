@@ -48,6 +48,7 @@ def run_engine(
     # Install databroker connection
     if cat is None:
         cat = databroker.temp().v2
+    catalog = cat  # TODO: Is the global symbol in this module used?
     RE.subscribe(cat.v1.insert)
 
     # Add preprocessors
