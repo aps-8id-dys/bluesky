@@ -8,8 +8,7 @@ echo $BASE_DIR
 cd $BASE_DIR
 pwd
 
-OLD_INSTRUMENT_PREFIX=aps_8id
-NEW_INSTRUMENT_PREFIX=empty
+INSTRUMENT_SLUG=aps_8id
 
 ##remove extra folders
 rm -rf .ruff_cache

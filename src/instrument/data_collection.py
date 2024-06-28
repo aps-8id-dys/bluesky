@@ -9,6 +9,7 @@ from .callbacks.spec_data_file_writer import specwriter
 from .initialize_bs_tools import RE
 from .devices import *  # noqa
 from .plans import *  # noqa
+import hdf5plugin  # noqa
 
 ## ipython helpers
 from .utils.mpl_helper import *  # noqa
