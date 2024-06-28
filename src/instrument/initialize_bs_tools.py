@@ -50,7 +50,7 @@ RE = run_engine(cat=cat, bec=bec, preprocessors=sd, md_path=MD_PATH)
 # The next line can be used to switch from PyEpics to caproto.
 # Only used in a couple rare cases where PyEpics code was failing.
 # It's defined here since it was difficult to find how to do this
-# in the ophyd documentation.  
+# in the ophyd documentation.
 ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
 logger.info(f"using ophyd control layer: {ophyd.cl.name}")
 
