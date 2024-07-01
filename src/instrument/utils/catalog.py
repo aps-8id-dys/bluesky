@@ -5,7 +5,6 @@ Utility that enables bluesky catalog
 import logging
 
 import databroker
-import numpy as np
 
 # from tiled.client import from_uri
 # from tiled.client.cache import Cache
@@ -13,36 +12,6 @@ import numpy as np
 # from ._iconfig import load_config
 
 log = logging.getLogger(__name__)
-
-
-def unsnake(arr: np.ndarray, snaking: list) -> np.ndarray:
-    """Unsnake a nump array.
-
-    For each axis in *arr*, there should be a corresponding True/False
-    in *snaking* whether that axis should have alternating rows. The
-    first entry is ignored as it doesn't make sense to snake the first
-    axis.
-
-    Returns
-    =======
-    unsnaked
-      A copy of *arr* with the odd-numbered axes flipped (if indicated
-      by *snaking*).
-
-    """
-    # arr = np.copy(arr)
-    # Create some slice object for easier manipulation
-    full_axis = slice(None)
-    alternating = slice(None, None, 2)
-    flipped = slice(None, None, -1)
-    # Flip each axis if necessary (skipping the first axis)
-    for axis, is_snaked in enumerate(snaking[1:]):
-        if not is_snaked:
-            continue
-        slices = (full_axis,) * axis
-        slices += (alternating,)
-        arr[slices] = arr[slices + (flipped,)]
-    return arr
 
 
 def load_catalog(name: str = "bluesky"):
@@ -120,52 +89,6 @@ def load_data(uid, catalog_name="bluesky", stream="primary"):
     res = load_result(uid=uid, catalog_name=catalog_name, stream=stream)
     data = res.read()
     return data
-
-
-def with_thread_lock(fn):
-    """Makes sure the function isn't accessed concurrently."""
-
-    def wrapper(obj, *args, **kwargs):
-        obj._lock.acquire()
-        try:
-            fn(obj, *args, **kwargs)
-        finally:
-            obj._lock.release()
-
-    return wrapper
-
-
-# class ThreadSafeCache(Cache):
-#     """Equivalent to the regular cache, but thread-safe.
-
-#     Ensures that sqlite3 is built with concurrency features, and
-#     ensures that no two write operations happen concurrently.
-
-#     """
-
-#     def __init__(
-#         self,
-#         *args,
-#         **kwargs,
-#     ):
-#         super().__init__(*args, **kwargs)
-#         self._lock = threading.Lock()
-
-#     def write_safe(self):
-#         """
-#         Check that it is safe to write.
-
-#         SQLite is not threadsafe for concurrent _writes_.
-#         """
-#         is_main_thread = threading.current_thread().ident == self._owner_thread
-#         sqlite_is_safe = sqlite3.threadsafety == 1
-#         return is_main_thread or sqlite_is_safe
-
-#     # Wrap the accessor methods so they wait for the lock
-#     clear = with_thread_lock(Cache.clear)
-#     set = with_thread_lock(Cache.set)
-#     get = with_thread_lock(Cache.get)
-#     delete = with_thread_lock(Cache.delete)
 
 
 # def tiled_client(entry_node=None, uri=None, cache_filepath=None):

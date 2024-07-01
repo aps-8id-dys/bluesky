@@ -27,12 +27,14 @@ from .utils.run_engine import run_engine
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-sd = SupplementalData()
+sd = SupplementalData()  # User will interact with the sd object, configure the RE for additional things to publish
 
-bec = BestEffortCallback()
+bec = BestEffortCallback()  # Responsible for plots, only be instatiated once
+bec.disable_baseline()  # User config
+bec.disable_plots()  # User config
+
 peaks = bec.peaks  # just an alias for less typing
-bec.disable_baseline()
-bec.disable_plots()
+
 
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
