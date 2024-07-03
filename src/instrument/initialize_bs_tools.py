@@ -31,7 +31,7 @@ sd = SupplementalData()  # User will interact with the sd object, configure the 
 
 bec = BestEffortCallback()  # Responsible for plots, only be instatiated once
 bec.disable_baseline()  # User config
-bec.disable_plots()  # User config
+# bec.disable_plots()  # User config
 
 peaks = bec.peaks  # just an alias for less typing
 
