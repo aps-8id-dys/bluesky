@@ -48,6 +48,7 @@ sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
 xpcs_header = Signal(name="xpcs_header", value=RE.md.get("xpcs_header", "A001"))
 xpcs_index = Signal(name="xpcs_index", value=RE.md.get("xpcs_index", 0))
 
+APS_CYCLE = "2024-2"
 DEFAULT_DETECTOR_NAME = "eiger4M"
 DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
 TITLE = "BDP_XPCS_demo"  # keep this short, single-word
@@ -264,9 +265,10 @@ def xpcs_bdp_demo_plan(
         description=description,
         header=xpcs_header.get(),
         metadatafile=nxwriter.file_name.name,
-        index=xpcs_index.get(),
+        index=xpcs_index.get(),a
         dataDir=str(data_path),
         concise=dm_concise,
+        aps_cycle=APS_CYCLE,  # TODO: get from apstools
         # instrument metadata (expected by nxwriter)
         # values from pete7.hdf
         # TODO: set from actual instrument values
