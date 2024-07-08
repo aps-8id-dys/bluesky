@@ -1,4 +1,4 @@
-# ID8 Bluesky Instrument
+# 8-ID-I XPCS Bluesky Instrument
 
 **Caution**:  If you will use the [bluesky queueserver (QS)](./qserver.md), note
 that _every_ Python file in this directory will be executed when QS starts the
