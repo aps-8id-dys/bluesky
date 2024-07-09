@@ -1,11 +1,11 @@
 import logging
 import time
 
-from aps_8id_bs_instrument import iconfig
-from aps_8id_bs_instrument.utils.session_logs import logger
-
 from bluesky.magics import BlueskyMagics
 from IPython import get_ipython
+
+from . import iconfig
+from .utils.session_logs import logger
 
 logging.basicConfig(level=logging.WARNING)
 logger.info(__file__)
@@ -21,7 +21,7 @@ if _ip is not None:
 
 #start timer
 t0 = time.monotonic()
-from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
+from initialize_bs_tools import (  # noqa: F401
     RE,
     bec,
     cat,
@@ -29,7 +29,7 @@ from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
     peaks,
     sd,
 )
-from aps_8id_bs_instrument.data_collection import *  # noqa
+from data_collection import *  # noqa
 
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 
