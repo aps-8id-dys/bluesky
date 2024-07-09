@@ -17,7 +17,8 @@ dependencies = [
     "ophyd",
     "ophyd-registry",
     "ipython",
-    "hdf5plugin"
+    "hdf5plugin",
+    "jupyterlab"
 ]
 
 [project.optional-dependencies]
