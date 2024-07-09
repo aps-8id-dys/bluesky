@@ -21,7 +21,7 @@ if _ip is not None:
 
 #start timer
 t0 = time.monotonic()
-from initialize_bs_tools import (  # noqa: F401
+from aps_8id_bs_instrument.initialize_bs_tools import (  # noqa: F401
     RE,
     bec,
     cat,
@@ -29,7 +29,7 @@ from initialize_bs_tools import (  # noqa: F401
     peaks,
     sd,
 )
-from data_collection import *  # noqa
+from aps_8id_bs_instrument.data_collection import *  # noqa
 
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 
