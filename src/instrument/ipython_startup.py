@@ -7,8 +7,8 @@ from IPython import get_ipython
 from . import iconfig
 from .utils.session_logs import logger
 
-logging.basicConfig(level=logging.WARNING)
-logger.info(__file__)
+# logging.basicConfig(level=logging.WARNING)
+# logger.info(__file__)
 
 _ip = get_ipython()
 if _ip is not None:
