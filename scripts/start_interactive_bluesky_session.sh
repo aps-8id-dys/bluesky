@@ -15,7 +15,7 @@ handle_keyword() {
       echo "You chose ipython!"
       ipython -i -c "%run bluesky_interactive_startup.ipy"
       ;;
-      
+
     jupyter)
       echo "You chose jupyter!"
       echo "Sadly Eric has not finished that yet, try again later"

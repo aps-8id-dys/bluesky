@@ -1,12 +1,18 @@
-# ~/my_repo/create_and_open_notebook.py
+"""
+Helper script to pre-load bluesky_interactive_startup and start a jupyter notebooks instance with it
+"""
+
 import os
-import nbformat as nbf
-from jupyter import notebookapp
 import webbrowser
+
+import nbformat as nbf
+from notebook import notebookapp
 
 # Define the notebook content
 notebook_content = nbf.v4.new_notebook()
-notebook_content.cells.append(nbf.v4.new_code_cell("%run bluesky_interactive_startup.ipy"))
+notebook_content.cells.append(
+    nbf.v4.new_code_cell("%run bluesky_interactive_startup.ipy")
+)
 
 # Write the notebook to a file
 notebook_path = os.path.expanduser("~/my_repo/auto_run_notebook.ipynb")
@@ -20,5 +26,5 @@ os.system(f"jupyter lab {notebook_path}")
 servers = list(notebookapp.list_running_servers())
 if servers:
     server = servers[0]
-    notebook_url = server['url'] + 'lab/tree/' + notebook_path
+    notebook_url = server["url"] + "lab/tree/" + notebook_path
     webbrowser.open(notebook_url)
