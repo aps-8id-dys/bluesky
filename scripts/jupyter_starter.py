@@ -1,7 +1,7 @@
 # ~/my_repo/create_and_open_notebook.py
 import os
 import nbformat as nbf
-from notebook import notebookapp
+from jupyter import notebookapp
 import webbrowser
 
 # Define the notebook content

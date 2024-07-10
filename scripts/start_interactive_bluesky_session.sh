@@ -18,7 +18,8 @@ handle_keyword() {
       
     jupyter)
       echo "You chose jupyter!"
-      jupyter lab --NotebookApp.exec_files=['bluesky_interactive_startup.ipy']
+      echo "Sadly Eric has not finished that yet, try again later"
+      # jupyter lab --NotebookApp.exec_files=['bluesky_interactive_startup.ipy']
       ;;
     *)
       echo "Invalid keyword. Please specify either 'ipython' or 'jupyter'."
