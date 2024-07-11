@@ -4,7 +4,7 @@ configure for data collection in a console session
 
 from apstools.utils import *  # noqa
 
-from . import iconfig
+from .utils.iconfig_loader import iconfig  # noqa
 from .callbacks.spec_data_file_writer import specwriter
 from .initialize_bs_tools import RE
 from .devices import *  # noqa

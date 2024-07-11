@@ -18,7 +18,7 @@ from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from .utils.catalog import load_catalog
-from .utils.config_utils import iconfig
+from .utils.iconfig_loader import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
 
