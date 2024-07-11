@@ -29,7 +29,7 @@ print(__file__)
 def load_config_yaml():
     """Load iconfig.yml config files."""
 
-    CONFIG_FILE = pathlib.Path(__file__).absolute().parent.parent / "iconfig.yml"
+    CONFIG_FILE = pathlib.Path(__file__).absolute().parent.parent / "instrument_config.yml"
 
     if CONFIG_FILE.exists():
         iconfig = yaml.load(open(CONFIG_FILE, "r").read(), yaml.Loader)

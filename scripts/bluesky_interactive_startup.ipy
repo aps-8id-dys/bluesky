@@ -11,8 +11,8 @@ from aps_8id_bs_instrument.utils.session_logs import logger
 from bluesky.magics import BlueskyMagics
 from IPython import get_ipython
 
-logging.basicConfig(level=logging.WARNING)
-logger.info(__file__)
+# logging.basicConfig(level=logging.WARNING)
+# logger.info(__file__)
 
 _ip = get_ipython()
 if _ip is not None:
