@@ -104,5 +104,4 @@ else:
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
 
-
 logger.info("#### Bluesky tools are loaded is complete. ####")
