@@ -10,11 +10,11 @@ import ophyd
 import pyRestTable
 from ophyd import Device, Signal
 
-from .. import iconfig
 from ..callbacks import *  # noqa
 from ..devices import *  # noqa
 from ..initialize_bs_tools import RE, cat
 from ..plans import *  # noqa
+from ..utils.iconfig_loader import iconfig
 
 # guides choice of module to import cat
 iconfig["framework"] = "queueserver"

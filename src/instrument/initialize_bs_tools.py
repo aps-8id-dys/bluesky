@@ -12,13 +12,18 @@ import logging
 # convenience imports
 import databroker
 import ophyd
+
+# from .dm.dm_setup import (
+#     DM_WORKFLOW_OWNER,  #noqa TODO: where will this permenantly live?
+# )
+from apstools.utils import dm_setup
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from .utils.catalog import load_catalog
-from .utils.config_utils import iconfig
+from .utils.iconfig_loader import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
 
@@ -26,6 +31,8 @@ from .utils.run_engine import run_engine
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
+
+dm_setup(iconfig["DM_SETUP_FILE"])
 
 sd = SupplementalData()  # User will interact with the sd object, configure the RE for additional things to publish
 
@@ -103,6 +110,5 @@ else:
     RE.scan_id_source = epics_scan_id_source
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
-
 
 logger.info("#### Bluesky tools are loaded is complete. ####")
