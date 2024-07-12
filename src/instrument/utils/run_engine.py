@@ -6,9 +6,8 @@ import databroker
 from bluesky import RunEngine as BlueskyRunEngine
 from bluesky import suspenders
 from bluesky.utils import PersistentDict, ProgressBarManager
-from ophydregistry import Registry
+from ophydregistry import ComponentNotFound, Registry
 
-from .exceptions import ComponentNotFound
 from .iconfig_loader import iconfig
 
 log = logging.getLogger(__name__)
