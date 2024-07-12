@@ -13,7 +13,7 @@ import logging
 from apstools.callbacks import NXWriterAPS
 
 # from .. import iconfig
-from ..utils.iconfig_loader import iconfig  # noqa
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

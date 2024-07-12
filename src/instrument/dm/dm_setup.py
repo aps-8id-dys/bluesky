@@ -11,7 +11,7 @@ import logging
 import os
 import pathlib
 
-from ..utils.iconfig_loader import iconfig  # noqa
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 

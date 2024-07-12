@@ -13,9 +13,9 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from ophyd.ophydobj import Kind
 
-from ..utils.iconfig_loader import iconfig  # noqa
 from ..devices import lambda2M
 from ..initialize_bs_tools import bec
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

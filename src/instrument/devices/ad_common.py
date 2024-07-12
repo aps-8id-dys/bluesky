@@ -51,7 +51,7 @@ from ophyd.areadetector.plugins import (
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from ..utils.iconfig_loader import iconfig  # noqa
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

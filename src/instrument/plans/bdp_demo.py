@@ -23,7 +23,6 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ophyd import Signal
 
-from ..utils.iconfig_loader import iconfig  # noqa
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import DM_WorkflowConnector, adsim4M, dm_experiment, eiger4M, lambda2M
 from ..dm.aps_data_management import (
@@ -40,6 +39,7 @@ from ..dm.aps_data_management import (
 )
 from ..initialize_bs_tools import RE, cat
 from ..plans.ad_setup_plans import setup_hdf5_plugin, write_if_new
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
