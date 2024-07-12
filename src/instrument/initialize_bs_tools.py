@@ -12,6 +12,11 @@ import logging
 # convenience imports
 import databroker
 import ophyd
+
+# from .dm.dm_setup import (
+#     DM_WORKFLOW_OWNER,  #noqa TODO: where will this permenantly live?
+# )
+from apstools.utils import dm_setup
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from ophyd.signal import EpicsSignalBase
@@ -26,6 +31,8 @@ from .utils.run_engine import run_engine
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
+
+dm_setup(iconfig["DM_SETUP_FILE"])
 
 sd = SupplementalData()  # User will interact with the sd object, configure the RE for additional things to publish
 
