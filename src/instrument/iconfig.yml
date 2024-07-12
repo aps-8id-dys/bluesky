@@ -104,7 +104,6 @@ AREA_DETECTOR:
 # Directory to "autosave" the RE.md dictionary (uses PersistentDict)
 # Uncomment and modify to change from the default.
 RUNENGINE_MD_PATH: /home/beams/8IDIUSER/.config/Bluesky_RunEngine_md
-# RUNENGINE_MD_PATH: /home/beams0/ECODREA/.config/Bluesky_RunEngine_md
 
 # override default control layer for ophyd
 # if undefined, defaults to PyEpics
