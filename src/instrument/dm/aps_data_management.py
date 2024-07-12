@@ -82,7 +82,7 @@ from os import environ
 import pyRestTable
 from bluesky import plan_stubs as bps
 
-from .. import iconfig
+from ..utils.iconfig_loader import iconfig  # noqa
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

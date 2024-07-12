@@ -18,7 +18,7 @@ from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from .utils.catalog import load_catalog
-from .utils.config_utils import iconfig
+from .utils.iconfig_loader import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
 
@@ -103,6 +103,5 @@ else:
     RE.scan_id_source = epics_scan_id_source
     scan_id_epics.wait_for_connection()
     RE.md["scan_id"] = scan_id_epics.get()
-
 
 logger.info("#### Bluesky tools are loaded is complete. ####")

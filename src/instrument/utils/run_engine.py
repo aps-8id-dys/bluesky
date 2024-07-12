@@ -8,8 +8,8 @@ from bluesky import suspenders
 from bluesky.utils import PersistentDict, ProgressBarManager
 from ophydregistry import Registry
 
-from .config_utils import iconfig
 from .exceptions import ComponentNotFound
+from .iconfig_loader import iconfig
 
 log = logging.getLogger(__name__)
 

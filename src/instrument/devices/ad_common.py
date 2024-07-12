@@ -51,7 +51,7 @@ from ophyd.areadetector.plugins import (
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from .. import iconfig  # noqa
+from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -299,7 +299,6 @@ def XpcsAD_factory(
 
     class AreaDetector(SingleTrigger, DetectorBase):
         cam = ADComponent(cam_class, "cam1:")
-        print("creating class")
         # In the AD IOC, cam --> codec & image
         codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
         if use_image:
