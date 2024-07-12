@@ -89,9 +89,6 @@ def bdp_acquire(
 ):
     """Repeated Acquisition (using Lambda2M detector)."""
 
-    if md is None:
-        md = {}
-
     det = lambda2M
 
     det.roi1.kind = Kind.omitted  # reset (so we can ignore) it
@@ -132,7 +129,7 @@ def bdp_acquire(
         det.hdf1.kind = Kind.omitted
     # fmt: on
 
-    _md.update(md)  # add the user-supplied metadata, if any
+    _md.update(md or {})  # add the user-supplied metadata, if any
     print(f"run metadata: {_md}")
 
     # BestEffortCallback not necessary here and it slows down the plan.
