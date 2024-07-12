@@ -221,7 +221,7 @@ def xpcs_bdp_demo_plan(
     if data_path.exists():
         raise FileExistsError(
             # fmt: off
-            f"Found existing directory '{data_path}'." "  Will not overwrite."
+            f"Found existing directory '{data_path}'.  Will not overwrite."
             # fmt: on
         )
     # AD will create this directory if not exists.
