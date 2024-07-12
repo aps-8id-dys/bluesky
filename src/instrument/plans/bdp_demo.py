@@ -23,7 +23,7 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ophyd import Signal
 
-from .. import iconfig
+from ..utils.iconfig_loader import iconfig  # noqa
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import DM_WorkflowConnector, adsim4M, dm_experiment, eiger4M, lambda2M
 from ..dm.aps_data_management import (

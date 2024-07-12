@@ -10,7 +10,7 @@ import ophyd
 import pyRestTable
 from ophyd import Device, Signal
 
-from .. import iconfig
+from ..utils.iconfig_loader import iconfig  # noqa
 from ..callbacks import *  # noqa
 from ..devices import *  # noqa
 from ..initialize_bs_tools import RE, cat

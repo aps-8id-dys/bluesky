@@ -11,7 +11,7 @@ import logging
 
 from ophyd.signal import EpicsSignal, EpicsSignalBase
 
-from .. import iconfig
+from ..utils.iconfig_loader import iconfig  # noqa
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

@@ -44,7 +44,7 @@ from apstools.utils import (
     stream_log_handler,
 )
 
-from .. import iconfig
+from ..utils.iconfig_loader import iconfig  # noqa
 
 # fmt: on
 
