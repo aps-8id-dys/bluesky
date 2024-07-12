@@ -4,7 +4,7 @@ version = "0.0.1"
 description='APS 8ID Beamline Bluesky Instrument Control'
 authors = [
     {name = "Eric Codrea", email = "ecodrea@anl.gov"},
-    {name = "Pete jemian", email = "pjemien@anl.gov"},
+    {name = "Pete Jemian", email = "jemian@anl.gov"},
     {name = "Rafael Vescovi", email = "ravescovi@anl.gov"},
 ]
 requires-python = ">=3.10"
