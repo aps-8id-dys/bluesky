@@ -2,7 +2,7 @@ name: bs_v1
 
 # create:
 #   conda env create --force -n bs_v1 -f ./environment.yml --solver=libmamba
-co
+
 channels:
   - apsu
   - conda-forge
