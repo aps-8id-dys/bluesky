@@ -3,6 +3,7 @@ configure for data collection in a console session
 """
 
 from apstools.utils import *  # noqa
+from .dm.dm_setup import DM_WORKFLOW_OWNER #noqa
 
 from .utils.iconfig_loader import iconfig
 from .callbacks.spec_data_file_writer import specwriter
