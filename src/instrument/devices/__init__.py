@@ -1,5 +1,5 @@
 """
-local, custom Device definitions
+Custom Device Definitions & Instatiation
 """
 
 # flake8: noqa

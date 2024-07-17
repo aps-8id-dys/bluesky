@@ -1,5 +1,5 @@
 """
-local, custom Bluesky plans (scans) and other functions
+Custom Plan Definitions & Instatiations
 """
 
 # flake8: noqa

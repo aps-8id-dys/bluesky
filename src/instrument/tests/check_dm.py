@@ -1,5 +1,5 @@
 """
-Test to check if dm is working
+Test to check if dm is setup properly
 """
 
 import os

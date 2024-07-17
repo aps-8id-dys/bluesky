@@ -1,4 +1,4 @@
-"""Test for APS Subnet"""
+"""Test to see if you're on APS Subnet"""
 
 import socket
 import warnings

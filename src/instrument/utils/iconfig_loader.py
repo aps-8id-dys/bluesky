@@ -1,5 +1,5 @@
 """
-Provide information from the configuration.yml file.
+Provides and instatiates information from the iconfig.yml file.
 
 Example YAML configuration file::
 

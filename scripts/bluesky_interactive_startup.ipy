@@ -2,7 +2,6 @@
 Replacement for ipython profile
 '''
 
-import logging
 import time
 
 from aps_8id_bs_instrument.utils.iconfig_loader import iconfig
