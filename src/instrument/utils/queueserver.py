@@ -8,11 +8,14 @@ import os
 
 import ophyd
 import pyRestTable
-from ophyd import Device, Signal
+from ophyd import Device
+from ophyd import Signal
 
 from ..callbacks import *  # noqa
 from ..devices import *  # noqa
-from ..initialize_bs_tools import RE, cat, sd
+from ..initialize_bs_tools import RE
+from ..initialize_bs_tools import cat
+from ..initialize_bs_tools import sd
 from ..plans import *  # noqa
 from .iconfig_loader import iconfig
 

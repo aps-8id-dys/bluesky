@@ -13,7 +13,9 @@ __all__ = """
 import logging
 
 from bluesky import plans as bp
-from ophyd import Component, Device, Signal
+from ophyd import Component
+from ophyd import Device
+from ophyd import Signal
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

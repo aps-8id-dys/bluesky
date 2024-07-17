@@ -33,7 +33,9 @@ import logging
 import time
 
 from apstools.utils import run_in_thread
-from ophyd import Component, Device, Signal
+from ophyd import Component
+from ophyd import Device
+from ophyd import Signal
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level

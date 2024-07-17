@@ -24,21 +24,25 @@ from bluesky import preprocessors as bpp
 from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices import DM_WorkflowConnector, adsim4M, dm_experiment, eiger4M, lambda2M
-from ..dm.aps_data_management import (
-    SECOND,
-    build_run_metadata_dict,
-    dm_api_daq,
-    dm_api_ds,
-    dm_api_proc,
-    dm_daq_wait_upload_plan,
-    dm_isDaqActive,
-    dm_start_daq,
-    share_bluesky_metadata_with_dm,
-    validate_experiment_dataDirectory,
-)
-from ..initialize_bs_tools import RE, cat
-from ..plans.ad_setup_plans import setup_hdf5_plugin, write_if_new
+from ..devices import DM_WorkflowConnector
+from ..devices import adsim4M
+from ..devices import dm_experiment
+from ..devices import eiger4M
+from ..devices import lambda2M
+from ..dm.aps_data_management import SECOND
+from ..dm.aps_data_management import build_run_metadata_dict
+from ..dm.aps_data_management import dm_api_daq
+from ..dm.aps_data_management import dm_api_ds
+from ..dm.aps_data_management import dm_api_proc
+from ..dm.aps_data_management import dm_daq_wait_upload_plan
+from ..dm.aps_data_management import dm_isDaqActive
+from ..dm.aps_data_management import dm_start_daq
+from ..dm.aps_data_management import share_bluesky_metadata_with_dm
+from ..dm.aps_data_management import validate_experiment_dataDirectory
+from ..initialize_bs_tools import RE
+from ..initialize_bs_tools import cat
+from ..plans.ad_setup_plans import setup_hdf5_plugin
+from ..plans.ad_setup_plans import write_if_new
 from ..utils.iconfig_loader import iconfig
 
 logger = logging.getLogger(__name__)
@@ -321,7 +325,8 @@ def xpcs_bdp_demo_plan(
     #
     @bpp.subs_decorator(nxwriter.receiver)
     def acquire():
-        from .ad_setup_plans import ad_acquire_setup, eiger4M_acquire_setup
+        from .ad_setup_plans import ad_acquire_setup
+        from .ad_setup_plans import eiger4M_acquire_setup
 
         # https://bcda-aps.github.io/apstools/latest/examples/de_1_adsim_hdf5_custom_names.html#HDF5:-AD_EpicsFileNameHDF5Plugin
         yield from ad_acquire_setup(

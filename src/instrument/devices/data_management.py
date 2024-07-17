@@ -18,9 +18,7 @@ from ophyd import Signal
 from ..dm.aps_data_management import dm_api_proc
 
 # from apstools.devices import DM_WorkflowConnector
-from ._apstools_data_management import (
-    DM_WorkflowConnector,
-)
+from ._apstools_data_management import DM_WorkflowConnector
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level

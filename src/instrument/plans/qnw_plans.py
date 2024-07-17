@@ -20,7 +20,9 @@ import logging
 
 from bluesky import plan_stubs as bps
 
-from ..devices import qnw_env1, qnw_env2, qnw_env3
+from ..devices import qnw_env1
+from ..devices import qnw_env2
+from ..devices import qnw_env3
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

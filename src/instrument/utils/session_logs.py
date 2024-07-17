@@ -38,11 +38,9 @@ __all__ = [
 import logging
 import pathlib
 
-from apstools.utils import (
-    file_log_handler,
-    setup_IPython_console_logging,
-    stream_log_handler,
-)
+from apstools.utils import file_log_handler
+from apstools.utils import setup_IPython_console_logging
+from apstools.utils import stream_log_handler
 
 from ..utils.iconfig_loader import iconfig
 

@@ -9,7 +9,8 @@ __all__ = """
 
 import logging
 
-from ophyd.signal import EpicsSignal, EpicsSignalBase
+from ophyd.signal import EpicsSignal
+from ophyd.signal import EpicsSignalBase
 
 from ..utils.iconfig_loader import iconfig
 

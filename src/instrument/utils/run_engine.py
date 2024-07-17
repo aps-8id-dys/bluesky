@@ -5,8 +5,10 @@ import logging
 import databroker
 from bluesky import RunEngine as BlueskyRunEngine
 from bluesky import suspenders
-from bluesky.utils import PersistentDict, ProgressBarManager
-from ophydregistry import ComponentNotFound, Registry
+from bluesky.utils import PersistentDict
+from bluesky.utils import ProgressBarManager
+from ophydregistry import ComponentNotFound
+from ophydregistry import Registry
 
 from .iconfig_loader import iconfig
 

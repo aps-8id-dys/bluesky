@@ -181,9 +181,7 @@ class MyNXWriter(NXWriterAPS):
     def get_ioc_file_path(self):
         import pathlib
 
-        from ..devices.ad_lambda2M import (
-            LAMBDA2M_FILES_ROOT,
-        )
+        from ..devices.ad_lambda2M import LAMBDA2M_FILES_ROOT
 
         # NOTE: The default is specific for the Lambda2M detector!
         # Actual IOC file path is not present in the resource or datum docs.

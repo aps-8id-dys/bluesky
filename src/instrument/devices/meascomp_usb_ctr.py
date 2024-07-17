@@ -38,7 +38,11 @@ __all__ = """
 
 import logging
 
-from ophyd import Component, Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 from ophyd.scaler import ScalerCH
 
 logger = logging.getLogger(__name__)

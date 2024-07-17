@@ -14,7 +14,8 @@ import logging
 
 from bluesky import plans as bp
 
-from ..devices import sim_1d, sim_motor
+from ..devices import sim_1d
+from ..devices import sim_motor
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

@@ -11,7 +11,10 @@ __all__ = [
 import logging
 
 from apstools.devices import PVPositionerSoftDoneWithStop
-from ophyd import Component, EpicsSignal, EpicsSignalRO, Signal
+from ophyd import Component
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import Signal
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)

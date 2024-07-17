@@ -5,11 +5,13 @@ xpcs mesh scan plans
 import inspect
 import os
 from collections import defaultdict
-from itertools import cycle, zip_longest
+from itertools import cycle
+from itertools import zip_longest
 
-from bluesky import plan_patterns, utils
+from bluesky import plan_patterns
 from bluesky import plan_stubs as bps
 from bluesky import preprocessors as bpp
+from bluesky import utils
 from toolz import partition
 
 
