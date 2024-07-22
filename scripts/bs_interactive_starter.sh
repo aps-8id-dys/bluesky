@@ -13,7 +13,7 @@ handle_keyword() {
   case $1 in
     ipython)
       echo "You chose ipython!"
-      ipython -i -c "%run bluesky_interactive_startup.ipy"
+      ipython -i -c "%run bs_profile.ipy"
       ;;
 
     jupyter)

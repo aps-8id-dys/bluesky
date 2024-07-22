@@ -11,16 +11,16 @@ import pyRestTable
 from ophyd import Device
 from ophyd import Signal
 
-from ..callbacks import *  # noqa
-from ..devices import *  # noqa
-from ..initialize_bs_tools import RE
-from ..initialize_bs_tools import cat
-from ..initialize_bs_tools import sd
-from ..plans import *  # noqa
-from .iconfig_loader import iconfig
+from .callbacks import *  # noqa
+from .devices import *  # noqa
+from .initialize_bs_tools import RE
+from .initialize_bs_tools import cat
+from .initialize_bs_tools import sd
+from .plans import *  # noqa
+from .utils.iconfig_loader import iconfig
 
 # guides choice of module to import cat
-iconfig["framework"] = "queueserver"
+# iconfig["framework"] = "queueserver"
 
 logger = logging.getLogger(__name__)
 

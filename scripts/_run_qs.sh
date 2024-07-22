@@ -9,12 +9,12 @@ export CONDA=${CONDA:-/APSshare/miniconda/x86_64}
 export CONDA_ENVIRONMENT="${BLUESKY_CONDA_ENV:-__BLUESKY_CONDA_ENV_not_defined__}"
 if [ "${DATABROKER_CATALOG}" == "" ]; then
     SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
-    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/src/instrument/iconfig.yml  | awk '{print $NF}')
+    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../src/instrument/iconfig.yml  | awk '{print $NF}')
     echo "Using catalog ${DATABROKER_CATALOG}"
 fi
 export QS_SERVER_HOST=$(hostname)  # or host (that passes $(hostname) test below)
 export QS_UPDATE_PLANS_DEVICES=ENVIRONMENT_OPEN
-export QS_USER_GROUP_PERMISSIONS_FILE="${SCRIPT_DIR}/src/instrument/config/user_group_permissions.yaml"
+export QS_USER_GROUP_PERMISSIONS_FILE="${SCRIPT_DIR}/../src/instrument/config/user_group_permissions.yaml"
 export QS_USER_GROUP_PERMISSIONS_RELOAD=ON_STARTUP
 
 # REDIS_ADDR is __always__ localhost.
