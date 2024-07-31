@@ -196,22 +196,27 @@ def xpcs_bdp_demo_plan(
     #
     # *** Prepare. ***
     #
+    analysisMachine_choices = """
+        adamite
+        amazonite
+        califone
+        polaris
+    """.lower().split()
     analysisMachine = analysisMachine.lower()  # to be safe
-    if analysisMachine in ("adamite", "amazonite"):
-        workflow_name = "xpcs8-apsu-dev-local"
-    elif analysisMachine in ("polaris"):
-        workflow_name = "xpcs8-apsu-dev-polaris"
-    else:
+    if analysisMachine not in analysisMachine_choices:
         raise ValueError(
             f"Received {analysisMachine=!r}."
-            '  Must be one of these: "adamite", "amazonite", "polaris"'
+            f"  Must be one of these: {analysisMachine_choices!r}"
         )
+    workflow_name = "xpcs8-02-gladier-boost"
 
     det = _pick_area_detector(detector_name)
     experiment_name = dm_experiment.get()
     if len(experiment_name) == 0:
         raise RuntimeError("Must run xpcs_setup_user() first.")
-    experiment = dm_api_ds().getExperimentByName(experiment_name)
+
+    # Make sure the experiment actually exists.
+    dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
     yield from write_if_new(xpcs_header, header)
@@ -290,7 +295,7 @@ def xpcs_bdp_demo_plan(
         incident_energy_spread=1,
         pix_dim_x=1,
         pix_dim_y=1,
-        t0=0.005,  
+        t0=0.005,
         t1=0.001,
         X_energy=12.0,
         xdim=1,
@@ -375,7 +380,7 @@ def xpcs_bdp_demo_plan(
         timeout=dm_reporting_time_limit,
         # all kwargs after this line are DM argsDict content
         filePath=pathlib.Path(det.hdf1.full_file_name.get()).name,
-        experiment=dm_experiment.get(),
+        experimentName=dm_experiment.get(),
         qmap=qmap_path.name,
         # from the plan's API
         smooth=wf_smooth,
