@@ -10,6 +10,7 @@ APS Data Management utility support.
     ~dm_api_dataset_cat
     ~dm_api_ds
     ~dm_api_file
+    ~dm_api_file_cat
     ~dm_api_proc
     ~dm_file_ready_to_process
     ~dm_get_daqs
@@ -46,6 +47,7 @@ __all__ = """
     dm_api_dataset_cat
     dm_api_ds
     dm_api_file
+    dm_api_file_cat
     dm_api_proc
     dm_file_ready_to_process
     dm_get_daqs
@@ -187,6 +189,14 @@ def dm_api_file():
     return api
 
 
+def dm_api_file_cat():
+    """Return the APS Data Management Catalog File API object."""
+    from dm import CatApiFactory
+
+    dm_source_environ()
+    return CatApiFactory.getFileCatApi()
+
+
 def dm_api_proc():
     """Return the APS Data Management Processing API object."""
     from dm import ProcApiFactory
@@ -243,6 +253,8 @@ def dm_isDaqActive(experimentName: str) -> bool:
         daq.get("status") in active_statuses
         for daq in dm_get_daqs(experimentName)
     ]
+    if len(statuses) == 0:
+        statuses.append(False)  # nothing active if no statuses
     # fmt: on
     return False not in statuses
 
