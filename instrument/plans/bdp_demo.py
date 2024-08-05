@@ -371,8 +371,10 @@ def xpcs_bdp_demo_plan(
     # HOWTO check the metadata catalog?
     dm_file_cat_api = dm_api_file_cat()
     _pre = dm_experiment_object["storageDirectory"]
-    _file = det.hdf1.full_file_name.get().lstrip(_pre).lstrip("/")
+    _full_file_name = det.hdf1.full_file_name.get()
+    _file = _full_file_name.lstrip(_pre).lstrip("/")
     _file_found = False
+    print(f"{_full_file_name=!r}")
     print(f"{_pre=!r}")
     print(f"{_file=!r}")
     print(f"{_file_found=!r}")
