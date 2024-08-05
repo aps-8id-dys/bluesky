@@ -231,7 +231,7 @@ def dm_get_daqs(experimentName: str):
 
 def dm_isDaqActive(experimentName: str) -> bool:
     """
-    Return if all DAQ(s) are active for the named APS Data Management experiment.
+    Return if any DAQ is active for the named APS Data Management experiment.
 
     PARAMETERS
 
@@ -248,15 +248,10 @@ def dm_isDaqActive(experimentName: str) -> bool:
         dmProcessingStatus.DM_PROCESSING_STATUS_PENDING,
         dmProcessingStatus.DM_PROCESSING_STATUS_RUNNING,
     )
-    # fmt: off
-    statuses = [
-        daq.get("status") in active_statuses
-        for daq in dm_get_daqs(experimentName)
-    ]
-    if len(statuses) == 0:
-        statuses.append(False)  # nothing active if no statuses
-    # fmt: on
-    return False not in statuses
+    for daq in dm_get_daqs(experimentName):
+        if daq.get("status") in active_statuses:
+            return True  # Found one!
+    return False
 
 
 def dm_file_ready_to_process(
