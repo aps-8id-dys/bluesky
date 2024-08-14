@@ -108,7 +108,7 @@ RUNENGINE_MD_PATH: /home/beams/8IDIUSER/.config/Bluesky_RunEngine_md
 # override default control layer for ophyd
 # if undefined, defaults to PyEpics
 # OPHYD_CONTROL_LAYER: PyEpics
-OPHYD_CONTROL_LAYER: caproto
+# OPHYD_CONTROL_LAYER: caproto
 
 # Uncomment any of these to override the defaults
 LOGGING:

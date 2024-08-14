@@ -9,7 +9,6 @@ export ENV_NAME="${BLUESKY_CONDA_ENV:-${DEFAULT_ENV}}"
 export IPYTHON_PROFILE=bluesky
 export IPYTHONDIR="${HOME}/.ipython-bluesky"
 
-
 pick () {  # activate ENV_NAME (using conda) from given arg
 
     ARG="${1}"
@@ -87,6 +86,10 @@ console_session () {
     export OPTIONS="${OPTIONS} --InteractiveShellApp.hide_initial_ns=False"
 
     pick_environment_executable
+
+    # Standard BCDA setup at APS defines this pointing to APSshare.
+    # We choose here to get PyEpics from the conda environment.
+    unset PYEPICS_LIBCA
 
     ipython ${OPTIONS}
 }
