@@ -243,7 +243,7 @@ def xpcs_bdp_demo_plan(
 
     qmap_path = QMAPS[det.name]
     if str(qmap_file).strip() == "":
-        qmap_file = str(qmap_path)
+        qmap_file = str(qmap_path)  # FIXME: which? qmap_file or qmap_path?
     if not pathlib.Path(qmap_file).exists():
         raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
     # upload QMAP to @voyager
