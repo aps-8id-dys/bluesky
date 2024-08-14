@@ -35,6 +35,8 @@ from .hhl_slits import *
 from .meascomp_usb_ctr import *
 from .qnw_device import *
 from .slit_4 import *
+from .tetramm_picoammeter import *
+
 # ----- ----- ----- ----- -----
 # simulator depends on (Aerotech stage) sample.x
 # TODO from .simulated_1d_detector import *
