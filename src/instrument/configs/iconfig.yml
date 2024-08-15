@@ -1,9 +1,4 @@
-# iconfig.yml
-
 # Configuration for the Bluesky instrument package.
-# simple key:value pairs
-
-CONTROLS_SUBNET: 116
 
 DATABROKER_CATALOG: &databroker_catalog 8idi_xpcs
 
@@ -14,31 +9,11 @@ RUNENGINE_METADATA:
   proposal_id: XPCS Development
   databroker_catalog: *databroker_catalog
 
-# workstation   subnet  /gdata  DM LDAP   /APSshare comments
-# ------------  ------  ------  -------   --------- --------
-# 8idpixirad    private no      no        yes       IOC for adsim4M
-# adamite       private yes     no        yes       analysis (multiple GPUs)
-# agate         public  no      no        yes
-# amazonite     private yes     no        yes       analysis (multiple GPUs)
-# amber         private yes     no        yes       hosts tiled server
-# beryl         private yes     no        yes       IOC for eiger4M
-# bixbite       private yes     no        yes       will move to CSSI
-# califone      private no      yes       no        analysis (multiple GPUs)
-# kouga         public  no      no        yes       QZ's desktop
-# lambda2m      private no      no        yes       IOC for lambda2M
-# onyx          private yes     no        yes       will move next year to PtychoProbe Eiger IOC
-# s8ididm       private yes     yes       no        APS DM server
-# axinite       private yes     no        yes       analysis (multiple GPUs)
-# tanzanite     private yes     no        yes       analysis (multiple GPUs)
-# rigaku[1-6]   private yes     yes?      no        Rigaku detector
-
-TILED_SERVER: amber
 
 # Uncomment and edit to define a PV to use for the `scan_id`.
 # The default behavior is to use `RE.md["scan_id"]`.
 # RUN_ENGINE_SCAN_ID_PV: f"{IOC}bluesky_scan_id"
-# PV hosted on the adsim4M IOC (for now)
-#RUN_ENGINE_SCAN_ID_PV: "8idi:bluesky_scan_id"
+# RUN_ENGINE_SCAN_ID_PV: "8idi:bluesky_scan_id"
 
 # permissions
 ALLOW_AREA_DETECTOR_WARMUP: true
@@ -104,6 +79,11 @@ AREA_DETECTOR:
 # Directory to "autosave" the RE.md dictionary (uses PersistentDict)
 # Uncomment and modify to change from the default.
 RUNENGINE_MD_PATH: /home/beams/8IDIUSER/.config/Bluesky_RunEngine_md
+
+# Best Effort Callback Configurations
+BEC:
+  BASELINE: FALSE
+  PLOTS: FALSE
 
 # override default control layer for ophyd
 # if undefined, defaults to PyEpics

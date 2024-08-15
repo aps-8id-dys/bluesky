@@ -1,15 +1,13 @@
 #!/bin/bash
 
 # Manage the bluesky queueserver process in a screen session.
-# Calls _run_qs.sh
 
 #--------------------
 # change the program defaults here
 
-source "${HOME}/.bash_aliases" #not included on the package, must be deleted
 if [ "${DATABROKER_CATALOG}" == "" ]; then
     SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
-    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../src/instrument/iconfig.yml  | awk '{print $NF}')
+    DATABROKER_CATALOG=$(grep DATABROKER_CATALOG ${SCRIPT_DIR}/../src/instrument/configs/iconfig.yml  | awk '{print $NF}')
     # echo "Using catalog ${DATABROKER_CATALOG}"
 fi
 DEFAULT_SESSION_NAME="bluesky_queueserver-${DATABROKER_CATALOG}"
@@ -24,7 +22,7 @@ fi
 SELECTION=${1:-usage}
 SESSION_NAME=${2:-"${DEFAULT_SESSION_NAME}"}
 
-PROCESS=_run_qs.sh
+PROCESS=run_qs.sh
 STARTUP_COMMAND="${STARTUP_DIR}/${PROCESS}"
 # _run_qs.sh will check that $(hostname) matches ${REDIS_HOST}
 export QS_SERVER_HOST="${REDIS_HOST}"
