@@ -1,3 +1,0 @@
-"""
-APS Data Management functionality
-"""
