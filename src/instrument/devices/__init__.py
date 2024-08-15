@@ -29,6 +29,7 @@ from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit
 from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
+from .tetramm_picoammeter import tetramm
 
 # from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_4 import sl4

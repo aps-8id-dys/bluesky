@@ -18,13 +18,13 @@ import numpy
 import ophyd
 import pyRestTable
 import spec2nexus
-from  aps_8id_bs_instrument.callbacks import *  # noqa
-from  aps_8id_bs_instrument.devices import *  # noqa
-from  aps_8id_bs_instrument.plans import *  # noqa
-from  aps_8id_bs_instrument.utils.catalog import load_catalog
-from  aps_8id_bs_instrument.utils.epics_tools import set_control_layer
-from  aps_8id_bs_instrument.utils.iconfig_loader import iconfig
-from  aps_8id_bs_instrument.utils.run_engine import run_engine
+from aps_8id_bs_instrument.callbacks import *  # noqa
+from aps_8id_bs_instrument.devices import *  # noqa
+from aps_8id_bs_instrument.plans import *  # noqa
+from aps_8id_bs_instrument.utils.catalog import load_catalog
+from aps_8id_bs_instrument.utils.epics_tools import set_control_layer
+from aps_8id_bs_instrument.utils.iconfig_loader import iconfig
+from aps_8id_bs_instrument.utils.run_engine import run_engine
 
 # guides choice of module to import cat
 
@@ -59,15 +59,21 @@ try:
     # import databroker; print(databroker.catalog_search_path())
     # https://blueskyproject.io/databroker/reference/configuration.html?highlight=search%20path
     cat = load_catalog(catalog_name)
-    logger.info("using databroker catalog '%s'", cat.name)  # FIXME: now showing on console
+    logger.info(
+        "using databroker catalog '%s'", cat.name
+    )  # FIXME: now showing on console
 except KeyError:
     cat = databroker.temp().v2
-    logger.info("using TEMPORARY databroker catalog '%s'", cat.name)  # FIXME: now showing on console
+    logger.info(
+        "using TEMPORARY databroker catalog '%s'", cat.name
+    )  # FIXME: now showing on console
 
 print(f"cat = {cat!r}")  # TODO: remove this diagnostic after FIXME items resolved
 
 # Set up a RunEngine.
-RE = run_engine(cat=cat) #TODO: No idea why when I put cat it no longer works can you please check?
+RE = run_engine(
+    cat=cat
+)  # TODO: No idea why when I put cat it no longer works can you please check?
 # RE = run_engine()
 
 set_control_layer("PyEpics")

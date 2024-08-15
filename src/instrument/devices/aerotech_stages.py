@@ -20,7 +20,6 @@ __all__ = """
     rheometer
 """.split()
 
-
 import logging
 
 from ophyd import Component
@@ -28,6 +27,7 @@ from ophyd import Device
 from ophyd import EpicsMotor
 
 logger = logging.getLogger(__name__)
+
 logger.info(__file__)
 
 
@@ -40,6 +40,10 @@ class AerotechSampleStage(Device):
     x = Component(EpicsMotor, "m1", labels=("sample", "motor"))
     y = Component(EpicsMotor, "m3", labels=("sample", "motor"))
     z = Component(EpicsMotor, "m2", labels=("sample", "motor"))
+    # different IOC!! "8ide:"
+    roll = Component(EpicsMotor, prefix="8ide:m15", labels=("sample", "motor"))
+    pitch = Component(EpicsMotor, prefix="8ide:m14", labels=("sample", "motor"))
+    yaw = Component(EpicsMotor, prefix="8ide:m16", labels=("sample", "motor"))
 
 
 class AerotechDetectorStage(Device):

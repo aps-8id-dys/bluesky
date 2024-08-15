@@ -17,20 +17,10 @@ __all__ = """
 import logging
 import pathlib
 
-from apstools.utils import cleanupText
-from bluesky import plan_stubs as bps
-from bluesky import plans as bp
-from bluesky import preprocessors as bpp
-from ophyd import Signal
-
-from ..callbacks.nexus_data_file_writer import nxwriter
 from apstools.devices import DM_WorkflowConnector
-from ..devices import adsim4M
-from ..devices import dm_experiment
-from ..devices import eiger4M
-from ..devices import lambda2M
 from apstools.utils import SECOND
 from apstools.utils import build_run_metadata_dict
+from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
 from apstools.utils import dm_api_proc
@@ -39,6 +29,16 @@ from apstools.utils import dm_isDaqActive
 from apstools.utils import dm_start_daq
 from apstools.utils import share_bluesky_metadata_with_dm
 from apstools.utils import validate_experiment_dataDirectory
+from bluesky import plan_stubs as bps
+from bluesky import plans as bp
+from bluesky import preprocessors as bpp
+from ophyd import Signal
+
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices import adsim4M
+from ..devices import dm_experiment
+from ..devices import eiger4M
+from ..devices import lambda2M
 from ..initialize_bs_tools import RE
 from ..initialize_bs_tools import cat
 from ..plans.ad_setup_plans import setup_hdf5_plugin
@@ -71,6 +71,7 @@ QMAPS = {
     "adsim4M": QMAP_BASE / "adsim4M_qmap_d36_s360.h5",
     "eiger4M": QMAP_BASE / "eiger4M_qmap_d36_s360.h5",
 }
+
 
 # TODO: hoist to apstools.utils
 def dm_daq_wait_upload_plan(id: str, period: float = 10 * SECOND):
