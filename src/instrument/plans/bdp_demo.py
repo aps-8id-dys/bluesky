@@ -24,21 +24,21 @@ from bluesky import preprocessors as bpp
 from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices import DM_WorkflowConnector
+from apstools.devices import DM_WorkflowConnector
 from ..devices import adsim4M
 from ..devices import dm_experiment
 from ..devices import eiger4M
 from ..devices import lambda2M
-from ..dm.aps_data_management import SECOND
-from ..dm.aps_data_management import build_run_metadata_dict
-from ..dm.aps_data_management import dm_api_daq
-from ..dm.aps_data_management import dm_api_ds
-from ..dm.aps_data_management import dm_api_proc
-from ..dm.aps_data_management import dm_daq_wait_upload_plan
-from ..dm.aps_data_management import dm_isDaqActive
-from ..dm.aps_data_management import dm_start_daq
-from ..dm.aps_data_management import share_bluesky_metadata_with_dm
-from ..dm.aps_data_management import validate_experiment_dataDirectory
+from apstools.utils import SECOND
+from apstools.utils import build_run_metadata_dict
+from apstools.utils import dm_api_daq
+from apstools.utils import dm_api_ds
+from apstools.utils import dm_api_proc
+from apstools.utils import dm_daq_wait_upload_plan
+from apstools.utils import dm_isDaqActive
+from apstools.utils import dm_start_daq
+from apstools.utils import share_bluesky_metadata_with_dm
+from apstools.utils import validate_experiment_dataDirectory
 from ..initialize_bs_tools import RE
 from ..initialize_bs_tools import cat
 from ..plans.ad_setup_plans import setup_hdf5_plugin
@@ -71,6 +71,23 @@ QMAPS = {
     "adsim4M": QMAP_BASE / "adsim4M_qmap_d36_s360.h5",
     "eiger4M": QMAP_BASE / "eiger4M_qmap_d36_s360.h5",
 }
+
+# TODO: hoist to apstools.utils
+def dm_daq_wait_upload_plan(id: str, period: float = 10 * SECOND):
+    """plan: Wait for DAQ uploads to finish."""
+    api = dm_api_daq()
+    uploadInfo = api.getUploadInfo(id)
+    uploadStatus = uploadInfo.get("status")
+    while uploadStatus not in "done failed skipped aborted aborting".split():
+        yield from bps.sleep(period)
+        uploadInfo = api.getUploadInfo(id)
+        uploadStatus = uploadInfo.get("status")
+    logger.debug("DM DAQ upload info: %s", uploadInfo)
+    if uploadStatus != "done":
+        raise ValueError(
+            f"DM DAQ upload status: {uploadStatus!r}, {id=!r}."
+            f"  Processing error message(s): {uploadInfo['errorMessage']}."
+        )
 
 
 def xpcs_setup_user(dm_experiment_name: str, index: int = -1):

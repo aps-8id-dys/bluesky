@@ -13,16 +13,16 @@ __all__ = """
 
 import logging
 
-from ophyd import Signal
-
-from ..dm.aps_data_management import dm_api_proc
-
-# from apstools.devices import DM_WorkflowConnector
-from ._apstools_data_management import DM_WorkflowConnector
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # allow any log content at this level
 logger.info(__file__)
+
+from ophyd import Signal
+
+from apstools.devices import DM_WorkflowConnector
+# from ._apstools_data_management import DM_WorkflowConnector
+
+from ..dm.aps_data_management import dm_api_proc
 
 # TODO: 'labels=("DM")' kwarg is ignored for non-EPICS devices.  Refactor to ophyd_registry?
 dm_workflow = DM_WorkflowConnector(name="dm_workflow")
