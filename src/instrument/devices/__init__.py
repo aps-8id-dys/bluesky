@@ -15,8 +15,8 @@ except Exception as excuse:
 
 try:
     from .flight_tube import (
-        det,
-        bs,
+        det_motors,
+        bs_motors,
     )
 except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")
