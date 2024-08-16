@@ -6,24 +6,6 @@
 
 First, download the package from github:
 
-<<<<<<< Updated upstream
-```bash
-$ git clone https://github.com/aps-8id-dys/bluesky 8id_bluesky_instrument
-$ cd 8id_bluesky_instrument
-$ git checkout dev-er
-```
-
-Then create the conda environment with mamba:
-
-```bash
-$ export ENV_NAME="aps_bs_env"
-$ conda create -n $ENV_NAME -f environment.yml
-$ conda activate $ENV_NAME
-$ pip install -e ".[dev]"
-```
-
-## At! This will later on be merged into main, as such the readme is still under construction
-=======
 ```
 git clone https://github.com/aps-8id-dys/bluesky 8id_bluesky_instrument
 cd 8id_bluesky_instrument
@@ -67,4 +49,3 @@ qserver queue start
 ## Spec to Bluesky Cheatsheet
 Please Reference the below cheatsheet in case you need or desire to run commands directly through the ipython session
 https://bcda-aps.github.io/bluesky_training/howto/bluesky_cheat_sheet.html
->>>>>>> Stashed changes
