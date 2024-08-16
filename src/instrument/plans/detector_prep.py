@@ -54,23 +54,16 @@ def prepare_count(
     )
 
     # NOW, set the other components
+    # fmt: off
     yield from bps.mv(
-        ad_det.cam.num_images,
-        n_images,
-        ad_det.cam.acquire_time,
-        acquire_time,
-        ad_det.cam.acquire_period,
-        acquire_period,
-        ad_det.cam.image_mode,
-        image_mode,
-        plugin.auto_increment,
-        auto_increment,
-        plugin.auto_save,
-        auto_save,
-        plugin.file_name,
-        file_name,
-        plugin.num_capture,
-        n_images,  # save all frames received
-        plugin.compression,
-        compression,
+        ad_det.cam.num_images, n_images,
+        ad_det.cam.acquire_time, acquire_time,
+        ad_det.cam.acquire_period, acquire_period,
+        ad_det.cam.image_mode, image_mode,
+        plugin.auto_increment, auto_increment,
+        plugin.auto_save, auto_save,
+        plugin.file_name, file_name,
+        plugin.num_capture, n_images,  # save all frames received
+        plugin.compression, compression,
     )
+    # fmt: on

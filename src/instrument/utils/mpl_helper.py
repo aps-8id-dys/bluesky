@@ -3,11 +3,12 @@ configure matplotlib for console or notebook session
 MUST be run BEFORE other initializations
 """
 
+from IPython import get_ipython  # noqa
+import matplotlib.pyplot as plt
+
 
 def isnotebook():  # noqa D103
     try:
-        from IPython import get_ipython  # noqa
-
         _ipython = get_ipython()
         if _ipython is not None:
             shell = _ipython.__class__.__name__
@@ -23,10 +24,7 @@ if isnotebook():  # noqa D103
     if _ipython is not None:
         # _ipython.magic("matplotlib notebook")
         _ipython.magic("matplotlib inline")
-    import matplotlib.pyplot as plt
 
     plt.ion()
 else:
-    import matplotlib.pyplot as plt
-
     plt.ion()

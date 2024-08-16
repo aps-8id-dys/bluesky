@@ -14,4 +14,8 @@ from .ad_common import XpcsAreaDetectorFactory
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-adsim4M = XpcsAreaDetectorFactory("ADSIM_4M", use_image=False)
+try:
+    adsim4M = XpcsAreaDetectorFactory("ADSIM_4M", use_image=False)
+except Exception:
+    adsim4M = None
+    logger.warning("Could not create the adsim4M object.")

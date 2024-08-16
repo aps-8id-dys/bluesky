@@ -11,18 +11,15 @@ import logging
 
 # convenience imports
 import databroker
-import ophyd
-
-# from .dm.dm_setup import (
-#     DM_WORKFLOW_OWNER,  #noqa TODO: where will this permenantly live?
-# )
-from apstools.utils import dm_setup
+from apstools.utils import dm_setup  # noqa TODO: where will this permenantly live?
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from ophyd.signal import EpicsSignalBase
 from ophydregistry import Registry
 
 from .utils.catalog import load_catalog
+from .utils.epics_tools import RUN_ENGINE_SCAN_ID_PV
+from .utils.epics_tools import set_control_layer
 from .utils.iconfig_loader import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
@@ -32,20 +29,25 @@ from .utils.run_engine import run_engine
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-dm_setup(iconfig["DM_SETUP_FILE"])
+if iconfig["DM_SETUP_FILE"] is not None:
+    dm_setup(iconfig["DM_SETUP_FILE"])
 
 sd = SupplementalData()  # User will interact with the sd object, configure the RE for additional things to publish
 
 bec = BestEffortCallback()  # Responsible for plots, only be instatiated once
-bec.disable_baseline()  # User config
-# bec.disable_plots()  # User config
+if iconfig["BEC"]["BASELINE"] is False:
+    bec.disable_baseline()  # User config
+if iconfig["BEC"]["PLOTS"] is False:
+    bec.disable_plots()  # User config
 
 peaks = bec.peaks  # just an alias for less typing
-
 
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
 try:
+    # We don't actually run this part because it is unable to find a yaml corresponding to the catalog name. For this to execute the yaml has to be store in:
+    # import databroker; print(databroker.catalog_search_path())
+    # https://blueskyproject.io/databroker/reference/configuration.html?highlight=search%20path
     cat = load_catalog(catalog_name)
     logger.info("using databroker catalog '%s'", cat.name)
 except KeyError:
@@ -55,13 +57,7 @@ except KeyError:
 # Set up a RunEngine.
 RE = run_engine(cat=cat, bec=bec, preprocessors=sd, md_path=MD_PATH)
 
-# OPHYD_CONTROL_LAYER is an application of "lessons learned."
-# The next line can be used to switch from PyEpics to caproto.
-# Only used in a couple rare cases where PyEpics code was failing.
-# It's defined here since it was difficult to find how to do this
-# in the ophyd documentation.
-ophyd.set_cl(iconfig.get("OPHYD_CONTROL_LAYER", "PyEpics").lower())
-logger.info(f"using ophyd control layer: {ophyd.cl.name}")
+set_control_layer("PyEpics")
 
 # Set default timeout for all EpicsSignal connections & communications.
 TIMEOUT = 60  # default used next...
@@ -74,41 +70,13 @@ if not EpicsSignalBase._EpicsSignalBase__any_instantiated:
         connection_timeout=iconfig.get("PV_CONNECTION_TIMEOUT", TIMEOUT),
     )
 
-
 # Create a registry of ophyd devices
 oregistry = Registry(auto_register=True)
-
 
 _pv = iconfig.get("RUN_ENGINE_SCAN_ID_PV")
 if _pv is None:
     logger.info("Using RunEngine metadata for scan_id")
 else:
-    from ophyd import EpicsSignal
-
-    logger.info("Using EPICS PV %s for scan_id", _pv)
-    scan_id_epics = EpicsSignal(_pv, name="scan_id_epics")
-
-    def epics_scan_id_source(_md):
-        """
-        Callback function for RunEngine.  Returns *next* scan_id to be used.
-
-        * Ignore metadata dictionary passed as argument.
-        * Get current scan_id from PV.
-        * Apply lower limit of zero.
-        * Increment (so that scan_id numbering starts from 1).
-        * Set PV with new value.
-        * Return new value.
-
-        Exception will be raised if PV is not connected when next
-        ``bps.open_run()`` is called.
-        """
-        new_scan_id = max(scan_id_epics.get(), 0) + 1
-        scan_id_epics.put(new_scan_id)
-        return new_scan_id
-
-    # tell RunEngine to use the EPICS PV to provide the scan_id.
-    RE.scan_id_source = epics_scan_id_source
-    scan_id_epics.wait_for_connection()
-    RE.md["scan_id"] = scan_id_epics.get()
+    RUN_ENGINE_SCAN_ID_PV(_pv, RE)
 
 logger.info("#### Bluesky tools are loaded is complete. ####")

@@ -4,12 +4,6 @@ Custom Device Definitions & Instatiation
 
 # flake8: noqa
 
-## Data management device
-from .data_management import (
-    DM_WorkflowConnector,
-    dm_experiment,
-)
-
 ## Simulated detector/motor
 from .simulated_1d_detector import sim_1d, sim_motor
 
@@ -35,6 +29,7 @@ from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit
 from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
+from .tetramm_picoammeter import tetramm
 
 # from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_4 import sl4

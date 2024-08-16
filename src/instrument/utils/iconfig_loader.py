@@ -15,8 +15,9 @@ from __future__ import annotations
 __all__ = [
     "iconfig",
 ]
+
 import logging
-import pathlib
+import os
 
 import yaml
 
@@ -29,9 +30,22 @@ print(__file__)
 def load_config_yaml():
     """Load iconfig.yml config files."""
 
-    CONFIG_FILE = pathlib.Path(__file__).absolute().parent.parent / "iconfig.yml"
+    # Get the absolute path of the current file
+    current_file_path = os.path.abspath(__file__)
 
-    if CONFIG_FILE.exists():
+    # Navigate two directories up
+    two_dirs_up = os.path.dirname(os.path.dirname(current_file_path))
+
+    # Define the target folder and file
+    target_folder = "configs"
+    target_file = "iconfig.yml"
+
+    # Construct the full path to the target file
+    target_file_path = os.path.join(two_dirs_up, target_folder, target_file)
+
+    CONFIG_FILE = target_file_path
+
+    if os.path.exists(CONFIG_FILE):
         iconfig = yaml.load(open(CONFIG_FILE, "r").read(), yaml.Loader)
     else:
         raise FileNotFoundError(
