@@ -5,6 +5,6 @@ echo "You chose ipython!"
 # We choose here to get PyEpics from the conda environment.
 unset PYEPICS_LIBCA # TODO: Need to fix this more permenantly
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" # This allows for command to be run from anywhere
 
 ipython -i -c "%run $SCRIPT_DIR/bs_ipy_profile.ipy"
