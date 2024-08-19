@@ -7,9 +7,8 @@
 First, download the package from github:
 
 ```bash
-git clone https://github.com/aps-8id-dys/bluesky 8id_bluesky_instrument
-cd 8id_bluesky_instrument
-git checkout dev-er
+git clone https://github.com/aps-8id-dys/bluesky
+cd bluesky
 ```
 
 ```bash
