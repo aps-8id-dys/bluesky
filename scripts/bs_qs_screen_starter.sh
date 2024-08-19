@@ -22,7 +22,7 @@ fi
 SELECTION=${1:-usage}
 SESSION_NAME=${2:-"${DEFAULT_SESSION_NAME}"}
 
-PROCESS=run_qs.sh
+PROCESS=_run_qs.sh
 STARTUP_COMMAND="${STARTUP_DIR}/${PROCESS}"
 # _run_qs.sh will check that $(hostname) matches ${REDIS_HOST}
 export QS_SERVER_HOST="${REDIS_HOST}"
