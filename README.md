@@ -1,18 +1,51 @@
-# Bluesky Instrument
+# 8-ID-I XPCS Bluesky Instrument
 
-**Caution**:  If you will use the [bluesky queueserver (QS)](./qserver.md), note
-that _every_ Python file in this directory will be executed when QS starts the
-RunEngine. Don't add extra Python files to this directory.  Instead, put them in
-`user/` or somewhere else.
+## Installation Steps
+*aps_8id_bs_instrument* can also use *conda* for dependency management, and
+*setuptools* for installation and development.
 
-Contains:
+First, download the package from github:
 
-description | item(s)
---- | ---
-Introduction | [`intro2bluesky.md`](https://bcda-aps.github.io/bluesky_training/reference/_intro2bluesky.html)
-IPython console startup | [`./console/`](console/README.md)
-Bluesky queueserver `*QS*` support | [introduction](./qserver.md)
-Instrument package | [`./instrument/`](./instrument/README.md)
-Conda environments | [`./environments/`](./environments/README.md)
-Unit tests | [`./tests/`](./tests/README.md)
-Documentation | [How-to, examples, tutorials, reference](https://bcda-aps.github.io/bluesky_training)
+```
+git clone https://github.com/aps-8id-dys/bluesky 8id_bluesky_instrument
+cd 8id_bluesky_instrument
+git checkout dev-er
+```
+
+```
+conda create -n your_env_name python=3.10
+conda activate your_env_name
+pip install -e ".[dev]"
+```
+
+## Running Bluesky Session
+### With Ipython
+
+```
+cd scripts
+./bs_ipy_starter.sh
+```
+
+Then Inside the ipython shell
+```
+RE(demo_sim_1d())
+```
+
+### With Queserver
+
+Inside one terminal
+```
+cd scripts
+./bs_qs_screen_starter.sh
+```
+
+Inside another terminal
+```
+qserver environment open
+qserver queue add plan '{"name": "demo_sim_1d"}'
+qserver queue start
+```
+
+## Spec to Bluesky Cheatsheet
+Please Reference the below cheatsheet in case you need or desire to run commands directly through the ipython session
+https://bcda-aps.github.io/bluesky_training/howto/bluesky_cheat_sheet.html
