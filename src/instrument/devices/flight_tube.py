@@ -28,6 +28,5 @@ class FlightTubeBeamStop(Device):
     ds_y = Component(EpicsMotor, "m6")
     us = Component(EpicsMotor, "m7")
 
-
-det_motors = FlightTubeDetector("8idiFlight:", name="det")
-bs_motors = FlightTubeBeamStop("8idiFlight:", name="bs")
+det_motors = FlightTubeDetector("8idiSoft:FLIGHT:", name="det_motors")
+bs_motors = FlightTubeBeamStop("8idiSoft:FLIGHT:", name="bs_motors")

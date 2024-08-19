@@ -24,6 +24,8 @@ from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
 from apstools.utils import dm_api_proc
+from dm.common.exceptions.objectNotFound import ObjectNotFound
+from ophyd import Signal
 
 # see `def` below: from apstools.utils import dm_daq_wait_upload_plan
 from apstools.utils import dm_isDaqActive
@@ -42,9 +44,14 @@ from ..devices import eiger4M
 from ..devices import lambda2M
 from ..initialize_bs_tools import RE
 from ..initialize_bs_tools import cat
-from ..plans.ad_setup_plans import setup_hdf5_plugin
-from ..plans.ad_setup_plans import write_if_new
+from .ad_setup_plans import setup_hdf5_plugin
+from .ad_setup_plans import write_if_new
 from ..utils.iconfig_loader import iconfig
+
+from ..utils import SECOND
+from ..utils import build_run_metadata_dict
+from ..utils import dm_api_file_cat
+from ..utils import share_bluesky_metadata_with_dm
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -122,14 +129,13 @@ def xpcs_setup_user(dm_experiment_name: str, index: int = -1):
         # Need another DAQ if also writing to a different directory (off voyager).
         # A single DAQ can be used to cover any subdirectories.
         # Anything in them will be uploaded.
-        logger.info(
-            "Starting DM DAQ: experiment %r in data directory %r",
-            dm_experiment_name,
-            data_directory,
+        msg = (
+            f"Starting DM DAQ: experiment {dm_experiment_name!r}"
+            f" in data directory {data_directory!r}."
         )
+        logger.info(msg)
+        print(msg)  # Was not showing up in the logs.
         dm_start_daq(dm_experiment_name, data_directory)
-
-    # TODO: What else?
 
 
 def xpcs_reset_index(index: int = 0):
@@ -214,22 +220,27 @@ def xpcs_bdp_demo_plan(
     #
     # *** Prepare. ***
     #
+    analysisMachine_choices = """
+        adamite
+        amazonite
+        califone
+        polaris
+    """.lower().split()
     analysisMachine = analysisMachine.lower()  # to be safe
-    if analysisMachine in ("adamite", "amazonite"):
-        workflow_name = "xpcs8-apsu-dev-local"
-    elif analysisMachine in ("polaris"):
-        workflow_name = "xpcs8-apsu-dev-polaris"
-    else:
+    if analysisMachine not in analysisMachine_choices:
         raise ValueError(
             f"Received {analysisMachine=!r}."
-            '  Must be one of these: "adamite", "amazonite", "polaris"'
+            f"  Must be one of these: {analysisMachine_choices!r}"
         )
+    workflow_name = "xpcs8-02-gladier-boost"
 
     det = _pick_area_detector(detector_name)
     experiment_name = dm_experiment.get()
     if len(experiment_name) == 0:
         raise RuntimeError("Must run xpcs_setup_user() first.")
-    # experiment = dm_api_ds().getExperimentByName(experiment_name)
+
+    # Make sure the experiment actually exists.
+    dm_experiment_object = dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
     yield from write_if_new(xpcs_header, header)
@@ -255,7 +266,7 @@ def xpcs_bdp_demo_plan(
 
     qmap_path = QMAPS[det.name]
     if str(qmap_file).strip() == "":
-        qmap_file = str(qmap_path)
+        qmap_file = str(qmap_path)  # FIXME: which? qmap_file or qmap_path?
     if not pathlib.Path(qmap_file).exists():
         raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
     # upload QMAP to @voyager
@@ -290,6 +301,7 @@ def xpcs_bdp_demo_plan(
         index=xpcs_index.get(),
         dataDir=str(data_path),
         concise=dm_concise,
+        cycle="2024-2",  # TODO get from apstools v1.6.20 ApsMachine...
         # instrument metadata (expected by nxwriter)
         # values from pete7.hdf
         # TODO: set from actual instrument values
@@ -378,9 +390,30 @@ def xpcs_bdp_demo_plan(
     # *** Wait for data writing & transfers to complete. ***
     #
     yield from nxwriter.wait_writer_plan_stub()  # NeXus metadata file
-    yield from dm_daq_wait_upload_plan(
-        daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD
-    )
+    yield from dm_daq_wait_upload_plan(daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD)
+    # TODO: Did the DAQ see that the detector image file write was complete?
+    # Check metadata catalog and find the file.
+    # HOWTO check the metadata catalog?
+    dm_file_cat_api = dm_api_file_cat()
+    _pre = dm_experiment_object["storageDirectory"]
+    _full_file_name = det.hdf1.full_file_name.get()
+    _file = _full_file_name.lstrip(_pre).lstrip("/")
+    _file_found = False
+    print(f"{_full_file_name=!r}")
+    print(f"{_pre=!r}")
+    print(f"{_file=!r}")
+    print(f"{_file_found=!r}")
+    for _i in range(60):  # wild guess, 60 seconds and the file should be found
+        try:
+            dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
+            _file_found = True
+            break
+        except ObjectNotFound:
+            if (_i % 10) == 0:
+                print(f"Waiting for DM DAQ to find image file: {_file!r}")
+            yield from bps.sleep(1)
+    if not _file_found:
+        raise FileNotFoundError(f"DM DAQ did not file image file {_file!r}")
 
     #
     # *** Start the APS Data Management workflow. ***
@@ -396,7 +429,7 @@ def xpcs_bdp_demo_plan(
         timeout=dm_reporting_time_limit,
         # all kwargs after this line are DM argsDict content
         filePath=pathlib.Path(det.hdf1.full_file_name.get()).name,
-        experiment=dm_experiment.get(),
+        experimentName=dm_experiment.get(),
         qmap=qmap_path.name,
         # from the plan's API
         smooth=wf_smooth,

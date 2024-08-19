@@ -2,6 +2,10 @@
 
 # # Start the bluesky queueserver.
 
+# Standard BCDA setup at APS defines this pointing to APSshare.
+# We choose here to get PyEpics from the conda environment.
+unset PYEPICS_LIBCA # TODO: Need to fix this more permenantly 
+
 #--------------------
 # change the program defaults here
 SCRIPT_DIR=$(dirname $(readlink -f "${0}"))
