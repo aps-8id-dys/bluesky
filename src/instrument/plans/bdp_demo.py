@@ -24,8 +24,6 @@ from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
 from apstools.utils import dm_api_proc
-from dm.common.exceptions.objectNotFound import ObjectNotFound
-from ophyd import Signal
 
 # see `def` below: from apstools.utils import dm_daq_wait_upload_plan
 from apstools.utils import dm_isDaqActive
@@ -35,6 +33,7 @@ from apstools.utils import validate_experiment_dataDirectory
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
+from dm.common.exceptions.objectNotFound import ObjectNotFound
 from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
@@ -44,14 +43,10 @@ from ..devices import eiger4M
 from ..devices import lambda2M
 from ..initialize_bs_tools import RE
 from ..initialize_bs_tools import cat
+from ..utils import dm_api_file_cat
+from ..utils.iconfig_loader import iconfig
 from .ad_setup_plans import setup_hdf5_plugin
 from .ad_setup_plans import write_if_new
-from ..utils.iconfig_loader import iconfig
-
-from ..utils import SECOND
-from ..utils import build_run_metadata_dict
-from ..utils import dm_api_file_cat
-from ..utils import share_bluesky_metadata_with_dm
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
@@ -390,7 +385,9 @@ def xpcs_bdp_demo_plan(
     # *** Wait for data writing & transfers to complete. ***
     #
     yield from nxwriter.wait_writer_plan_stub()  # NeXus metadata file
-    yield from dm_daq_wait_upload_plan(daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD)
+    yield from dm_daq_wait_upload_plan(
+        daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD
+    )
     # TODO: Did the DAQ see that the detector image file write was complete?
     # Check metadata catalog and find the file.
     # HOWTO check the metadata catalog?

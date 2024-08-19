@@ -4,7 +4,7 @@
 
 # Standard BCDA setup at APS defines this pointing to APSshare.
 # We choose here to get PyEpics from the conda environment.
-unset PYEPICS_LIBCA # TODO: Need to fix this more permenantly 
+unset PYEPICS_LIBCA # TODO: Need to fix this more permenantly
 
 #--------------------
 # change the program defaults here
