@@ -44,6 +44,9 @@ Inside another terminal
 
 ```bash
 qserver environment open
+```
+
+```bash
 qserver queue add plan '{"name": "demo_sim_1d"}'
 qserver queue start
 ```
