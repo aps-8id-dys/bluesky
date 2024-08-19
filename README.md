@@ -36,7 +36,7 @@ RE(demo_sim_1d())
 Inside one terminal
 ```
 cd scripts
-./run_qs.sh
+./bs_qs_screen_starter.sh
 ```
 
 Inside another terminal
