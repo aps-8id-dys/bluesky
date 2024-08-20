@@ -14,4 +14,4 @@ from .ad_common import XpcsAreaDetectorFactory
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-flag1ad = XpcsAreaDetectorFactory("FLAG1", use_process=False)
+flag1ad = XpcsAreaDetectorFactory("FLAG1", use_process=False, use_roi=False, use_stats=False)
