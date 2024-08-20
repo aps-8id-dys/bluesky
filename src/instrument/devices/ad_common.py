@@ -99,7 +99,7 @@ class EigerDetectorCam_V34(CamMixin_V34, EigerDetectorCam):
 class FlagCam_V34(CamMixin_V34, CamBase_V34):
     """Cameras on the HHL Mirrors in 8-ID-A."""
 
-    # TODO: What PVs to be connected?
+    offset = None
 
 
 class Lambda2MCam(CamBase_V34):
