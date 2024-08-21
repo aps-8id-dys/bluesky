@@ -54,7 +54,7 @@ class Slit6(Device):
 
 sl8 = Slit6(
     name="sl8",
-    prefix="8iddSoft:CR8-I2:US",
+    prefix="8idiSoft:CR8-I2:US",
     v_neg_motor="m1",
     v_pos_motor="m2",
     h_neg_motor="m4",
