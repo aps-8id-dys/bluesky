@@ -26,13 +26,16 @@ except Exception as excuse:
 from .damm import damm
 from .flag_4 import fl4
 from .hhl_mirrors import mr1, mr2
-from .hhl_slits import wb_slit
+from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
 from .tetramm_picoammeter import tetramm
 
 # from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_4 import sl4
+from .slit_8 import sl8
+from .slit_9 import sl9
+from .granite import granite
 
 ## Beamline Area Detectors
 from .ad_eiger_4M import eiger4M
