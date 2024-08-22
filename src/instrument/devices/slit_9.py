@@ -15,7 +15,9 @@ import logging
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-from apstools.synApps import db_2slit
+from apstools.synApps.db_2slit import Optics2Slit2D_HV
+
+sl9 = Optics2Slit2D_HV("8idiSoft:CR8-I2", name="slit1")
 
 
 # class Slit6(Device):
