@@ -36,4 +36,4 @@ class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
 
 
 # Create the sl9 object
-sl5 = ID8Optics2Slit2D_HV("8idESoft:Slit1", name="sl-5")
+sl5 = ID8Optics2Slit2D_HV("8ideSoft:Slit1", name="sl-5")
