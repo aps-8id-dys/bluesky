@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-class CustomOptics2Slit1D(Optics2Slit1D):
+class ID8Optics2Slit1D(Optics2Slit1D):
     xn = cpt(PVPositionerSoftDone, "", setpoint_pv="xn", readback_pv="xn.RBV")
     xp = cpt(PVPositionerSoftDone, "", setpoint_pv="xp", readback_pv="xp.RBV")
     size = cpt(PVPositionerSoftDone, "", setpoint_pv="size", readback_pv="size.RBV")
@@ -30,10 +30,10 @@ class CustomOptics2Slit1D(Optics2Slit1D):
     )  # TODO: What is the pv value for sync
 
 
-class CustomOptics2Slit2D_HV(Optics2Slit2D_HV):
-    h = cpt(CustomOptics2Slit1D, "H")
-    v = cpt(CustomOptics2Slit1D, "V")
+class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
+    h = cpt(ID8Optics2Slit1D, "H")
+    v = cpt(ID8Optics2Slit1D, "V")
 
 
 # Create the sl9 object
-sl9 = CustomOptics2Slit2D_HV("8idiSoft:Slit2", name="sl-9")
+sl9 = ID8Optics2Slit2D_HV("8idiSoft:Slit2", name="sl-9")
