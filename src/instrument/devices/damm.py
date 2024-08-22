@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-class Slit2(Device):
+class Damm(Device):
     def __init__(
         self,
         prefix: str,
@@ -40,4 +40,4 @@ class Slit2(Device):
     y = FCpt(EpicsMotor, "{motor_prefix}:{_y_motor}", labels={"motors"})
 
 
-damm = Slit2(name="damm", prefix="8iddSoft:CR8-D1:US", x_motor="m2", y_motor="m3")
+damm = Damm(name="damm", prefix="8iddSoft:CR8-D1:US", x_motor="m2", y_motor="m3")
