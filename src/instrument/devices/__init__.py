@@ -33,6 +33,8 @@ from .tetramm_picoammeter import tetramm
 
 # from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_4 import sl4
+from .slit_5 import sl5
+# from .slit_7 import sl7
 from .slit_8 import sl8
 from .slit_9 import sl9
 from .granite import granite
