@@ -17,6 +17,12 @@ conda activate your_env_name
 pip install -e ".[dev]"
 ```
 
+## Sanity check test script
+The below script will allow you to check if you are on the private subnet as well as check if dm tool are installed properly
+```bash
+cd scripts/user/
+python3 check_environment_test.py
+```
 ## Running Bluesky Session
 ### With Ipython
 
@@ -49,6 +55,17 @@ qserver environment open
 ```bash
 qserver queue add plan '{"name": "demo_sim_1d"}'
 qserver queue start
+```
+
+## Useful Bluesky Commands
+
+- To see all ophyd devices available
+```
+listObjects()
+```
+- To see all the motors which compose a device
+```
+device_name.component_names
 ```
 
 ## Spec to Bluesky Cheatsheet
