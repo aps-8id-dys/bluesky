@@ -23,6 +23,7 @@ except Exception as excuse:
 
 
 ## Beamline specific devices
+from .bd_5a import bd5a
 from .damm import damm
 from .flag_4 import fl4
 from .hhl_mirrors import mr1, mr2
