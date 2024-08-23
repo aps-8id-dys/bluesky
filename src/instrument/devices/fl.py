@@ -18,5 +18,5 @@ logger.info(__file__)
 
 
 # Real motors that directly control the slits
-fl2 = FCpt(EpicsMotor, "8ideSoft:CR8-E2:m7", labels={"motors"})
-fl3 = FCpt(EpicsMotor, "8idiSoft:CR8-I2:m7", labels={"motors"})
+fl2 = EpicsMotor("8ideSoft:CR8-E2:m7", name="fl2")
+fl3 = EpicsMotor("8idiSoft:CR8-I2:m7", name="fl3")
