@@ -1,9 +1,16 @@
+"""
+Plan that allows for moving to pre-programmed positions seen as strings
+"""
+
 __all__ = """
     select_sample_env
 """.split()
 
 import bluesky.plan_stubs as bps
-from ..devices import granite, sample
+
+from ..devices import granite
+from ..devices import sample
+
 
 def select_sample_env(env: str):
     # choices = {
@@ -23,4 +30,3 @@ def select_sample_env(env: str):
     elif env == "robot":
         yield from bps.mv(granite.x, 62)
         yield from bps.mv(sample.x, 298)
-
