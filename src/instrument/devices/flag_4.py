@@ -3,7 +3,7 @@ Flag 4 in station 8-ID-D
 """
 
 __all__ = """
-    fl4
+    flag4
 """.split()
 
 
@@ -36,8 +36,8 @@ class Flag4(Device):
     flag_4 = FCpt(EpicsMotor, "{motor_prefix}:{_flag_4_motor}", labels={"motors"})
 
 
-fl4 = Flag4(
-    name="fl4",
+flag4 = Flag4(
+    name="flag_4",
     prefix="8iddSoft:CR8-D1:US",
     flag_4_motor="m1",
 )

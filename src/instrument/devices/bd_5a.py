@@ -40,4 +40,6 @@ class BD5A(Device):
     v = FCpt(EpicsMotor, "{motor_prefix}:{_v_base_motor}", labels={"motors"})
 
 
-bd5a = BD5A(name="bd-5a", prefix="8iddSoft:CR8-D1:US", h_base_motor="m9", v_base_motor="m10")
+bd5a = BD5A(
+    name="bd-5a", prefix="8iddSoft:CR8-D1:US", h_base_motor="m9", v_base_motor="m10"
+)
