@@ -10,7 +10,6 @@ __all__ = """
 
 import logging
 
-from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 
