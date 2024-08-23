@@ -31,7 +31,7 @@ from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
 from .tetramm_picoammeter import tetramm
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
-from .slit_4_base import sl4_base
+from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit_4 import sl4
 from .slit_5 import sl5
 from .slit_7 import sl7
