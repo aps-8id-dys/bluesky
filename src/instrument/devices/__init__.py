@@ -32,11 +32,11 @@ from .meascomp_usb_ctr import mcs
 from .tetramm_picoammeter import tetramm
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
-from .slit_4 import sl4
-from .slit_5 import sl5
-from .slit_7 import sl7
-from .slit_8 import sl8
-from .slit_9 import sl9
+from .slits import sl4, sl5, sl7, sl8, sl9
+# from .slit_5 import sl5
+# from .slit_7 import sl7
+# from .slit_8 import sl8
+# from .slit_9 import sl9
 from .granite import granite
 
 ## Beamline Area Detectors
