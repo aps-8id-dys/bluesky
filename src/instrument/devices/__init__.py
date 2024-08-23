@@ -30,17 +30,14 @@ from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
 from .tetramm_picoammeter import tetramm
-
-# from .qnw_device import qnw_env1, qnw_env2, qnw_env3
-from .slit_4 import sl4
-from .slit_8 import sl8
-from .slit_9 import sl9
+from .qnw_device import qnw_env1, qnw_env2, qnw_env3
+from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
+from .slit import sl4, sl5, sl7, sl8, sl9
 from .granite import granite
 
 ## Beamline Area Detectors
 from .ad_eiger_4M import eiger4M
 from .ad_flag1 import flag1ad
-
 from .ad_flag2 import flag2ad
 from .ad_lambda_2M import lambda2M
 from .ad_rigaku_3M import rigaku3M
