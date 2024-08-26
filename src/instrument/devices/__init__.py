@@ -26,6 +26,7 @@ except Exception as excuse:
 from .bd_5a import bd5a
 from .damm import damm
 from .flag_4 import flag4
+from .fl import fl2, fl3
 from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
@@ -35,6 +36,7 @@ from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .granite import granite
+from .win import win_e, win_i
 
 ## Beamline Area Detectors
 from .ad_eiger_4M import eiger4M
