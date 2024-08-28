@@ -37,6 +37,7 @@ from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .granite import granite
 from .transfocator_8idd.py import rl1
+from .transfocator_8ide.py import rl2
 from .win import win_e, win_i
 
 ## Beamline Area Detectors
