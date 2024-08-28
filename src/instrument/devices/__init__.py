@@ -36,6 +36,7 @@ from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .granite import granite
+from .transfocator_8idd.py import rl1
 from .win import win_e, win_i
 
 ## Beamline Area Detectors
