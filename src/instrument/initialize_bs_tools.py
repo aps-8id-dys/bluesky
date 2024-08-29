@@ -11,7 +11,7 @@ import logging
 
 # convenience imports
 import databroker
-from apstools.utils import dm_setup  # noqa TODO: where will this permenantly live?
+from apstools.utils import dm_setup
 from bluesky import SupplementalData
 from bluesky.callbacks.best_effort import BestEffortCallback
 from ophyd.signal import EpicsSignalBase
@@ -23,8 +23,6 @@ from .utils.epics_tools import set_control_layer
 from .utils.iconfig_loader import iconfig
 from .utils.metadata import MD_PATH
 from .utils.run_engine import run_engine
-
-# TODO: This is not inside init. Some aspects do not work with qserver.
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
