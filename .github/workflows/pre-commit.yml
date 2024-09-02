@@ -6,10 +6,15 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
       name: Checkout code
+
     - uses: actions/setup-python@v5
       name: Setup Python
+      with:
+        python-version: "3.11"
+
     - uses: pre-commit/action@v3.0.0
       name: Run Pre-Commit Checks
