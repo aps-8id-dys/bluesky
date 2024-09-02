@@ -11,7 +11,8 @@ __all__ = """
 
 import logging
 
-from ._8id_common import HV_Motors, QuadEM_SydorTP4U
+from ._8id_common import HV_Motors
+from ._8id_common import SydorTP4U
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
