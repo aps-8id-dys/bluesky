@@ -119,6 +119,7 @@ class Transfocator(MotorBundle):
     .. note:: POLAR instrument has some related functions (`transfocator.py`).
         https://github.com/APS-4ID-POLAR/polar_instrument/pull/7/files
     """
+
     # motors that position the CRL assembly
     # By some convention, the names x&y are used rather than h&v.
     x = FCpt(EpicsMotor, "{prefix}{_pv_x}", labels={"motors"})
