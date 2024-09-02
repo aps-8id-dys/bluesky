@@ -13,6 +13,7 @@ __all__ = """
 
 import logging
 
+from ophyd import Component
 from ophyd import EpicsMotor
 from ophyd import EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
@@ -149,16 +150,16 @@ class Transfocator(MotorBundle):
         pv_y: str = "",
         pv_yaw: str = "",
         pv_pitch: str = "",
-        lens1: str = "",
-        lens2: str = "",
-        lens3: str = "",
-        lens4: str = "",
-        lens5: str = "",
-        lens6: str = "",
-        lens7: str = "",
-        lens8: str = "",
-        lens9: str = "",
-        lens10: str = "",
+        pv_lens1: str = "",
+        pv_lens2: str = "",
+        pv_lens3: str = "",
+        pv_lens4: str = "",
+        pv_lens5: str = "",
+        pv_lens6: str = "",
+        pv_lens7: str = "",
+        pv_lens8: str = "",
+        pv_lens9: str = "",
+        pv_lens10: str = "",
         **kwargs,
     ):
         self._pv_x = pv_x
