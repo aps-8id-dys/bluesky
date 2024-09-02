@@ -120,14 +120,14 @@ class Transfocator(MotorBundle):
         https://github.com/APS-4ID-POLAR/polar_instrument/pull/7/files
     """
 
-    # motors that position the CRL assembly
+    # Motors that position the CRL assembly.
     # By some convention, the names x&y are used rather than h&v.
     x = FCpt(EpicsMotor, "{prefix}{_pv_x}", labels={"motors"})
     y = FCpt(EpicsMotor, "{prefix}{_pv_y}", labels={"motors"})
     pitch = FCpt(EpicsMotor, "{prefix}{_pv_pitch}", labels={"motors"})
     yaw = FCpt(EpicsMotor, "{prefix}{_pv_yaw}", labels={"motors"})
 
-    # motors that insert or remove each lens
+    # Motors that insert or remove each lens.
     # Note: Operated as two-position motors.  Consider refactoring as such.
     lens1 = FCpt(EpicsMotor, "{prefix}{_pv_lens1}", labels={"lens"})
     lens2 = FCpt(EpicsMotor, "{prefix}{_pv_lens2}", labels={"lens"})
@@ -140,8 +140,8 @@ class Transfocator(MotorBundle):
     lens9 = FCpt(EpicsMotor, "{prefix}{_pv_lens9}", labels={"lens"})
     lens10 = FCpt(EpicsMotor, "{prefix}{_pv_lens10}", labels={"lens"})
 
-    # TODO: Describe magnification of each lens.
-    # TODO: Add method(s) to select & report magnification based on lens combination.
+    # TODO: Describe parameters of each lens.
+    # TODO: Add method(s) to select & report focal parameters based on lens combination.
 
     def __init__(
         self,
