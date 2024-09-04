@@ -1,5 +1,5 @@
 """
-xpcs mesh scan plans
+XPCS mesh scan plans (?hoist to apstools?).
 """
 
 import inspect
@@ -162,10 +162,11 @@ def mesh_scan_nd(
         # Not all motors provide a 'fields' hint, so we have to skip it.
         pass
     else:
+        # TODO: could these lines be moved after 'dimensions =' above?
         # We know that hints exists. Either:
         #  - the user passed it in and we are extending it
         #  - the user did not pass it in and we got the default {}
-        # If the user supplied hints includes a dimension entry, do not
+        # If the user-supplied hints includes a 'dimensions' entry, do not
         # change it, else set it to the one generated above
         _md["hints"].setdefault("dimensions", dimensions)
 
