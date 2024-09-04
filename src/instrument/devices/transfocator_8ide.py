@@ -1,8 +1,5 @@
 """
 RL2: Transfocator (compound refractive lens, CRL) in 8-ID-E
-
-.. note:: POLAR instrument has some related functions (`transfocator.py`).
-    https://github.com/APS-4ID-POLAR/polar_instrument/pull/7/files
 """
 
 __all__ = """
