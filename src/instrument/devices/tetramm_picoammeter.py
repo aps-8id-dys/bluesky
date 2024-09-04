@@ -40,5 +40,9 @@ class MyTetrAMM(TetrAMM):
     sum_all = Component(MyStatsPlugin, "SumAll:")
 
 
-tetramm = MyTetrAMM("8idTetra:QUAD1:", name="tetramm")
-tetramm.wait_for_connection()
+try:
+    tetramm = MyTetrAMM("8idTetra:QUAD1:", name="tetramm")
+    tetramm.wait_for_connection()
+except Exception as cause:
+    logger.warning(f"Could not create tetramm: {cause}")
+    tetramm = None
