@@ -11,17 +11,18 @@ requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 dependencies = [
-    "apstools",
+    "apstools >=1.6.20",
     "bluesky",
     "bluesky-queueserver",
     "bluesky-queueserver-api",
     "bluesky-widgets",
-    "databroker ==1.2",
+    "databroker ==1.2.5",
     "hdf5plugin",
     "ipython",
     "jupyterlab",
     "ophyd",
     "ophyd-registry",
+    "pysumreg",
     "qtpy"
 ]
 
