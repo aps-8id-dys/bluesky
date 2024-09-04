@@ -167,7 +167,7 @@ def mesh_scan_nd(
         #  - the user did not pass it in and we got the default {}
         # If the user supplied hints includes a dimension entry, do not
         # change it, else set it to the one generated above
-        _md["hints"].setdefault("dimensions", dimensions)
+        _md["hints"].setdefault("dimensions", dimensions)  # FIXME: Where is dimensions defined?
 
     predeclare = per_step is None and os.environ.get("BLUESKY_PREDECLARE", False)
     if per_step is None:
