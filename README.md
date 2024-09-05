@@ -12,7 +12,7 @@ cd bluesky
 ```
 
 ```bash
-conda create -y -n your_env_name "python<13" "pyqt=5"
+conda create -n your_env_name "python<13" "pyqt=5"
 conda activate your_env_name
 pip install -e ".[dev]"
 ```
