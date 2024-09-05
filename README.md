@@ -12,13 +12,14 @@ cd bluesky
 ```
 
 ```bash
-conda create -n your_env_name python=3.10
+conda create -y -n your_env_name "python<13" "pyqt=5"
 conda activate your_env_name
 pip install -e ".[dev]"
 ```
 
 ## Sanity check test script
-The below script will allow you to check if you are on the private subnet as well as check if dm tool are installed properly
+The below script will allow you to check if you are on the private subnet as
+well as check if APS Data Management tools are installed properly.
 ```bash
 cd scripts/user/
 python3 check_environment_test.py
@@ -27,8 +28,7 @@ python3 check_environment_test.py
 ### With Ipython
 
 ```bash
-cd scripts
-./bs_ipy_starter.sh
+./scripts/bs_ipy_starter.sh
 ```
 
 Then Inside the ipython shell
@@ -42,8 +42,7 @@ RE(demo_sim_1d())
 Inside one terminal
 
 ```bash
-cd scripts
-./bs_qs_screen_starter.sh
+./scripts/bs_qs_screen_starter.sh run
 ```
 
 Inside another terminal
