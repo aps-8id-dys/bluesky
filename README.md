@@ -21,8 +21,7 @@ pip install -e ".[dev]"
 The below script will allow you to check if you are on the private subnet as
 well as check if APS Data Management tools are installed properly.
 ```bash
-cd scripts/user/
-python3 check_environment_test.py
+python3 ./scripts/user/check_environment_test.py
 ```
 ## Running Bluesky Session
 ### With Ipython
@@ -58,15 +57,12 @@ qserver queue start
 
 ## Useful Bluesky Commands
 
-- To see all ophyd devices available
-```
-listObjects()
-```
-- To see all the motors which compose a device
-```
-device_name.component_names
-```
+command | description
+--- | ---
+`listObjects()` | show all ophyd devices available
+`device_name.component_names` | show all parts of `device_name` (such as motors)
+`device_name.summary()` | details of `device_name`
 
-## Spec to Bluesky Cheatsheet
-Please Reference the below cheatsheet in case you need or desire to run commands directly through the ipython session
+## SPEC to Bluesky Cheatsheet
+Please refer to the cheatsheet below in case you need or desire to run commands directly through the ipython session
 https://bcda-aps.github.io/bluesky_training/howto/bluesky_cheat_sheet.html
