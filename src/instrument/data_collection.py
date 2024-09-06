@@ -9,6 +9,8 @@ from .plans import *  # noqa
 
 ## ipython helpers
 from .utils.session_logs import logger
+from .callbacks import specwriter
 
 logger.info(__file__)
-logger.info("#### data collection tools are loaded is complete. ####")
+
+logger.info("#### data collection tools loading is complete. ####")
