@@ -1,8 +1,5 @@
 """
-RL1: Transfocator (compound refractive lens, CRL) in 8-ID-D
-
-.. note:: POLAR instrument has some related functions (`transfocator.py`).
-    https://github.com/APS-4ID-POLAR/polar_instrument/pull/7/files
+RL1: Transfocator (compound refractive lens, CRL) in 8-ID-D.
 """
 
 __all__ = """
@@ -11,30 +8,27 @@ __all__ = """
 
 import logging
 
-from ophyd import Component
-from ophyd import EpicsMotor
-from ophyd import MotorBundle
+from ._8id_common import Transfocator
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-class Transfocator(MotorBundle):
-    y = Component(EpicsMotor, "m1")
-    x = Component(EpicsMotor, "m2")
-    yaw = Component(EpicsMotor, "m3")
-    pitch = Component(EpicsMotor, "m4")
-
-    lens1 = Component(EpicsMotor, "m5")
-    lens2 = Component(EpicsMotor, "m6")
-    lens3 = Component(EpicsMotor, "m7")
-    lens4 = Component(EpicsMotor, "m8")
-    lens5 = Component(EpicsMotor, "m9")
-    lens6 = Component(EpicsMotor, "m10")
-    lens7 = Component(EpicsMotor, "m11")
-    lens8 = Component(EpicsMotor, "m12")
-    lens9 = Component(EpicsMotor, "m13")
-    lens10 = Component(EpicsMotor, "m14")
-
-
-rl1 = Transfocator("8iddSoft:TRANS:", name="rl1")
+rl1 = Transfocator(
+    "8iddSoft:TRANS:",
+    name="rl1",
+    pv_y="m1",
+    pv_x="m2",
+    pv_yaw="m3",
+    pv_pitch="m4",
+    pv_lens1="m5",
+    pv_lens2="m6",
+    pv_lens3="m7",
+    pv_lens4="m8",
+    pv_lens5="m9",
+    pv_lens6="m10",
+    pv_lens7="m11",
+    pv_lens8="m12",
+    pv_lens9="m13",
+    pv_lens10="m14",
+)
