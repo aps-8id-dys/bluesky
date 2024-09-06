@@ -2,6 +2,10 @@
 Write SPEC data files.
 """
 
-from apstools.callbacks import SpecWriterCallback
+try:
+    # upgrade comes with apstools 1.6.20
+    from apstools.callbacks import SpecWriterCallback2 as callback
+except ImportError:
+    from apstools.callbacks import SpecWriterCallback as callback
 
-specwriter = SpecWriterCallback()
+specwriter = callback()
