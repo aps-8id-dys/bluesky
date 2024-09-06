@@ -14,30 +14,25 @@ import logging
 
 from ophyd import Component
 from ophyd import TetrAMM
-from ophyd.areadetector import ImagePlugin
-from ophyd.areadetector import StatsPlugin
+from ophyd.areadetector.plugins import ImagePlugin_V34
+from ophyd.areadetector.plugins import StatsPlugin_V34
+from ophyd.quadem import QuadEMPort
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-class MyImagePlugin(ImagePlugin):
-    pool_max_buffers = None
-
-
-class MyStatsPlugin(StatsPlugin):
-    pool_max_buffers = None
-
-
 class MyTetrAMM(TetrAMM):
-    """Only change the AD plugins which don't have pool_max_buffers."""
+    """Caen picoammeter - TetraAMM."""
 
-    current1 = Component(MyStatsPlugin, "Current1:")
-    current2 = Component(MyStatsPlugin, "Current2:")
-    current3 = Component(MyStatsPlugin, "Current3:")
-    current4 = Component(MyStatsPlugin, "Current4:")
-    image = Component(MyImagePlugin, "image1:")
-    sum_all = Component(MyStatsPlugin, "SumAll:")
+    conf = Component(QuadEMPort, port_name="QUAD1")
+
+    current1 = Component(StatsPlugin_V34, "Current1:")
+    current2 = Component(StatsPlugin_V34, "Current2:")
+    current3 = Component(StatsPlugin_V34, "Current3:")
+    current4 = Component(StatsPlugin_V34, "Current4:")
+    image = Component(ImagePlugin_V34, "image1:")
+    sum_all = Component(StatsPlugin_V34, "SumAll:")
 
 
 try:
