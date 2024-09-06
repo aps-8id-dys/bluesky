@@ -77,4 +77,4 @@ if _pv is None:
 else:
     RUN_ENGINE_SCAN_ID_PV(_pv, RE)
 
-logger.info("#### Bluesky tools are loaded is complete. ####")
+logger.info("#### Bluesky setup is complete. ####")
