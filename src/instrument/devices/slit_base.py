@@ -45,17 +45,17 @@ class SlitBase(Device):
 
 
 sl4_base = SlitBase(
-    name="SL 4 Base", prefix="8iddSoft:CR8-D1:US", h_motor="m15", v_motor="m16"
+    name="sl4_base", prefix="8iddSoft:CR8-D1:US", h_motor="m15", v_motor="m16"
 )
 sl5_base = SlitBase(
-    name="SL 5 Base", prefix="8ideSoft:CR8-E2:US", h_motor="m5", v_motor="m6"
+    name="sl5_base", prefix="8ideSoft:CR8-E2:US", h_motor="m5", v_motor="m6"
 )
 sl7_base = SlitBase(
-    name="SL 7 Base", prefix="8ideSoft:CR8-E2:US", h_motor="m15", v_motor="m16"
+    name="sl7_base", prefix="8ideSoft:CR8-E2:US", h_motor="m15", v_motor="m16"
 )
 sl8_base = SlitBase(
-    name="SL 8 Base", prefix="8idiSoft:CR8-I2:US", h_motor="m5", v_motor="m6"
+    name="sl8_base", prefix="8idiSoft:CR8-I2:US", h_motor="m5", v_motor="m6"
 )
 sl9_base = SlitBase(
-    name="SL 9 Base", prefix="8idiSoft:CR8-I2:US", h_motor="m15", v_motor="m16"
+    name="sl9_base", prefix="8idiSoft:CR8-I2:US", h_motor="m15", v_motor="m16"
 )
