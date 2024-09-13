@@ -167,7 +167,7 @@ class Transfocator(MotorBundle):
         self._pv_y = pv_y
         self._pv_pitch = pv_pitch
         self._pv_yaw = pv_yaw
-        self._pv_lens0 = pv_lens1
+        self._pv_lens1 = pv_lens1
         self._pv_lens2 = pv_lens2
         self._pv_lens3 = pv_lens3
         self._pv_lens4 = pv_lens4
