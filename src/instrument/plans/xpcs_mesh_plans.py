@@ -14,6 +14,8 @@ from bluesky import preprocessors as bpp
 from bluesky import utils
 from toolz import partition
 
+from ..initialize_bs_tools import oregistry
+
 
 def mesh_list_grid_scan(
     detectors,
@@ -69,7 +71,8 @@ def mesh_list_grid_scan(
     md_args = []
     motor_names = []
     motors = []
-    for motor, pos_list in partition(2, args):
+    for motor_name, pos_list in partition(2, args):
+        motor = oregistry.find(motor_name)
         md_args.extend([repr(motor), pos_list])
         motor_names.append(motor.name)
         motors.append(motor)
