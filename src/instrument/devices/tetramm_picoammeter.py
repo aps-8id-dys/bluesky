@@ -38,6 +38,16 @@ class MyTetrAMM(TetrAMM):
 try:
     tetramm = MyTetrAMM("8idTetra:QUAD1:", name="tetramm")
     tetramm.wait_for_connection()
+
+    # Mark some components as "config" so they do not appear on data rows.
+    for attr_name in tetramm.component_names:
+        attr = getattr(tetramm, attr_name)
+        if attr_name.startswith("current_"):
+            for ch_name in attr.component_names:
+                getattr(attr, ch_name).kind = "config"
+        elif attr_name.startswith("position_"):
+            attr.kind = "config"
+
 except Exception as cause:
     logger.warning(f"Could not create tetramm: {cause}")
     tetramm = None
