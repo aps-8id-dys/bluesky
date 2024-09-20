@@ -42,7 +42,6 @@ from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import adsim4M
-# from ..devices import dm_experiment
 from ..devices import eiger4M
 from ..devices import lambda2M
 from ..initialize_bs_tools import RE
