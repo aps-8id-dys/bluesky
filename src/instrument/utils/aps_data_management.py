@@ -87,7 +87,7 @@ from bluesky import plan_stubs as bps
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-from .._iconfig import iconfig  # noqa
+from .iconfig_loader import iconfig  # noqa
 
 SECOND = 1
 MINUTE = 60 * SECOND

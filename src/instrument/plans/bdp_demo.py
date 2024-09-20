@@ -23,10 +23,14 @@ from apstools.utils import build_run_metadata_dict
 from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
+from apstools.utils import dm_api_filecat
 from apstools.utils import dm_api_proc
 
 # see `def` below: from apstools.utils import dm_daq_wait_upload_plan
-from apstools.utils import dm_isDaqActive
+try:
+    from apstools.utils import dm_isDaqActive
+except ImportError:
+    from ..utils.aps_data_management import dm_isDaqActive  # TODO hoist to apstools
 from apstools.utils import dm_start_daq
 from apstools.utils import share_bluesky_metadata_with_dm
 from apstools.utils import validate_experiment_dataDirectory
@@ -38,12 +42,11 @@ from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import adsim4M
-from ..devices import dm_experiment
+# from ..devices import dm_experiment
 from ..devices import eiger4M
 from ..devices import lambda2M
 from ..initialize_bs_tools import RE
 from ..initialize_bs_tools import cat
-from ..utils import dm_api_file_cat
 from ..utils.iconfig_loader import iconfig
 from .ad_setup_plans import setup_hdf5_plugin
 from .ad_setup_plans import write_if_new
@@ -51,6 +54,7 @@ from .ad_setup_plans import write_if_new
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+dm_experiment = Signal(name="dm_experiment", value="")
 sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
 xpcs_header = Signal(name="xpcs_header", value=RE.md.get("xpcs_header", "A001"))
 xpcs_index = Signal(name="xpcs_index", value=RE.md.get("xpcs_index", 0))
@@ -391,7 +395,7 @@ def xpcs_bdp_demo_plan(
     # TODO: Did the DAQ see that the detector image file write was complete?
     # Check metadata catalog and find the file.
     # HOWTO check the metadata catalog?
-    dm_file_cat_api = dm_api_file_cat()
+    dm_file_cat_api = dm_api_filecat()
     _pre = dm_experiment_object["storageDirectory"]
     _full_file_name = det.hdf1.full_file_name.get()
     _file = _full_file_name.lstrip(_pre).lstrip("/")
