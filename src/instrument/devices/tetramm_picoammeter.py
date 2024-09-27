@@ -32,6 +32,7 @@ class MyTetrAMM(TetrAMM):
     sum_all = Component(StatsPlugin_V34, "SumAll:")
 
     def __init__(self, *args, port_name="TetrAMM", **kwargs):
+        """custom port name"""
         self.port_name = port_name
 
         super().__init__(*args, **kwargs)
