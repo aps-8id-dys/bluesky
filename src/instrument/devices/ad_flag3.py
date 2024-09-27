@@ -14,9 +14,14 @@ from .ad_common import XpcsAreaDetectorFactory
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-flag3ad = XpcsAreaDetectorFactory(
-    "FLAG3",
-    use_process=False,  # Do not use the AD Processing plugin: PROC1
-    use_roi=False,  # Do not use the AD Region-of-Interest plugin: ROI1
-    use_stats=False,  # Do not use the AD Statistics plugin: Stats1
-)
+try:
+    flag3ad = XpcsAreaDetectorFactory(
+        "FLAG3",
+        use_process=False,  # Do not use the AD Processing plugin: PROC1
+        use_roi=True,
+        use_stats=True,
+    )
+    flag3ad.wait_for_connection()
+except Exception as cause:
+    logger.warning(f"Could not create flag3ad: {cause}")
+    flag3ad = None

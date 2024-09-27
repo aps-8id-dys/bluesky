@@ -18,8 +18,8 @@ try:
     flag2ad = XpcsAreaDetectorFactory(
         "FLAG2",
         use_process=False,  # Do not use the AD Processing plugin: PROC1
-        use_roi=False,  # Do not use the AD Region-of-Interest plugin: ROI1
-        use_stats=False,  # Do not use the AD Statistics plugin: Stats1
+        use_roi=True,
+        use_stats=True,
     )
     flag2ad.wait_for_connection()
 except Exception as cause:

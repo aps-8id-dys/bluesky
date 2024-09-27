@@ -46,7 +46,7 @@ from .win import win_e, win_i
 from .ad_eiger_4M import eiger4M
 from .ad_flag1 import flag1ad
 from .ad_flag2 import flag2ad
-# from .ad_flag3 import flag3ad
+from .ad_flag3 import flag3ad
 from .ad_flag4 import flag4ad
 from .ad_lambda_2M import lambda2M
 from .ad_rigaku_3M import rigaku3M
