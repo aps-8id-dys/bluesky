@@ -45,7 +45,7 @@ class MyTetrAMM(TetrAMM):
             elif attr_name.startswith("position_"):
                 attr.kind = "config"
 
-        self.sum_all.mean_value.kind = "hinted"  # Show as a data column.
+        self.sum_all.mean_value.kind = "hinted"  # Show as a data column in SPEC file.
         # tetramm1.sum_all.mean_value.kind = "hinted"
 
 
