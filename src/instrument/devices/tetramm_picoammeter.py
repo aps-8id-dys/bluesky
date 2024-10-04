@@ -48,6 +48,11 @@ class MyTetrAMM(TetrAMM):
 
         self.sum_all.mean_value.kind = "hinted"  # Show as a data column in SPEC file.
         # tetramm1.sum_all.mean_value.kind = "hinted"
+        self.current1.mean_value.kind = "hinted"
+        self.current2.mean_value.kind = "hinted"
+        self.current3.mean_value.kind = "hinted"
+        self.current4.mean_value.kind = "hinted"
+        
 
 
 try:
