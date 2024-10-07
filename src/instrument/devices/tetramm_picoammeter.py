@@ -9,7 +9,6 @@ GitHub apstools issue #878 has some useful documentation in the comments.
 import logging
 
 from ophyd import Component
-from ophyd import FormattedComponent
 from ophyd import TetrAMM
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import StatsPlugin_V34
@@ -22,7 +21,7 @@ logger.info(__file__)
 class MyTetrAMM(TetrAMM):
     """Caen picoammeter - TetraAMM."""
 
-    conf = FormattedComponent(QuadEMPort, port_name="{port_name}")
+    conf = Component(QuadEMPort, port_name="QUAD_PORT")
 
     current1 = Component(StatsPlugin_V34, "Current1:")
     current2 = Component(StatsPlugin_V34, "Current2:")
@@ -33,9 +32,8 @@ class MyTetrAMM(TetrAMM):
 
     def __init__(self, *args, port_name="TetrAMM", **kwargs):
         """custom port name"""
-        self.port_name = port_name
-
         super().__init__(*args, **kwargs)
+        self.conf.port_name.put(port_name)  # fix the port name here
 
         # Mark some components as "config" so they do not appear on data rows.
         for attr_name in self.component_names:
@@ -53,8 +51,6 @@ class MyTetrAMM(TetrAMM):
         self.current3.mean_value.kind = "hinted"
         self.current4.mean_value.kind = "hinted"
         
-
-
 try:
     tetramm1 = MyTetrAMM("8idTetra:QUAD1:", name="tetramm1", port_name="QUAD1")
 except Exception as cause:
