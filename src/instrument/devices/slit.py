@@ -59,7 +59,6 @@ class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
     v = cpt(ID8Optics2Slit1D, "V")
 
 
-# Create the sl9 object
 sl4 = ID8Optics2Slit2D_HV("8iddSoft:Slit1", name="sl4")
 sl5 = ID8Optics2Slit2D_HV("8ideSoft:Slit1", name="sl5")
 sl7 = ID8Optics2Slit2D_HV("8ideSoft:Slit2", name="sl7")
