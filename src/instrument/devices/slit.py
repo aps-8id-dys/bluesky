@@ -23,15 +23,35 @@ logger.info(__file__)
 
 
 class ID8Optics2Slit1D(Optics2Slit1D):
-    xn = cpt(PVPositionerSoftDone, "", setpoint_pv="xn", readback_pv="xn.RBV")
-    xp = cpt(PVPositionerSoftDone, "", setpoint_pv="xp", readback_pv="xp.RBV")
-    size = cpt(PVPositionerSoftDone, "", setpoint_pv="size", readback_pv="size.RBV")
-    center = cpt(
-        PVPositionerSoftDone, "", setpoint_pv="center", readback_pv="center.RBV"
+    xn = cpt(
+        PVPositionerSoftDone,
+        "xn",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=5e-4,
     )
-    sync = cpt(
-        EpicsSignal, "doSync", put_complete=True, kind="omitted"
-    )  # TODO: What is the pv value for sync
+    xp = cpt(
+        PVPositionerSoftDone,
+        "xp",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=5e-4,
+    )
+    size = cpt(
+        PVPositionerSoftDone,
+        "size",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=5e-4,
+    )
+    center = cpt(
+        PVPositionerSoftDone,
+        "center",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=5e-4,
+    )
+    sync = cpt(EpicsSignal, "doSync", put_complete=True, kind="omitted")
 
 
 class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
