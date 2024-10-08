@@ -51,6 +51,7 @@ class MyTetrAMM(TetrAMM):
         self.current3.mean_value.kind = "hinted"
         self.current4.mean_value.kind = "hinted"
 
+
 try:
     tetramm1 = MyTetrAMM("8idTetra:QUAD1:", name="tetramm1", port_name="QUAD1")
 except Exception as cause:
