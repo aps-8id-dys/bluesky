@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
-import apstools.devices
+import apstools.devices  # noqa: E402
 
 aps = apstools.devices.ApsMachineParametersDevice(name="aps")
 """
