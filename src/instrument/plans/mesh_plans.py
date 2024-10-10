@@ -36,7 +36,23 @@ def xpcs_mesh(
     md=None,
 ):
     """
-    xpcs_mesh plan
+    Measure XPCS in repeated passes through a 2-D mesh.
+
+    Mesh is defined by two positioner axes m1 & m2. Each axis has parameters for
+    start, end, and number of steps (s, e, n). These define a mesh of size (n1 x
+    n2).  The mesh is converted to a list of m1 & m2 positions to be measured in
+    sequence.
+
+    The actual number of data collections, number_of_collection_points, is not
+    required to be equal to the number of mesh points.  The list of mesh
+    coordinates wll be repeated as necessary to collect the required number of
+    collection points.
+
+    The sequence of mesh points will consider 'snake_axes', which reverses the
+    sequence of 'm2' points on each increment of 'm1'.
+
+    At each collection, the area detector will acquire 'nframes' with
+    acquisition parameters 'acquire_time' & 'acquire_period'.
     """
     # TODO: called for alignment or XPCS data collection
     # Area detector is configured different for each of these.
