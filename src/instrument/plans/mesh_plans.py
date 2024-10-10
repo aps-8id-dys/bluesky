@@ -1,19 +1,64 @@
 """
-APS BDP demo: 2024-02
-"""
+XPCS plans for scanning over a mesh.
 
-# from apstools.plans.xpcs_mesh import mesh_list_grid_scan
+.. automodule::
+    ~mesh_list_grid_scan
+    ~xpcs_mesh
+"""
 
 import logging
 
+import apstools.plans
 import numpy as np
 from bluesky import plan_stubs as bps
-
-from ..initialize_bs_tools import oregistry
-from .xpcs_mesh_plans import mesh_list_grid_scan
+from toolz import partition
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
+
+from ..initialize_bs_tools import oregistry  # noqa: E402
+
+
+def mesh_list_grid_scan(
+    detectors,
+    *args,
+    number_of_collection_points,
+    snake_axes=False,
+    per_step=None,
+    md=None,
+):
+    """
+    Scan over a multi-dimensional mesh.
+
+    Collect a total of $n$ points; each motor is on an independent trajectory.
+
+    Here, the motors are specified as motor **names** (to match the queueserver
+    interface). With the names, the ophyd registry is searched for the actual
+    motor object.
+
+    Calls: ``apstools.plans.xpcs_mesh.mesh_list_grid_scan()``.  See that plan
+    for a detailed description of its arguments.
+    """
+    # Translate the motor names into motor objects.
+    axes_parameters = []
+    for motor_name, pos_list in partition(2, args):
+        if isinstance(motor_name, str):
+            motor_object = oregistry.find(motor_name)
+        else:
+            # Assume caller provided actual motor object.
+            motor_object = motor_name
+        axes_parameters += [motor_object, pos_list]
+
+    # Use same-named plan from apstools.
+    uid = yield from apstools.plans.mesh_list_grid_scan(
+        detectors,
+        *axes_parameters,
+        number_of_collection_points,
+        snake_axes=snake_axes,
+        per_step=per_step,
+        md=md,
+    )
+    return uid
 
 
 def xpcs_mesh(
@@ -36,7 +81,23 @@ def xpcs_mesh(
     md=None,
 ):
     """
-    xpcs_mesh plan
+    Measure XPCS in repeated passes through a 2-D mesh.
+
+    Mesh is defined by two positioner axes m1 & m2. Each axis has parameters for
+    start, end, and number of steps (s, e, n). These define a mesh of size (n1 x
+    n2).  The mesh is converted to a list of m1 & m2 positions to be measured in
+    sequence.
+
+    The actual number of data collections, number_of_collection_points, is not
+    required to be equal to the number of mesh points.  The list of mesh
+    coordinates wll be repeated as necessary to collect the required number of
+    collection points.
+
+    The sequence of mesh points will consider 'snake_axes', which reverses the
+    sequence of 'm2' points on each increment of 'm1'.
+
+    At each collection, the area detector will acquire 'nframes' with
+    acquisition parameters 'acquire_time' & 'acquire_period'.
     """
     # TODO: called for alignment or XPCS data collection
     # Area detector is configured different for each of these.
