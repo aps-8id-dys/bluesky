@@ -120,7 +120,7 @@ def xpcs_mesh(
         # Includes configuration of soft glue as needed.
         # Probably will need more user keywords for this.
 
-    yield from mesh_list_grid_scan(
+    uid = yield from mesh_list_grid_scan(
         [area_det] + detectors,
         m1,
         m1_positions,
@@ -130,3 +130,4 @@ def xpcs_mesh(
         snake_axes=snake_axes,
         md=md,
     )
+    return uid
