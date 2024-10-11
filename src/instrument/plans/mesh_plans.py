@@ -84,7 +84,7 @@ def xpcs_mesh(
     Measure XPCS in repeated passes through a 2-D mesh.
 
     Mesh is defined by two positioner axes m1 & m2. Each axis has parameters for
-    start, end, and number of steps (s, e, n). These define a mesh of size (n1 x
+    start, end, and number of points (s, e, n). These define a mesh of size (n1 x
     n2).  The mesh is converted to a list of m1 & m2 positions to be measured in
     sequence.
 
@@ -109,14 +109,13 @@ def xpcs_mesh(
 
     area_det = oregistry.find(area_det_name)
     if area_det in detectors:
+        # fmt: off
         yield from bps.mv(
-            area_det.cam.acquire_time,
-            acquire_time,
-            area_det.cam.acquire_period,
-            acquire_period,
-            area_det.cam.num_images,
-            nframes,
+            area_det.cam.acquire_time, acquire_time,
+            area_det.cam.acquire_period, acquire_period,
+            area_det.cam.num_images, nframes,
         )
+        # fmt: on
         # TODO: add user control of detector trigger_mode
         # Includes configuration of soft glue as needed.
         # Probably will need more user keywords for this.
@@ -129,5 +128,5 @@ def xpcs_mesh(
         m2_positions,
         number_of_collection_points=number_of_collection_points,
         snake_axes=snake_axes,
-        md=None,
+        md=md,
     )
