@@ -81,7 +81,7 @@ def xpcs_mesh(
     # header_index="A001",
     # ---- parameters for analysis code (in DM workflow)
     # see https://github.com/azjk/boost_corr?tab=readme-ov-file#usage
-    qmap_file = "/path/to/qmap/file.hdf5",
+    qmap_file="/path/to/qmap/file.hdf5",
     smooth="sqmap",
     # ----
     md=None,
