@@ -62,6 +62,7 @@ def mesh_list_grid_scan(
 
 
 def xpcs_mesh(
+    # ---- parameters for data acquisition
     area_det_name="eiger4M",
     detectors=None,
     m1="sample.x",
@@ -78,10 +79,17 @@ def xpcs_mesh(
     acquire_period=0.001,
     nframes=1_000,
     # header_index="A001",
+    # ---- parameters for analysis code (in DM workflow)
+    # see https://github.com/azjk/boost_corr?tab=readme-ov-file#usage
+    qmap_file = "/path/to/qmap/file.hdf5",
+    smooth="sqmap",
+    # ----
     md=None,
 ):
     """
     Measure XPCS in repeated passes through a 2-D mesh.
+
+    Only used for data collection after alignment is complete.
 
     Mesh is defined by two positioner axes m1 & m2. Each axis has parameters for
     start, end, and number of points (s, e, n). These define a mesh of size (n1 x
@@ -99,7 +107,6 @@ def xpcs_mesh(
     At each collection, the area detector will acquire 'nframes' with
     acquisition parameters 'acquire_time' & 'acquire_period'.
     """
-    # TODO: called for alignment or XPCS data collection
     # Area detector is configured different for each of these.
 
     if detectors is None:
@@ -107,6 +114,8 @@ def xpcs_mesh(
     m1_positions = np.linspace(s1, e1, n1).tolist()
     m2_positions = np.linspace(s2, e2, n2).tolist()
 
+    if area_det_name != "eiger4m":
+        raise RuntimeError(f"{area_det_name=!r}, Must use 'eiger4m' now.")
     area_det = oregistry.find(area_det_name)
     if area_det in detectors:
         # fmt: off
