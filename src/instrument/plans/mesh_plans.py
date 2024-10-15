@@ -37,7 +37,7 @@ XPCS plans for scanning over a mesh.
     --dryrun, -dr         dryrun: only show the argument without execution.
     --overwrite, -ow      whether to overwrite the existing result file.
     -c CONFIG.JSON, --config CONFIG.JSON
-                            configuration file to be used. if the same key is passed as an argument, the value in the configure file will be omitted.      
+                            configuration file to be used. if the same key is passed as an argument, the value in the configure file will be omitted.
 
 """
 
