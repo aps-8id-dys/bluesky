@@ -28,28 +28,28 @@ class ID8Optics2Slit1D(Optics2Slit1D):
         "xn",
         setpoint_pv=".VAL",
         readback_pv=".RBV",
-        tolerance=5e-4,
+        tolerance=8e-4,
     )
     xp = cpt(
         PVPositionerSoftDone,
         "xp",
         setpoint_pv=".VAL",
         readback_pv=".RBV",
-        tolerance=5e-4,
+        tolerance=8e-4,
     )
     size = cpt(
         PVPositionerSoftDone,
         "size",
         setpoint_pv=".VAL",
         readback_pv=".RBV",
-        tolerance=5e-4,
+        tolerance=8e-4,
     )
     center = cpt(
         PVPositionerSoftDone,
         "center",
         setpoint_pv=".VAL",
         readback_pv=".RBV",
-        tolerance=5e-4,
+        tolerance=8e-4,
     )
     sync = cpt(EpicsSignal, "doSync", put_complete=True, kind="omitted")
 
