@@ -56,7 +56,9 @@ class MyTetrAMM(TetrAMM):
 
     def trigger(self):
         """
-        Tetramms are operated in continuous mode. Will just accept the current value.
+        TetrAMMs are operated in continuous mode.
+
+        The subsequent '.read()' will return the current values.
         """
         if self._staged != Staged.yes:
             raise RuntimeError(
@@ -67,7 +69,7 @@ class MyTetrAMM(TetrAMM):
         self._status = self._status_type(self)
         self._acquisition_signal.put(1, wait=False)
         self.generate_datum(self._image_name, ttime.time(), {})
-        self._status.set_finished()
+        self._status.set_finished()  # <-- done immediately
         return self._status
 
 
