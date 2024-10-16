@@ -4,41 +4,7 @@ XPCS plans for scanning over a mesh.
 .. automodule::
     ~mesh_list_grid_scan
     ~xpcs_mesh
-
-..
-    usage: boost_corr [-h] -r RAW_FILENAME -q QMAP_FILENAME [-o OUTPUT_DIR] [-s SMOOTH] [-i GPU_ID] [-begin_frame BEGIN_FRAME] [-end_frame END_FRAME] [-stride_frame STRIDE_FRAME]
-                    [-avg_frame AVG_FRAME] [-t TYPE] [-dq TYPE] [--verbose] [--dryrun] [--overwrite] [-c CONFIG.JSON]
-
-    Compute Multi-tau/Twotime correlation for XPCS datasets on GPU/CPU
-
-    optional arguments:
-    -h, --help            show this help message and exit
-    -r RAW_FILENAME, --raw RAW_FILENAME
-                            the filename of the raw data file (imm/rigaku/hdf)
-    -q QMAP_FILENAME, --qmap QMAP_FILENAME
-                            the filename of the qmap file (h5/hdf)
-    -o OUTPUT_DIR, --output OUTPUT_DIR
-                            [default: cluster_results] the output directory for the result file. If not exit, the program will create this directory.
-    -s SMOOTH, --smooth SMOOTH
-                            [default: sqmap] smooth method to be used in Twotime correlation.
-    -i GPU_ID, --gpu_id GPU_ID
-                            [default: -1] choose which GPU to use. if the input is -1, then CPU is used
-    -begin_frame BEGIN_FRAME
-                            [default: 1] begin_frame specifies which frame to begin with for the correlation. This is useful to get rid of the bad frames in the beginning.
-    -end_frame END_FRAME  [default: -1] end_frame specifies the last frame used for the correlation. This is useful to get rid of the bad frames in the end. If -1 is used, end_frame will be set to
-                            the number of frames, i.e. the last frame
-    -stride_frame STRIDE_FRAME
-                            [default: 1] stride_frame defines the stride.
-    -avg_frame AVG_FRAME  [default: 1] stride_frame defines the number of frames to be averaged before the correlation.
-    -t TYPE, --type TYPE  [default: "Multitau"] Analysis type: ["Multitau", "Twotime", "Both"].
-    -dq TYPE, --dq_selection TYPE
-                            [default: "all"] dq_selection: a string that select the dq list, eg. '1, 2, 5-7' selects [1,2,5,6,7]. If 'all', all dynamic qindex will be used.
-    --verbose, -v         verbose
-    --dryrun, -dr         dryrun: only show the argument without execution.
-    --overwrite, -ow      whether to overwrite the existing result file.
-    -c CONFIG.JSON, --config CONFIG.JSON
-                            configuration file to be used. if the same key is passed as an argument, the value in the configure file will be omitted.
-
+    ~xpcs_mesh_with_dm
 """
 
 import datetime
@@ -101,11 +67,10 @@ def mesh_list_grid_scan(
     """
     Scan over a multi-dimensional mesh.
 
-    Collect a total of $n$ points; each motor is on an independent trajectory.
+    Collect a total of 'n' points; each motor has its own set of positions.
 
-    Here, the motors are specified as motor **names** (to match the queueserver
-    interface). With the names, the ophyd registry is searched for the actual
-    motor object.
+    Motors are specified by their **names** (matching the queueserver
+    interface). The ophyd registry is searched by name for the motor object.
 
     Calls: ``apstools.plans.xpcs_mesh.mesh_list_grid_scan()``.  See that plan
     for a detailed description of its arguments.
@@ -130,11 +95,6 @@ def mesh_list_grid_scan(
         md=md,
     )
     return uid
-
-
-def position_list(start, end, numPts):
-    """Return a list of positions from start to end with numPts points."""
-    return np.linspace(start, end, numPts).tolist()
 
 
 def validate_xpcs_mesh_inputs(
@@ -195,11 +155,7 @@ def wait_daq_image_file_upload(
 
 
 def xpcs_mesh(
-    title=SUGGESTION["title"],  # used as part of file name
-    description=SUGGESTION["description"],
-    header: str = xpcs_dm.header.get(),
-    # ---- parameters for data acquisition
-    area_det_name=SUGGESTION["area_det_name"],
+    area_det_name="eiger4M",
     detectors=None,
     m1="sample.x",
     s1=0,
@@ -215,14 +171,7 @@ def xpcs_mesh(
     acquire_period=0.001,
     nframes=1_000,
     # header_index="A001",
-    # ---- parameters for analysis code (in DM workflow)
-    # see https://github.com/azjk/boost_corr?tab=readme-ov-file#usage
-    qmap_file=SUGGESTION["QMAP_file"],
-    smooth=SUGGESTION["smooth"],
-    analysisMachine=SUGGESTION["analysisMachine"],
-    # FIXME:
-    # ----
-    md: dict = None,
+    md=None,
 ):
     """
     Measure XPCS in repeated passes through a 2-D mesh as a single bluesky run.
@@ -245,32 +194,13 @@ def xpcs_mesh(
     At each collection, the area detector will acquire 'nframes' with
     acquisition parameters 'acquire_time' & 'acquire_period'.
     """
-    # 'title' must be safe to use as a file name (no spaces or special chars)
-    safe_title = cleanupText(title)
-    data_path = pathlib.Path(
-        xpcs_dm.data_path(
-            safe_title,
-            number_of_collection_points,
-        )
-    )
-
-    ############################################################
-    # Fail early, fail hard!  Check inputs before configuration.
-
-    validate_xpcs_mesh_inputs(
-        area_det_name,
-        data_path,
-        qmap_file,
-        analysisMachine,
-    )
-
-    ############################################################
+    # Only used for XPCS data collection
     # Area detector is configured different for each of these.
 
     if detectors is None:
         detectors = []
-    m1_positions = position_list(s1, e1, n1)
-    m2_positions = position_list(s2, e2, n2)
+    m1_positions = np.linspace(s1, e1, n1).tolist()
+    m2_positions = np.linspace(s2, e2, n2).tolist()
 
     area_det = oregistry.find(area_det_name)
     if area_det in detectors:
@@ -285,8 +215,90 @@ def xpcs_mesh(
         # Includes configuration of soft glue as needed.
         # Probably will need more user keywords for this.
 
+    yield from mesh_list_grid_scan(
+        [area_det] + detectors,
+        m1,
+        m1_positions,
+        m2,
+        m2_positions,
+        number_of_collection_points=number_of_collection_points,
+        snake_axes=snake_axes,
+        md=None,
+    )
+
+
+def xpcs_mesh_with_dm(
+    title=SUGGESTION["title"],  # used as part of file name
+    description=SUGGESTION["description"],
+    header: str = xpcs_dm.header.get(),
+    # ---- parameters for data acquisition
+    area_det_name=SUGGESTION["area_det_name"],
+    detectors=None,
+    m1="sample.x",
+    s1=0,
+    e1=1,
+    n1=3,
+    m2="sample.y",
+    s2=0,
+    e2=2,
+    n2=5,
+    number_of_collection_points=20,
+    snake_axes=False,
+    acquire_time=0.001,
+    acquire_period=0.001,
+    nframes=1_000,
+    # header_index="A001",
+    # ---- parameters for analysis code (in DM workflow)
+    # see https://github.com/azjk/boost_corr?tab=readme-ov-file#usage
+    analysisMachine=SUGGESTION["analysisMachine"],
+    qmap_file=SUGGESTION["QMAP_file"],
+    wf_smooth=SUGGESTION["smooth"],
+    wf_gpuID=-1,
+    wf_beginFrame=1,
+    wf_endFrame=-1,
+    wf_strideFrame=1,
+    wf_avgFrame=1,
+    wf_type="Multitau",
+    wf_dq="all",
+    wf_verbose=False,
+    wf_saveG2=False,
+    wf_overwrite=False,
+    # ----
+    md: dict = None,
+):
+    """
+    Plan: acquire with xpcs_mesh() then execute DM workflow.
+    """
     ############################################################
-    # DM parameters
+    #! 'title' must be safe to use as a file name (no spaces or special chars)
+    safe_title = cleanupText(title)
+    data_path = pathlib.Path(
+        xpcs_dm.data_path(
+            safe_title,
+            number_of_collection_points,
+        )
+    )
+
+    ############################################################
+    #! Check inputs before configuration. Fail early, fail hard!
+
+    validate_xpcs_mesh_inputs(
+        area_det_name,
+        data_path,
+        qmap_file,
+        analysisMachine,
+    )
+
+    ############################################################
+    #! Area detector.
+
+    if detectors is None:
+        detectors = []
+
+    area_det = oregistry.find(area_det_name)
+
+    ############################################################
+    #! DM parameters
 
     dm_experiment_object = dm_api_ds().getExperimentByName(
         xpcs_dm.experiment_name.get()
@@ -295,7 +307,7 @@ def xpcs_mesh(
     logger.info("DM experiment: %s", xpcs_dm.experiment_name.get())
 
     ############################################################
-    # Organize metadata: BS, DM
+    #! Organize metadata: BS, DM
 
     md_bs = dict(  # bluesky plan metadata dict
         area_det_name=area_det_name,
@@ -313,21 +325,31 @@ def xpcs_mesh(
         acquire_time=acquire_time,
         acquire_period=acquire_period,
         nframes=nframes,
-        # md about the DM
-        analysisMachine=analysisMachine,
+        # md about the DM but not in md_dm
         workflow_name=workflow_name,
         experiment_name=xpcs_dm.experiment_name.get(),
     )
-    md_dm = dict(
+    md_dm = dict(  # will be passed verbatim to DM workflow, as **md_dm
+        analysisMachine=analysisMachine,
+        avgFrame=wf_avgFrame,
+        beginFrame=wf_beginFrame,
+        dq=wf_dq,
+        endFrame=wf_endFrame,
+        gpuID=wf_gpuID,
+        overwrite=wf_overwrite,
         qmap_file=qmap_file,
-        smooth=smooth,
-        # FIXME:
+        saveG2=wf_saveG2,
+        smooth=wf_smooth,
+        strideFrame=wf_strideFrame,
+        type=wf_type,
+        verbose=wf_verbose,
     )
 
     ############################################################
-    # Setup area detector HDF5 plugin (with data_path)
+    #! Setup area detector HDF5 plugin (with data_path)
 
     master_file_base = xpcs_dm.filename_base(
+        # no path, no extension
         safe_title,
         number_of_collection_points,
     )
@@ -339,7 +361,7 @@ def xpcs_mesh(
     )
 
     ############################################################
-    # DM DAQ upload the QMAP file to @voyager
+    #! DM DAQ upload the QMAP file to @voyager
 
     qmap_path = pathlib.Path(qmap_file)
     daqInfo_qmap_upload = dm_api_daq().upload(
@@ -350,7 +372,7 @@ def xpcs_mesh(
     logger.info("DM DAQ upload id: %r", daqInfo_qmap_upload["id"])
 
     ############################################################
-    # NeXus master file
+    #! NeXus master file
 
     hdf5_master_file = master_file_base + MASTER_EXTENSION
     nxwriter.warn_on_missing_content = False
@@ -358,7 +380,7 @@ def xpcs_mesh(
     nxwriter.file_name = data_path / hdf5_master_file
 
     ############################################################
-    # Data Acquisition: run the bluesky plan, wait for the files
+    #! Data Acquisition: run the bluesky plan, wait for the files
 
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
 
@@ -378,22 +400,21 @@ def xpcs_mesh(
             "title": title,
             "description": description,
             "datetime": str(datetime.datetime.now()),
-            "catalog": cat.name,
         }
         md_xpcs_mesh.update(md_bs)
         md_xpcs_mesh["data_management"] = md_dm
         md_xpcs_mesh.update(md)  # user md takes highest priority
 
-        uid = yield from mesh_list_grid_scan(
+        # fmt: off
+        uid = yield from xpcs_mesh(
             [area_det] + detectors,
-            m1,
-            m1_positions,
-            m2,
-            m2_positions,
+            m1, s1, e1, n1,
+            m2, s2, e2, n2,
             number_of_collection_points=number_of_collection_points,
             snake_axes=snake_axes,
             md=md_xpcs_mesh,
         )
+        # fmt: on
         return uid
 
     uid = yield from acquire()
@@ -407,7 +428,7 @@ def xpcs_mesh(
     yield from wait_daq_image_file_upload(dm_experiment_object, ad_file)
 
     ############################################################
-    # Start DM workflow (optional: and wait for it to finish)
+    #! Start DM workflow (optional: and wait for it to finish)
 
     logger.info(
         "DM workflow %r, filePath=%r",
@@ -422,14 +443,11 @@ def xpcs_mesh(
         filePath=pathlib.Path(ad_file).name,
         experimentName=xpcs_dm.experiment_name.get(),
         qmap=qmap_path.name,
-        # from the plan's API
-        smooth=smooth,
-        # FIXME:
-        analysisMachine=analysisMachine,
+        **md_dm,  # all other kwargs
     )
 
     ############################################################
-    # Upload bluesky run metadata to APS DM
+    #! Upload bluesky run metadata to APS DM
 
     share_bluesky_metadata_with_dm(
         xpcs_dm.experiment_name.get(),
@@ -438,6 +456,6 @@ def xpcs_mesh(
     )
 
     ############################################################
-    # complete
+    #! complete
 
     logger.info("Finished: xpcs_mesh()")
