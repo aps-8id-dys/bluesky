@@ -8,12 +8,12 @@ GitHub apstools issue #878 has some useful documentation in the comments.
 
 import logging
 import time as ttime
-from ophyd.device import Staged
 
 from ophyd import Component
 from ophyd import TetrAMM
 from ophyd.areadetector.plugins import ImagePlugin_V34
 from ophyd.areadetector.plugins import StatsPlugin_V34
+from ophyd.device import Staged
 from ophyd.quadem import QuadEMPort
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,9 @@ class MyTetrAMM(TetrAMM):
         self.current4.mean_value.kind = "hinted"
 
     def trigger(self):
-        # Tetramms are operated in continuous mode. Will just accept the current value.
+        '''
+        Tetramms are operated in continuous mode. Will just accept the current value.
+        '''
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -67,6 +69,7 @@ class MyTetrAMM(TetrAMM):
         self.generate_datum(self._image_name, ttime.time(), {})
         self._status.set_finished()
         return self._status
+
 
 try:
     tetramm1 = MyTetrAMM("8idTetra:QUAD1:", name="tetramm1", port_name="QUAD1")
