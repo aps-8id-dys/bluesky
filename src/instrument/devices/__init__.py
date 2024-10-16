@@ -34,7 +34,7 @@ from .idt_mono import idt_mono
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
-from .slit import sl4, sl5, sl7, sl8, sl9
+from .slit import sl5, sl9 #, sl7, sl8,sl4, 
 from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
 from .transfocator_8idd import rl1
 from .transfocator_8ide import rl2
