@@ -56,7 +56,6 @@ class XPCS_Plan_Signals_Device(Device):
         experiment = dm_api_ds().getExperimentByName(self.experiment_name.get())
         path = pathlib.Path(experiment["dataDirectory"])
         filepath = path / self.filename_base(title, nframes)
-        # return f"{experiment['dataDirectory']}/{self.filename_base(title, nframes)}"
         return filepath
 
     def filename_base(self, title: str, nframes: int = 0):

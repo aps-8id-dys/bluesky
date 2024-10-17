@@ -249,9 +249,7 @@ def xpcs_mesh_with_dm(
     acquire_time=0.001,
     acquire_period=0.001,
     nframes=1_000,
-    # header_index="A001",
     # ---- parameters for analysis code (in DM workflow)
-    # see https://github.com/azjk/boost_corr?tab=readme-ov-file#usage
     analysisMachine=SUGGESTION["analysisMachine"],
     qmap_file=SUGGESTION["QMAP_file"],
     wf_smooth=SUGGESTION["smooth"],
