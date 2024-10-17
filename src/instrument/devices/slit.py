@@ -35,6 +35,7 @@ class ID8Optics2Slit1D(Optics2Slit1D):
     ):
         # Store motor names and secondary prefix as instance variables
         self.secondary_prefix = secondary_prefix
+        print(self.secondary_prefix)
         self.positive_motor = positive_motor
         self.negative_motor = negative_motor
 
@@ -75,18 +76,18 @@ class ID8Optics2Slit1D(Optics2Slit1D):
 
 
 class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
-    # Define horizontal and vertical slit components
-    h = Cpt(
+    # Use FCpt to delay the initialization until after the instance is created
+    h = FCpt(
         ID8Optics2Slit1D,
-        "H",
+        "{prefix}H",  # H gets appended to the prefix
         secondary_prefix="{_secondary_prefix}",
         positive_motor="{_h_positive_motor}",
         negative_motor="{_h_negative_motor}",
     )
 
-    v = Cpt(
+    v = FCpt(
         ID8Optics2Slit1D,
-        "V",
+        "{prefix}V",  # V gets appended to the prefix
         secondary_prefix="{_secondary_prefix}",
         positive_motor="{_v_positive_motor}",
         negative_motor="{_v_negative_motor}",
@@ -104,20 +105,23 @@ class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
         **kwargs,
     ):
         # Store the motor names and secondary prefix as instance variables
+        self._secondary_prefix = secondary_prefix
         self._h_positive_motor = h_positive_motor
         self._h_negative_motor = h_negative_motor
         self._v_positive_motor = v_positive_motor
         self._v_negative_motor = v_negative_motor
-        self._secondary_prefix = secondary_prefix
-
+        
+        # Print inside __init__
+        print(f"outer: {self._secondary_prefix}\n\n\n\n\n")
+        
         # Call the parent constructor
         super().__init__(prefix, *args, **kwargs)
+        print("after init")
 
-
-# Instantiate slits
+# Example of usage
 sl5 = ID8Optics2Slit2D_HV(
     prefix="8ideSoft:Slit1",
-    secondary_prefix="8idiSoft:CR8-E2:",
+    secondary_prefix="8idiSoft:CR8-E2",
     h_positive_motor="m4",
     h_negative_motor="m3",
     v_positive_motor="m2",
