@@ -27,13 +27,12 @@ class IndividualSlits(Device):
         *args,
         **kwargs,
     ):
-        '''
-        init
-        '''
+        """
+        Initializing the prefix and correct suffix format
+        """
         # Determine the prefix for the motors
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])
-
 
         self._h_positive_motor = h_positive_motor
         self._h_negative_motor = h_negative_motor
