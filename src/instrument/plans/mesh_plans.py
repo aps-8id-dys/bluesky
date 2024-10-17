@@ -252,6 +252,8 @@ def xpcs_mesh_with_dm(
     acquire_time=0.001,
     acquire_period=0.001,
     nframes=1_000,
+    # ---- instrument settings
+    X_energy=12.0,
     # ---- parameters for analysis code (in DM workflow)
     analysisMachine=SUGGESTION["analysisMachine"],
     qmap_file=SUGGESTION["QMAP_file"],
@@ -328,6 +330,7 @@ def xpcs_mesh_with_dm(
         acquire_time=acquire_time,
         acquire_period=acquire_period,
         nframes=nframes,
+        X_energy=X_energy,
         # md about the DM but not in md_dm
         workflow_name=workflow_name,
         experiment_name=xpcs_dm.experiment_name.get(),
@@ -392,6 +395,9 @@ def xpcs_mesh_with_dm(
 
     @bpp.subs_decorator(nxwriter.receiver)
     def acquire():
+        from .ad_setup_plans import ad_acquire_setup
+        from .ad_setup_plans import eiger4M_acquire_setup
+
         # fmt: off
         yield from bps.mv(
             dm_workflow.concise_reporting, False,
@@ -409,6 +415,21 @@ def xpcs_mesh_with_dm(
         md_xpcs_mesh.update(md_bs)
         md_xpcs_mesh["data_management"] = md_dm
         md_xpcs_mesh.update(md or {})  # user md takes highest priority
+
+        # https://bcda-aps.github.io/apstools/latest/examples/de_1_adsim_hdf5_custom_names.html#HDF5:-AD_EpicsFileNameHDF5Plugin
+        yield from ad_acquire_setup(
+            area_det,
+            acquire_time=acquire_time,
+            acquire_period=acquire_period,
+            num_capture=nframes,
+            num_exposures=1,
+            num_images=nframes,
+            num_triggers=1,
+            path=data_path,
+        )
+
+        if area_det.name == "eiger4M":
+            yield from eiger4M_acquire_setup(area_det)
 
         # fmt: off
         uid = yield from xpcs_mesh(
