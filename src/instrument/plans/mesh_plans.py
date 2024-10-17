@@ -363,7 +363,7 @@ def xpcs_mesh_with_dm(
     )
 
     ############################################################
-    #! DM DAQ upload the QMAP file to @voyager
+    #! DM DAQ upload will copy the QMAP file to voyager.
 
     qmap_path = pathlib.Path(qmap_file)
     daqInfo_qmap_upload = dm_api_daq().upload(
