@@ -129,10 +129,12 @@ def wait_daq_image_file_upload(
     full_file_name,
     period=60 * SECOND,
 ):
-    """Wait for image file to be uploaded by DAQ."""
-    # TODO: Did the DAQ see that the detector image file write was complete?
-    # Check metadata catalog and find the file.
-    # HOWTO check the metadata catalog?
+    """
+    Wait for image file to be uploaded by DAQ.
+
+    Check metadata catalog and find the file.
+    """
+    # TODO: Hoist to apstools?
     dm_file_cat_api = dm_api_filecat()
     _pre = dm_experiment["storageDirectory"]
     _file = full_file_name.lstrip(_pre).lstrip("/")
