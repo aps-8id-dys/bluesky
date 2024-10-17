@@ -7,7 +7,11 @@ Plans to be run for each session or experiment.
 
 import logging
 
-from apstools.utils import dm_isDaqActive
+try:
+    from apstools.utils import dm_isDaqActive
+except ImportError:
+    # TODO hoist to apstools
+    from ..utils.aps_data_management import dm_isDaqActive  # noqa
 from apstools.utils import dm_start_daq
 from apstools.utils import validate_experiment_dataDirectory
 from bluesky import plan_stubs as bps
