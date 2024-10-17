@@ -20,7 +20,6 @@ from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
 from apstools.utils import dm_api_filecat
-from apstools.utils import dm_daq_wait_upload_plan
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import preprocessors as bpp
@@ -30,6 +29,10 @@ from toolz import partition
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+try:
+    from apstools.utils import dm_daq_wait_upload_plan
+except ImportError:
+    from ..utils.aps_data_management import dm_daq_wait_upload_plan
 from ..callbacks.nexus_data_file_writer import nxwriter  # noqa: E402
 from ..devices.xpcs_support import xpcs_dm  # noqa: E402
 from ..initialize_bs_tools import RE  # noqa: E402
