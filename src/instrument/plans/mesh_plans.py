@@ -92,7 +92,7 @@ def mesh_list_grid_scan(
     uid = yield from apstools.plans.mesh_list_grid_scan(
         detectors,
         *axes_parameters,
-        number_of_collection_points,
+        number_of_collection_points=number_of_collection_points,
         snake_axes=snake_axes,
         per_step=per_step,
         md=md,
@@ -107,8 +107,8 @@ def validate_xpcs_mesh_inputs(
     analysisMachine,
 ):
     """Raise exception if inputs to xpcs_mesh plan are not valid."""
-    if area_det_name != "eiger4m":
-        raise RuntimeError(f"{area_det_name=!r}, Must use 'eiger4m' now.")
+    if area_det_name != "eiger4M":
+        raise RuntimeError(f"{area_det_name=!r}, Must use 'eiger4M' now.")
 
     if len(xpcs_dm.experiment_name.get()) == 0:
         raise RuntimeError("Must run xpcs_setup_user() first.")
@@ -222,9 +222,9 @@ def xpcs_mesh(
 
     yield from mesh_list_grid_scan(
         [area_det] + detectors,
-        oregistry.find(m1),
+        oregistry.find(name=m1),
         m1_positions,
-        oregistry.find(m2),
+        oregistry.find(name=m2),
         m2_positions,
         number_of_collection_points=number_of_collection_points,
         snake_axes=snake_axes,
@@ -281,7 +281,7 @@ def xpcs_mesh_with_dm(
             number_of_collection_points,
         )
     )
-
+    yield from bps.mv(xpcs_dm.header, header)
     ############################################################
     #! Check inputs before configuration. Fail early, fail hard!
 
@@ -396,7 +396,6 @@ def xpcs_mesh_with_dm(
         yield from bps.mv(
             dm_workflow.concise_reporting, False,
             dm_workflow.reporting_period, 10 * SECOND,
-            xpcs_dm.header, header,
         )
         yield from xpcs_dm.increment_index()
         RE.md["xpcs_header"] = xpcs_dm.header.get()
@@ -409,11 +408,11 @@ def xpcs_mesh_with_dm(
         }
         md_xpcs_mesh.update(md_bs)
         md_xpcs_mesh["data_management"] = md_dm
-        md_xpcs_mesh.update(md)  # user md takes highest priority
+        md_xpcs_mesh.update(md or {})  # user md takes highest priority
 
         # fmt: off
         uid = yield from xpcs_mesh(
-            [area_det] + detectors,
+            area_det_name, detectors,
             m1, s1, e1, n1,
             m2, s2, e2, n2,
             number_of_collection_points=number_of_collection_points,
