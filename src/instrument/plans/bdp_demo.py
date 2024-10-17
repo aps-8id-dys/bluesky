@@ -303,9 +303,10 @@ def xpcs_bdp_demo_plan(
         # instrument metadata (expected by nxwriter)
         # values from pete7.hdf
         # TODO: set from actual instrument values
-        absolute_cross_section_scale=1,
-        bcx=0,
+        absolute_cross_section_scale=1,  # ok as-is
+        bcx=0,  # used by analysis?
         bcy=0,
+        #! good as hard constants now, might be replaced by QMAP
         ccdx=1,
         ccdx0=1,
         ccdy=1,
