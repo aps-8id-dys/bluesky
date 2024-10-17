@@ -50,7 +50,7 @@ SUGGESTION = {
     "analysisMachine": "amazonite",
     "area_det_name": "eiger4M",
     "description": "Demonstrate XPCS mesh and DM workflow.",
-    "QMAP_file": "/path/to/qmap/file.hdf5",
+    "QMAP_file": "",
     "smooth": "sqmap",
     "title": "RENAME_XPCS_MESH",  # keep this short, single-word
 }
