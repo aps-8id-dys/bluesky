@@ -42,7 +42,7 @@ class ID8Optics2Slit1D(Optics2Slit1D):
         "size",
         setpoint_pv=".VAL",
         readback_pv=".RBV",
-        tolerance=8e-4,
+        tolerance=2e-3,
     )
     center = cpt(
         PVPositionerSoftDone,
