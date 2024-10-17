@@ -222,9 +222,9 @@ def xpcs_mesh(
 
     yield from mesh_list_grid_scan(
         [area_det] + detectors,
-        m1,
+        oregistry.find(m1),
         m1_positions,
-        m2,
+        oregistry.find(m2),
         m2_positions,
         number_of_collection_points=number_of_collection_points,
         snake_axes=snake_axes,
