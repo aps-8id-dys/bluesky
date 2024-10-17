@@ -368,6 +368,7 @@ def xpcs_mesh_with_dm(
     # Upload is used for any files not written directly to voyager.
 
     qmap_path = pathlib.Path(qmap_file)
+    # TODO: check dm_isDaqActive here?
     daqInfo_qmap_upload = dm_api_daq().upload(
         experimentName=xpcs_dm.experiment_name.get(),
         dataDirectory=DAQ_UPLOAD_PREFIX + str(qmap_path.parent),
