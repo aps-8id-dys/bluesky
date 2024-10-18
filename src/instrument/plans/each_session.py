@@ -2,7 +2,7 @@
 Plans to be run for each session or experiment.
 
 .. automodule::
-    ~xpcs_setup_user
+    ~xpcs_setup_user2
 """
 
 import logging
@@ -24,7 +24,7 @@ from ..initialize_bs_tools import RE  # noqa: E402
 from .ad_setup_plans import write_if_new  # noqa: E402
 
 
-def xpcs_setup_user(dm_experiment_name: str, index: int = -1):
+def xpcs_setup_user2(dm_experiment_name: str, index: int = -1):
     """
     Configure bluesky session for this user and DM experiment.
 
