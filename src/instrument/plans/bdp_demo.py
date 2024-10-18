@@ -479,8 +479,11 @@ def prj_test(
         )
 
 
-def mc_test(detector_name: str = DEFAULT_DETECTOR_NAME, index: int = 0,
-             num_trys: int = 10):
+def mc_test(
+    detector_name: str = DEFAULT_DETECTOR_NAME,
+    index: int = 0,
+    num_trys: int = 10,
+):
     """Developer shortcut plan."""
     qmap_path = QMAPS.get(detector_name)
     if qmap_path is None:
