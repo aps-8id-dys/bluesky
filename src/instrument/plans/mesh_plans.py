@@ -111,7 +111,7 @@ def validate_xpcs_mesh_inputs(
         raise RuntimeError(f"{area_det_name=!r}, Must use 'eiger4M' now.")
 
     if len(xpcs_dm.experiment_name.get()) == 0:
-        raise RuntimeError("Must run xpcs_setup_user() first.")
+        raise RuntimeError("Must run xpcs_setup_user2() first.")
 
     if data_path.exists():
         msg = f"Data path '{data_path}' exists.  Will not overwrite."
