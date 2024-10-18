@@ -55,9 +55,9 @@ class MyTetrAMM(TetrAMM):
         self.current4.mean_value.kind = "hinted"
 
     def trigger(self):
-        '''
+        """
         Tetramms are operated in continuous mode. Will just accept the current value.
-        '''
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
