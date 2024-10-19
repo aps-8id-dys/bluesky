@@ -452,6 +452,14 @@ def xpcs_bdp_demo_plan(
 
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
+    job = dm_workflow.getJob()
+    msg = (
+        f"{job['submissionTimestamp']}"
+        f" DM workflow job: id={job['id']!r}"
+        f" status={job['status']!r}"
+    )
+    logger.info(msg)
+    print(msg)
 
     logger.info("Finished: xpcs_bdp_demo_plan()")
 
