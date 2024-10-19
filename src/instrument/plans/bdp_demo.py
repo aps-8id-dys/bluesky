@@ -452,6 +452,11 @@ def xpcs_bdp_demo_plan(
 
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
+
+    # Report for the console oberver (issue #94)
+    msg = f"Bluesky run {uids=!r}"
+    logger.info(msg)
+    print(msg)
     job = dm_workflow.getJob()
     msg = (
         f"{job['submissionTimestamp']}"
