@@ -404,7 +404,7 @@ def xpcs_bdp_demo_plan(
     print(f"{_pre=!r}")
     print(f"{_file=!r}")
     print(f"{_file_found=!r}")
-    for _i in range(60):  # wild guess, 60 seconds and the file should be found
+    for _i in range(120):  # wild guess, 60 seconds and the file should be found
         try:
             dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
             _file_found = True
