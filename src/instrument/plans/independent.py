@@ -48,10 +48,9 @@ def setup_detector(det, acq_time, num_frames, file_name):
     yield from bps.mv(det.hdf1.file_name, file_name)
 
 
-def kickoff_dm_workflow(experiment_name, file_name, qmap_file, uid):
+def kickoff_dm_workflow(experiment_name, file_name, qmap_file, run):
     """Start a DM workflow for this bluesky run."""
     workflow_name = "xpcs8-02-gladier-boost"
-    run = cat[uid]
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
     yield from bps.mv(dm_workflow.concise_reporting, True)
     yield from bps.mv(dm_workflow.reporting_period, 10)  # seconds between updates
@@ -93,6 +92,8 @@ def full_acquisition():
 
     uids = yield from simple_acquire(det)
     print(f"Bluesky run: {uids=}")
+    run = cat[uids[0]]
+
 
     try:
         yield from nxwriter.wait_writer_plan_stub()
@@ -100,7 +101,7 @@ def full_acquisition():
             "my_dm_experiment",
             pathlib.Path(det.hdf1.full_file_name.get()).name,
             "my_qmap_file.h5",
-            uids[0],
+            run,
         )
     except Exception as exc:
         print(f"Exception: {exc}")
