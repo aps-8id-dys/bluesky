@@ -404,20 +404,21 @@ def xpcs_bdp_demo_plan(
     _file = _full_file_name.lstrip(_pre).lstrip("/")
     _file_found = False
     print(f"{_full_file_name=!r}")
-    print(f"{_pre=!r}")
-    print(f"{_file=!r}")
-    print(f"{_file_found=!r}")
-    for _i in range(120):  # wild guess: after some time, file should be found
-        try:
-            dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
-            _file_found = True
-            break
-        except ObjectNotFound:
-            if (_i % 10) == 0:
-                print(f"Waiting for DM DAQ to find image file: {_file!r}")
-            yield from bps.sleep(1)
-    if not _file_found:
-        raise FileNotFoundError(f"DM DAQ did not file image file {_file!r}")
+    # 2024-10-22, PRJ:  No need to wait for this upload to be cataloged in DM.
+    # print(f"{_pre=!r}")
+    # print(f"{_file=!r}")
+    # print(f"{_file_found=!r}")
+    # for _i in range(120):  # wild guess: after some time, file should be found
+    #     try:
+    #         dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
+    #         _file_found = True
+    #         break
+    #     except ObjectNotFound:
+    #         if (_i % 10) == 0:
+    #             print(f"Waiting for DM DAQ to find image file: {_file!r}")
+    #         yield from bps.sleep(1)
+    # if not _file_found:
+    #     raise FileNotFoundError(f"DM DAQ did not file image file {_file!r}")
 
     #
     # *** Start the APS Data Management workflow. ***
