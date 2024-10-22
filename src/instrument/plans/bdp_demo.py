@@ -466,6 +466,9 @@ def xpcs_bdp_demo_plan(
     logger.info(msg)
     print(msg)
 
+    # Leave the HDF plugin in LazyOpen mode.
+    yield from bps.mv(det.hdf1.lazy_open, "Yes")
+
     logger.info("Finished: xpcs_bdp_demo_plan()")
 
 
