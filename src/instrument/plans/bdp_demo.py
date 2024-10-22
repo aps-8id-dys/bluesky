@@ -23,7 +23,6 @@ from apstools.utils import build_run_metadata_dict
 from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
-from apstools.utils import dm_api_filecat
 from apstools.utils import dm_api_proc
 
 # see `def` below: from apstools.utils import dm_daq_wait_upload_plan
@@ -37,7 +36,6 @@ from apstools.utils import validate_experiment_dataDirectory
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-from dm.common.exceptions.objectNotFound import ObjectNotFound
 from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
@@ -242,7 +240,7 @@ def xpcs_bdp_demo_plan(
         raise RuntimeError("Must run xpcs_setup_user() first.")
 
     # Make sure the experiment actually exists.
-    dm_experiment_object = dm_api_ds().getExperimentByName(experiment_name)
+    dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
     yield from write_if_new(xpcs_header, header)
@@ -395,30 +393,9 @@ def xpcs_bdp_demo_plan(
     yield from dm_daq_wait_upload_plan(
         daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD
     )
-    # TODO: Did the DAQ see that the detector image file write was complete?
-    # Check metadata catalog and find the file.
-    # HOWTO check the metadata catalog?
-    dm_file_cat_api = dm_api_filecat()
-    _pre = dm_experiment_object["storageDirectory"]
+
     _full_file_name = det.hdf1.full_file_name.get()
-    _file = _full_file_name.lstrip(_pre).lstrip("/")
-    _file_found = False
     print(f"{_full_file_name=!r}")
-    # 2024-10-22, PRJ:  No need to wait for this upload to be cataloged in DM.
-    # print(f"{_pre=!r}")
-    # print(f"{_file=!r}")
-    # print(f"{_file_found=!r}")
-    # for _i in range(120):  # wild guess: after some time, file should be found
-    #     try:
-    #         dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
-    #         _file_found = True
-    #         break
-    #     except ObjectNotFound:
-    #         if (_i % 10) == 0:
-    #             print(f"Waiting for DM DAQ to find image file: {_file!r}")
-    #         yield from bps.sleep(1)
-    # if not _file_found:
-    #     raise FileNotFoundError(f"DM DAQ did not file image file {_file!r}")
 
     #
     # *** Start the APS Data Management workflow. ***
