@@ -14,8 +14,8 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
 from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices.ad_eiger_4M import eiger4M
 from ..initialize_bs_tools import cat
-from .ad_eiger_4M import eiger4M
 
 EMPTY_DICT = {}
 
@@ -55,12 +55,8 @@ def kickoff_dm_workflow(experiment_name, file_name, qmap_file, run):
     yield from bps.mv(dm_workflow.concise_reporting, True)
     yield from bps.mv(dm_workflow.reporting_period, 10)  # seconds between updates
 
-    # TODO: How to turn off all reporting about the workflow?
-    yield from dm_workflow.run_as_plan(
-        workflow=workflow_name,
-        wait=False,
-        timeout=999_999_999_999,
-        # all kwargs after this line are DM argsDict content
+    # DM argsDict content
+    argsDict = dict(
         filePath=file_name,
         experimentName=experiment_name,
         qmap=qmap_file,
@@ -79,6 +75,14 @@ def kickoff_dm_workflow(experiment_name, file_name, qmap_file, run):
         # analysisMachine=analysisMachine,
     )
 
+    # TODO: How to turn off __all__ reporting about the workflow?
+    yield from dm_workflow.run_as_plan(
+        workflow=workflow_name,
+        wait=False,
+        timeout=999_999_999_999,  # TODO:
+        **argsDict,
+    )
+
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
@@ -93,7 +97,6 @@ def full_acquisition():
     uids = yield from simple_acquire(det)
     print(f"Bluesky run: {uids=}")
     run = cat[uids[0]]
-
 
     try:
         yield from nxwriter.wait_writer_plan_stub()
