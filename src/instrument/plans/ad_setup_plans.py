@@ -120,7 +120,6 @@ def setup_hdf5_plugin(
     dir_depth: int = -5,
     file_number: (int, None) = None,  # next file number
     auto_increment: bool = True,
-    lazy_open: bool = False,
     auto_save: bool = True,
     write_mode: str = "Stream",
     num_capture: int = 1,
@@ -208,7 +207,6 @@ def setup_hdf5_plugin(
     yn = {True: "Yes", False: "No"}
     yield from write_if_new(hdf.auto_increment, yn[auto_increment])
     yield from write_if_new(hdf.auto_save, yn[auto_save])
-    yield from write_if_new(hdf.lazy_open, yn[lazy_open])
 
     hdf.stage_sigs["blocking_callbacks"] = "No"
     hdf.stage_sigs["file_write_mode"] = write_mode

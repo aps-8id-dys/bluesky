@@ -23,7 +23,6 @@ from apstools.utils import build_run_metadata_dict
 from apstools.utils import cleanupText
 from apstools.utils import dm_api_daq
 from apstools.utils import dm_api_ds
-from apstools.utils import dm_api_filecat
 from apstools.utils import dm_api_proc
 
 # see `def` below: from apstools.utils import dm_daq_wait_upload_plan
@@ -37,7 +36,6 @@ from apstools.utils import validate_experiment_dataDirectory
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-from dm.common.exceptions.objectNotFound import ObjectNotFound
 from ophyd import Signal
 
 from ..callbacks.nexus_data_file_writer import nxwriter
@@ -54,15 +52,18 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 dm_experiment = Signal(name="dm_experiment", value="")
-sensor = Signal(name="sensor", value=1.23456)  # TODO: developer
 xpcs_header = Signal(name="xpcs_header", value=RE.md.get("xpcs_header", "A001"))
 xpcs_index = Signal(name="xpcs_index", value=RE.md.get("xpcs_index", 0))
 
 DEFAULT_DETECTOR_NAME = "eiger4M"
 DM_WORKFLOW_NAME = iconfig.get("DM_WORKFLOW_NAME", "example-01")
-TITLE = "BDP_XPCS_demo"  # keep this short, single-word
+TITLE = "CAC_demo"  # keep this short, single-word
 DESCRIPTION = "Demonstrate XPCS data acquisition and analysis."
-DEFAULT_RUN_METADATA = {"title": TITLE, "description": DESCRIPTION}
+DEFAULT_RUN_METADATA = {
+    "title": TITLE,
+    "description": DESCRIPTION,
+    "cycle": "2024-3",
+}
 DEFAULT_REPORTING_PERIOD = (
     10 * SECOND
 )  # time between reports about an active DM workflow
@@ -73,9 +74,10 @@ DAQ_UPLOAD_WAIT_PERIOD = 1.0 * SECOND
 DAQ_UPLOAD_PREFIX = "ftp://s8ididm:2811"
 
 QMAP_BASE = pathlib.Path("/home/beams/8IDIUSER/Documents/Miaoqi/standard_qmaps")
-QMAPS = {
+QMAPS = {  # only used in test plans
     "adsim4M": QMAP_BASE / "adsim4M_qmap_d36_s360.h5",
     "eiger4M": QMAP_BASE / "eiger4M_qmap_d36_s360.h5",
+    "eiger4M_0811_1": QMAP_BASE / "eiger4m_qmap_after_windowadjust.h5",
 }
 
 
@@ -181,8 +183,8 @@ def xpcs_bdp_demo_plan(
     title: str = TITLE,
     description: str = DESCRIPTION,
     header: str = xpcs_header.get(),
-    analysisMachine: str = "amazonite",  # or "adamite", or "polaris"
-    qmap_file: str = str(QMAPS.get(DEFAULT_DETECTOR_NAME, "/path/to/qmap_file.hdf")),
+    analysisMachine: str = "amazonite",
+    qmap_file: str = "",
     # detector parameters ----------------------------------------
     detector_name: str = DEFAULT_DETECTOR_NAME,
     acquire_time: float = 0.01,
@@ -218,17 +220,17 @@ def xpcs_bdp_demo_plan(
     #
     # *** Prepare. ***
     #
-    analysisMachine_choices = """
+    ANALYSIS_MACHINES = """
         adamite
         amazonite
         califone
         polaris
     """.lower().split()
     analysisMachine = analysisMachine.lower()  # to be safe
-    if analysisMachine not in analysisMachine_choices:
+    if analysisMachine not in ANALYSIS_MACHINES:
         raise ValueError(
             f"Received {analysisMachine=!r}."
-            f"  Must be one of these: {analysisMachine_choices!r}"
+            f"  Must be one of these: {ANALYSIS_MACHINES!r}"
         )
     workflow_name = "xpcs8-02-gladier-boost"
 
@@ -238,7 +240,7 @@ def xpcs_bdp_demo_plan(
         raise RuntimeError("Must run xpcs_setup_user() first.")
 
     # Make sure the experiment actually exists.
-    dm_experiment_object = dm_api_ds().getExperimentByName(experiment_name)
+    dm_api_ds().getExperimentByName(experiment_name)
     logger.info("DM experiment: %s", experiment_name)
 
     yield from write_if_new(xpcs_header, header)
@@ -262,11 +264,11 @@ def xpcs_bdp_demo_plan(
         det.hdf1, data_path, file_name_base, num_capture=num_images
     )
 
-    qmap_path = QMAPS[det.name]
-    if str(qmap_file).strip() == "":
-        qmap_file = str(qmap_path)  # FIXME: which? qmap_file or qmap_path?
-    if not pathlib.Path(qmap_file).exists():
+    qmap_path = pathlib.Path(qmap_file)
+    if not qmap_path.exists():
         raise FileNotFoundError(f"QMAP file: {qmap_file!r}")
+    elif not qmap_path.is_file():
+        raise FileNotFoundError(f"Not a file: {qmap_file!r}")
     # upload QMAP to @voyager
     daqInfo_qmap_upload = dm_api_daq().upload(
         experimentName=experiment_name,
@@ -304,22 +306,22 @@ def xpcs_bdp_demo_plan(
         # values from pete7.hdf
         # TODO: set from actual instrument values
         absolute_cross_section_scale=1,
-        bcx=0,
-        bcy=0,
+        bcx=1044,
+        bcy=1416,
         ccdx=1,
         ccdx0=1,
         ccdy=1,
         ccdy0=1,
-        det_dist=4,
+        det_dist=12.5,
         I0=1,
         I1=1,
-        incident_beam_size_nm_xy=1,
+        incident_beam_size_nm_xy=10_000,
         incident_energy_spread=1,
-        pix_dim_x=1,
-        pix_dim_y=1,
-        t0=0.005,
-        t1=0.001,
-        X_energy=12.0,
+        pix_dim_x=75e-6,
+        pix_dim_y=75e-6,
+        t0=acquire_time,
+        t1=acquire_period,
+        X_energy=13.321,
         xdim=1,
         ydim=1,
     )
@@ -391,29 +393,9 @@ def xpcs_bdp_demo_plan(
     yield from dm_daq_wait_upload_plan(
         daqInfo_qmap_upload["id"], DAQ_UPLOAD_WAIT_PERIOD
     )
-    # TODO: Did the DAQ see that the detector image file write was complete?
-    # Check metadata catalog and find the file.
-    # HOWTO check the metadata catalog?
-    dm_file_cat_api = dm_api_filecat()
-    _pre = dm_experiment_object["storageDirectory"]
+
     _full_file_name = det.hdf1.full_file_name.get()
-    _file = _full_file_name.lstrip(_pre).lstrip("/")
-    _file_found = False
     print(f"{_full_file_name=!r}")
-    print(f"{_pre=!r}")
-    print(f"{_file=!r}")
-    print(f"{_file_found=!r}")
-    for _i in range(60):  # wild guess, 60 seconds and the file should be found
-        try:
-            dm_file_cat_api.getExperimentFile(dm_experiment_object["name"], _file)
-            _file_found = True
-            break
-        except ObjectNotFound:
-            if (_i % 10) == 0:
-                print(f"Waiting for DM DAQ to find image file: {_file!r}")
-            yield from bps.sleep(1)
-    if not _file_found:
-        raise FileNotFoundError(f"DM DAQ did not file image file {_file!r}")
 
     #
     # *** Start the APS Data Management workflow. ***
@@ -449,20 +431,66 @@ def xpcs_bdp_demo_plan(
     # upload bluesky run metadata to APS DM
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
+    # Report for the console oberver (issue #94)
+    msg = f"Bluesky run {uids=!r}"
+    logger.info(msg)
+    print(msg)
+    job = dm_workflow.getJob()
+    msg = (
+        f"{job['submissionTimestamp']}"
+        f" DM workflow job: id={job['id']!r}"
+        f" status={job['status']!r}"
+    )
+    logger.info(msg)
+    print(msg)
+
     logger.info("Finished: xpcs_bdp_demo_plan()")
 
 
-def prj_test(detector_name: str = DEFAULT_DETECTOR_NAME, index: int = 0):
+def prj_test(
+    detector_name: str = DEFAULT_DETECTOR_NAME,
+    index: int = 0,
+    num_trys: int = 10,
+):
     """Developer shortcut plan."""
-    yield from xpcs_setup_user("20240131-jemian", index=index)
+    yield from xpcs_setup_user("dm-test-bs-MC", index=index)
     qmap_path = QMAPS.get(detector_name)
     if qmap_path is None:
         raise FileNotFoundError(f"QMAP file {qmap_path} not found.")
-    yield from xpcs_bdp_demo_plan(
-        header="A002",
-        detector_name=detector_name,
-        qmap_file=str(qmap_path),
-        dm_wait=False,
-        dm_concise=True,
-        analysisMachine="adamite",
-    )
+
+    for n in range(num_trys):
+        logger.info("run #%d of %d", n, num_trys)
+        yield from xpcs_bdp_demo_plan(
+            header="A001",
+            detector_name=detector_name,
+            qmap_file=str(qmap_path),
+            dm_wait=False,
+            dm_concise=True,
+            analysisMachine="adamite",
+        )
+
+
+def mc_test(
+    detector_name: str = DEFAULT_DETECTOR_NAME,
+    index: int = 0,
+    num_trys: int = 10,
+):
+    """Developer shortcut plan."""
+    qmap_path = QMAPS.get(detector_name)
+    if qmap_path is None:
+        raise FileNotFoundError(f"QMAP file {qmap_path} not found.")
+
+    for n in range(num_trys):
+        logger.info("run #%d of %d", n, num_trys)
+        yield from xpcs_bdp_demo_plan(
+            header="G10",
+            detector_name=detector_name,
+            qmap_file=str(qmap_path),
+            dm_wait=False,
+            dm_concise=True,
+            analysisMachine="adamite",
+            wf_gpuID=0,
+            acquire_time=0.01,
+            acquire_period=0.01,
+            num_images=1_000,
+        )
