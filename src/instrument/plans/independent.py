@@ -1,11 +1,15 @@
 """
-Independent plans.
+Data acquisition steps as independent bluesky plans.
 
 .. autosummary::
-    ~example_full_acquisition
     ~kickoff_dm_workflow
     ~setup_detector
     ~simple_acquire
+
+This plan is an example that combines the above plans.
+
+.. autosummary::
+    ~example_full_acquisition
 """
 
 import pathlib
@@ -20,7 +24,7 @@ from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.ad_eiger_4M import eiger4M
 from ..initialize_bs_tools import cat
 
-EMPTY_DICT = {}
+EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
 
 def simple_acquire(det, md: dict = EMPTY_DICT):
@@ -96,7 +100,10 @@ def kickoff_dm_workflow(
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
     # Users requested the DM workflow job ID be printed to the console.
-    print(f"DM workflow id: {dm_workflow.getJob()['id']}")
+    job = dm_workflow.getJob()
+    job_id = job["id"]
+    job_status = job.get("status", "not available")
+    print(f"DM workflow id: {job_id!r}  status: {job_status}")
 
 
 def example_full_acquisition():
