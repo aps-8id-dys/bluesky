@@ -2,6 +2,9 @@
 Independent plans.
 
 .. autosummary::
+    ~example_full_acquisition
+    ~kickoff_dm_workflow
+    ~setup_detector
     ~simple_acquire
 """
 
@@ -48,48 +51,55 @@ def setup_detector(det, acq_time, num_frames, file_name):
     yield from bps.mv(det.hdf1.file_name, file_name)
 
 
-def kickoff_dm_workflow(experiment_name, file_name, qmap_file, run):
+def kickoff_dm_workflow(
+    experiment_name,
+    file_name,
+    qmap_file,
+    run,
+    analysisMachine="amazonite",
+):
     """Start a DM workflow for this bluesky run."""
-    workflow_name = "xpcs8-02-gladier-boost"
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
+    forever = 999_999_999_999  # long time, s, disables periodic reports
+    workflow_name = "xpcs8-02-gladier-boost"
+
     yield from bps.mv(dm_workflow.concise_reporting, True)
-    yield from bps.mv(dm_workflow.reporting_period, 10)  # seconds between updates
+    yield from bps.mv(dm_workflow.reporting_period, forever)
 
     # DM argsDict content
     argsDict = dict(
         filePath=file_name,
         experimentName=experiment_name,
         qmap=qmap_file,
-        # from the plan's API
-        # smooth=wf_smooth,
-        # gpuID=wf_gpuID,
-        # beginFrame=wf_beginFrame,
-        # endFrame=wf_endFrame,
-        # strideFrame=wf_strideFrame,
-        # avgFrame=wf_avgFrame,
-        # type=wf_type,
-        # dq=wf_dq,
-        # verbose=wf_verbose,
-        # saveG2=wf_saveG2,
-        # overwrite=wf_overwrite,
-        # analysisMachine=analysisMachine,
+        smooth="sqmap",
+        gpuID=-1,
+        beginFrame=1,
+        endFrame=-1,
+        strideFrame=1,
+        avgFrame=1,
+        type="Multitau",
+        dq="all",
+        verbose=False,
+        saveG2=False,
+        overwrite=False,
+        analysisMachine=analysisMachine,
     )
 
-    # TODO: How to turn off __all__ reporting about the workflow?
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name,
         wait=False,
-        timeout=999_999_999_999,  # TODO:
+        timeout=forever,
         **argsDict,
     )
 
-    # upload bluesky run metadata to APS DM
+    # Upload bluesky run metadata to APS DM.
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
-    # TODO: print the workflow process id.
+    # Users requested the DM workflow job ID be printed to the console.
+    print(f"DM workflow id: {dm_workflow.getJob()['id']}")
 
 
-def full_acquisition():
+def example_full_acquisition():
     """These are the data acquisition steps for a user."""
     det = eiger4M
     yield from setup_detector(det, 0.1, 1000, "A001_001")
@@ -100,11 +110,15 @@ def full_acquisition():
 
     try:
         yield from nxwriter.wait_writer_plan_stub()
+        image_file_name = pathlib.Path(det.hdf1.full_file_name.get()).name
+        print(f"{image_file_name=!r}")
+
         yield from kickoff_dm_workflow(
             "my_dm_experiment",
-            pathlib.Path(det.hdf1.full_file_name.get()).name,
+            image_file_name,
             "my_qmap_file.h5",
             run,
+            analysisMachine="amazonite",
         )
     except Exception as exc:
         print(f"Exception: {exc}")
