@@ -100,10 +100,11 @@ def kickoff_dm_workflow(
     share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
 
     # Users requested the DM workflow job ID be printed to the console.
-    job = dm_workflow.getJob()
-    job_id = job["id"]
-    job_status = job.get("status", "not available")
-    print(f"DM workflow id: {job_id!r}  status: {job_status}")
+    dm_workflow._update_processing_data()
+    job_id = dm_workflow.job_id.get()
+    job_stage = dm_workflow.stage_id.get()
+    job_status = dm_workflow.status.get()
+    print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
 def example_full_acquisition():
