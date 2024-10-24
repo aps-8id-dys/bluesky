@@ -18,4 +18,7 @@ from .independent import kickoff_dm_workflow
 from .independent import setup_detector
 from .independent import simple_acquire
 from .mesh_plans import xpcs_mesh
-from .select_sample_env import select_sample_env
+
+# from .select_sample_env import select_sample_env
+from .select_sample import select_sample, open_shutter, close_shutter
+from .qnw_plans import set_qnw
