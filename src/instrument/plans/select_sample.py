@@ -20,6 +20,9 @@ def select_sample(env: int):
     yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
     yield from bps.mv(eiger4M.cam.num_images, 1)
 
+    eiger4M.stats1.kind = "hinted"
+    eiger4M.stats1.mean_value.kind = "hinted"
+
     if env == 1:
         yield from bps.mv(sample.x, 304)
     if env == 2:

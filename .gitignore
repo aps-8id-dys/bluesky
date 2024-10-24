@@ -40,3 +40,6 @@ notes_*.md
 
 # previous bluesky instrument (local copy)
 old_code/
+
+# user-defined plans
+user_plans/
