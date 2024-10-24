@@ -50,8 +50,8 @@ def simple_acquire(det, md: dict = EMPTY_DICT):
 
 def setup_detector(det, acq_time, num_frames, file_name):
     """Setup the acquisition,"""
-    yield from bps.mv(det.cam.acquisition_time, acq_time)
-    yield from bps.mv(det.cam.number_of_frames, num_frames)
+    yield from bps.mv(det.cam.acquire_time, acq_time)
+    yield from bps.mv(det.cam.num_images, num_frames)
     yield from bps.mv(det.hdf1.file_name, file_name)
 
 
