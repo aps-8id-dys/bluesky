@@ -49,7 +49,7 @@ class IndividualSlits(Device):
 
 
 i_sl9 = IndividualSlits(
-    prefix="8ideSoft:CR8-I2:US",
+    prefix="8idiSoft:CR8-I2:US",
     h_positive_motor="m12",
     h_negative_motor="m11",
     v_positive_motor="m10",
@@ -58,11 +58,10 @@ i_sl9 = IndividualSlits(
 )
 
 i_sl5 = IndividualSlits(
-    prefix="8idiSoft:CR8-E2:US",
+    prefix="8ideSoft:CR8-E2:US",
     h_positive_motor="m4",
     h_negative_motor="m3",
     v_positive_motor="m2",
     v_negative_motor="m1",
     name="i_sl5",
 )
-#test
