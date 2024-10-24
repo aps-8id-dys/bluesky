@@ -44,10 +44,23 @@ def select_sample(env: int):
         yield from bps.mv(sample.x, 10)
 
 
-def open_shutter():
-    pe.caput("8idiSoft:fastshutter:State", 0)
-    time.sleep(0.5)
+# def open_shutter():
+#     pe.caput("8idiSoft:fastshutter:State", 0)
+#     time.sleep(0.5)
 
+
+# def close_shutter():
+#     pe.caput("8idiSoft:fastshutter:State", 1)
+
+def open_shutter():
+    pe.caput("8idiSoft:LJT705:Bo0", 0)
 
 def close_shutter():
-    pe.caput("8idiSoft:fastshutter:State", 1)
+    pe.caput("8idiSoft:LJT705:Bo0", 1)
+
+def shutteron():
+    pe.caput("8idiSoft:LJT705:Bo1", 0)
+
+def shutteroff():
+    pe.caput("8idiSoft:LJT705:Bo1", 1)
+
