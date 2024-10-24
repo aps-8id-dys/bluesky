@@ -48,7 +48,7 @@ class IndividualSlits(Device):
     vn = FCpt(EpicsMotor, "{motor_prefix}:{_v_negative_motor}", labels={"motors"})
 
 
-sl5_motors = IndividualSlits(
+sl9_motors = IndividualSlits(
     prefix="8idiSoft:CR8-I2:US",
     h_positive_motor="m12",
     h_negative_motor="m11",
@@ -57,11 +57,11 @@ sl5_motors = IndividualSlits(
     name="sl9_motors",
 )
 
-sl9_motors = IndividualSlits(
+sl5_motors = IndividualSlits(
     prefix="8ideSoft:CR8-E2:US",
     h_positive_motor="m4",
     h_negative_motor="m3",
     v_positive_motor="m2",
     v_negative_motor="m1",
-    name="sl9_motors",
+    name="sl5_motors",
 )
