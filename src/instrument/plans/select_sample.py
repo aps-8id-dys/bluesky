@@ -6,15 +6,16 @@ __all__ = """
     select_sample_env
 """.split()
 
-import bluesky.plan_stubs as bps
 import time
+
+import bluesky.plan_stubs as bps
 import epics as pe
 
-from ..devices import sample, eiger4M
+from ..devices import eiger4M
+from ..devices import sample
 
 
 def select_sample(env: int):
-
     yield from bps.mv(sample.y, 21.2)
     yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
     yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
@@ -42,6 +43,11 @@ def select_sample(env: int):
     if env == 9:
         yield from bps.mv(sample.x, 10)
 
-def open_shutter(): pe.caput('8idiSoft:fastshutter:State', 0); time.sleep(0.5)
 
-def close_shutter(): pe.caput('8idiSoft:fastshutter:State', 1)
+def open_shutter():
+    pe.caput("8idiSoft:fastshutter:State", 0)
+    time.sleep(0.5)
+
+
+def close_shutter():
+    pe.caput("8idiSoft:fastshutter:State", 1)
