@@ -13,7 +13,6 @@ from .bdp_demo import mc_test
 from .bdp_demo import xpcs_bdp_demo_plan
 from .bdp_demo import xpcs_reset_index
 from .bdp_demo import xpcs_setup_user
-#from .independent import full_acquisition
 from .independent import kickoff_dm_workflow
 from .independent import setup_detector
 from .independent import simple_acquire
