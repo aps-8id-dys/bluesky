@@ -117,7 +117,6 @@ def example_full_acquisition():
     run = cat[uids[0]]
 
     try:
-        yield from nxwriter.wait_writer_plan_stub()
         image_file_name = pathlib.Path(det.hdf1.full_file_name.get()).name
         print(f"{image_file_name=!r}")
 
