@@ -13,8 +13,9 @@ from .bdp_demo import mc_test
 from .bdp_demo import xpcs_bdp_demo_plan
 from .bdp_demo import xpcs_reset_index
 from .bdp_demo import xpcs_setup_user
-from .independent import kickoff_dm_workflow
-from .independent import setup_detector
+# from .independent import kickoff_dm_workflow
+# from .independent import setup_detector
+from .independent_test import kickoff_dm_workflow, setup_det_ext_trig, setup_det_ext_trig, setup_softglue_ext_trig
 from .independent import simple_acquire
 from .mesh_plans import xpcs_mesh
 
