@@ -23,8 +23,10 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
 from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.callbacks.devices.ad_eiger_4M import eiger4M
-from aps_8id_bs_instrument.callbacks.initialize_bs_tools import cat
+from aps_8id_bs_instrument.initialize_bs_tools import cat
+from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
+from aps_8id_bs_instrument.devices.softglue import softglue_8idi
+
 
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
@@ -37,7 +39,7 @@ def simple_acquire(det, file_name, md: dict = EMPTY_DICT):
     nxwriter.file_path = DATA_FOLDER+file_name+'/'
     nxwriter.file_name = nxwriter.file_path / (file_name + ".hdf")
 
-    md["metadatafile"] = nxwriter.file_name.name
+    md["metadatafile"] = nxwriter.file_name
 
     @bpp.subs_decorator(nxwriter.receiver)
     def acquire():
