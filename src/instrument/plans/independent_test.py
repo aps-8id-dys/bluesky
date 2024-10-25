@@ -47,7 +47,7 @@ def simple_acquire(det, file_name, md: dict = EMPTY_DICT):
     yield from acquire()
 
     # Send the external trigger pulse sequence from softglue
-    pe.put("8idi:softGlueA:MUX2-1_IN0_Signal","1!\"")
+    yield from bps.mv(softglue_8idi.sg_trigger, 1)
 
     # Wait for NeXus metadata file content to flush to disk.
     # If next acquisition proceeds without waiting, the
@@ -69,9 +69,8 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
 
 def setup_softglue_ext_trig(acq_time, acq_period):
 
-    pe.caput("8idi:SGControl1.C", acq_time)
-    pe.caput("8idi:SGControl1.A", acq_period)
-
+    yield from bps.mv(softglue_8idi.acq_time, acq_time)
+    yield from bps.mv(softglue_8idi.acq_period, acq_period)
 
 def kickoff_dm_workflow(
     experiment_name,
