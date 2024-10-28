@@ -31,6 +31,7 @@ from .granite import granite
 from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
+from .labjack_support import labjack
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
