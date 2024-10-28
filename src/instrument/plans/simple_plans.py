@@ -142,9 +142,9 @@ def kickoff_dm_workflow(
     analysisMachine="amazonite",
 ):
     """Start a DM workflow for this bluesky run."""
-    oregistry.auto_register = False  # Ignore re-creations of this device.
+    # oregistry.auto_register = False  # Ignore re-creations of this device.
     dm_workflow = DM_WorkflowConnector(name="dm_workflow")
-    oregistry.auto_register = True
+    # oregistry.auto_register = True
 
     forever = 999_999_999_999  # long time, s, disables periodic reports
     workflow_name = "xpcs8-02-gladier-boost"
