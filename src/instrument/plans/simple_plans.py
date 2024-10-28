@@ -31,10 +31,6 @@ Example::
     )
 """
 
-import pathlib
-
-# import epics as pe
-
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
@@ -42,9 +38,7 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
 from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.initialize_bs_tools import cat
 from aps_8id_bs_instrument.initialize_bs_tools import oregistry
-from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
 from aps_8id_bs_instrument.devices.labjack_support import labjack
 from aps_8id_bs_instrument.devices.softglue import softglue_8idi
 
@@ -119,8 +113,9 @@ def simple_acquire(det, user_md: dict = EMPTY_DICT):
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
-    """Setup the cam module for external trigger (3) mode and populate the hdf plugin"""
-    yield from bps.mv(det.cam.trigger_mode, 3)  # External External Series
+    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
+    # CAUTION: different detectors have different trigger modes!
+    yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
 
     yield from bps.mv(det.cam.acquire_time, acq_time)
     yield from bps.mv(det.cam.acquire_period, acq_period)
@@ -192,28 +187,3 @@ def kickoff_dm_workflow(
     job_stage = dm_workflow.stage_id.get()
     job_status = dm_workflow.status.get()
     print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
-
-
-def example_full_acquisition():
-    """These are the data acquisition steps for a user."""
-    det = eiger4M
-    yield from setup_det_ext_trig(det, 0.1, 0.1, 1000, "A001_001")
-
-    uids = yield from simple_acquire(det)
-    print(f"Bluesky run: {uids=}")
-    run = cat[uids[0]]
-
-    try:
-        yield from nxwriter.wait_writer_plan_stub()
-        image_file_name = pathlib.Path(det.hdf1.full_file_name.get()).name
-        print(f"{image_file_name=!r}")
-
-        yield from kickoff_dm_workflow(
-            "my_dm_experiment",
-            image_file_name,
-            "my_qmap_file.h5",
-            run,
-            analysisMachine="amazonite",
-        )
-    except Exception as exc:
-        print(f"Exception: {exc}")
