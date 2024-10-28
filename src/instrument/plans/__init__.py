@@ -15,6 +15,7 @@ from .demo_sim_1d import demo_sim_1d
 # from .independent import kickoff_dm_workflow
 # from .independent import setup_detector
 from .independent_test import kickoff_dm_workflow
+from .independent_test import pre_align
 from .independent_test import setup_det_ext_trig
 from .independent_test import setup_softglue_ext_trig
 from .independent_test import simple_acquire
