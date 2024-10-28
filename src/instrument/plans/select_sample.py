@@ -3,7 +3,11 @@ Plan that allows for moving to pre-programmed positions seen as strings
 """
 
 __all__ = """
-    select_sample_env
+    select_sample
+    open_shutter
+    close_shutter
+    shutter_on
+    shutter_off
 """.split()
 
 import time
@@ -20,9 +24,6 @@ def select_sample(env: int):
     yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
     yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
     yield from bps.mv(eiger4M.cam.num_images, 1)
-
-    eiger4M.stats1.kind = "hinted"
-    eiger4M.stats1.mean_value.kind = "hinted"
 
     if env == 1:
         yield from bps.mv(sample.x, 304)
@@ -56,7 +57,6 @@ def select_sample(env: int):
 def open_shutter():
     pe.caput("8idiSoft:LJT705:Bo0", 0)
     time.sleep(0.1)
-
 
 def close_shutter():
     pe.caput("8idiSoft:LJT705:Bo0", 1)
