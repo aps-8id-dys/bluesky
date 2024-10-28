@@ -9,3 +9,4 @@ except ImportError:
     from apstools.callbacks import SpecWriterCallback as callback
 
 specwriter = callback()
+specwriter.write_new_scan_header = False  # issue #1032
