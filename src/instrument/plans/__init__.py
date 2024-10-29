@@ -15,11 +15,15 @@ from .demo_sim_1d import demo_sim_1d
 from .mesh_plans import xpcs_mesh
 from .qnw_plans import set_qnw
 # from .select_sample_env import select_sample_env
-from .select_sample import close_shutter
-from .select_sample import open_shutter
-from .select_sample import select_sample
+from .select_sample import select_sample, sort_qnw
+from .simple_plans import eiger_acq_ext_trig
+from .simple_plans import eiger_acq_int_series
 from .simple_plans import kickoff_dm_workflow
-from .simple_plans import pre_align
 from .simple_plans import setup_det_ext_trig
+from .simple_plans import setup_det_int_series
 from .simple_plans import setup_softglue_ext_trig
-from .simple_plans import simple_acquire
+from .simple_plans import simple_acquire_ext_trig
+from .simple_plans import simple_acquire_int_series
+from .simple_plans import create_run_metadata_dict
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
+
