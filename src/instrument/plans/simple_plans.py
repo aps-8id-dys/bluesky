@@ -94,17 +94,13 @@ def simple_acquire(det, user_md: dict = EMPTY_DICT):
     @bpp.subs_decorator(nxwriter.receiver)
     def acquire():
         # TODO: Some users want periodic update of acquisition progress.
+        # Softglue is a detector here, so it is triggered with the area detector.
         yield from bp.count([det, softglue_8idi], md=md)
 
     # RE.unsubscribe(subscription_id)
 
     # Start the acquire. Eiger will wait for external trigger pulse sequence
     yield from acquire()
-
-    # Send the external trigger pulse sequence from softglue.
-    # Acquisition starts with this step.
-    # FIXME: never gets called until acquire finishes.
-    # yield from bps.mv(softglue_8idi.sg_trigger, "1!")
 
     # Wait for NeXus metadata file content to flush to disk.
     # If next acquisition proceeds without waiting, the
