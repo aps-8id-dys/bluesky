@@ -21,8 +21,11 @@ class SoftGlue(Device):
         "8idi:softGlueA:OR-1_IN2_Signal",
         kind="omitted",
         string=True,
-        trigger_value="1!",
     )
+
+    def stop(self, *, success=False):
+        self.sg_stop_trigger.put("1!")
+        super().stop(success=success)
 
     # FIXME upstream : This code uses self.trigger_value
     # https://github.com/aps-8id-dys/bluesky/issues/99
