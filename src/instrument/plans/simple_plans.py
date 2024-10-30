@@ -50,7 +50,6 @@ Example (internal mode)::
 
 """
 
-import epics as pe
 import numpy as np
 
 from apstools.devices import DM_WorkflowConnector
@@ -59,23 +58,26 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
-from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
-from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from aps_8id_bs_instrument.devices.softglue import softglue_8idi
-from aps_8id_bs_instrument.initialize_bs_tools import oregistry, cat
-from aps_8id_bs_instrument.plans.select_sample import sort_qnw
-from aps_8id_bs_instrument.plans.shutter_logic import shutteron, shutteroff, showbeam, blockbeam, post_align
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices import filter3
+from ..devices import registers
+from ..devices.ad_eiger_4M import eiger4M
+from ..devices.aerotech_stages import sample
+from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ..devices.softglue import softglue_8idi
+from ..initialize_bs_tools import oregistry, cat
+from ..plans.select_sample import sort_qnw
+from ..plans.shutter_logic import shutteron, shutteroff, showbeam, blockbeam, post_align
 
  
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
-QMAP_NAME = pe.caget('8idi:StrReg23', as_string=True)
-EXP_NAME = pe.caget('8idi:StrReg25', as_string=True)
-CYCLE_NAME = pe.caget('8idi:StrReg26', as_string=True)
-WORKFLOW_NAME = pe.caget('8idi:StrReg27', as_string=True)
-ANALYSIS_MACHINE = pe.caget('8idi:StrReg29', as_string=True)
+QMAP_NAME = registers.qmap_file.get()
+EXP_NAME = registers.experiment_name.get()
+CYCLE_NAME = registers.cycle_name.get()
+WORKFLOW_NAME = registers.workflow_name.get()
+ANALYSIS_MACHINE = registers.analysis_machine.get()
+
 
 def create_run_metadata_dict(det):
     md = {}
@@ -97,7 +99,7 @@ def create_run_metadata_dict(det):
     md["pix_dim_y"] = 75e-6
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pe.caget('8idi:StrReg27')
+    md["metadatafile"] = registers.metadata_file.get()  # FIXME:  Which StrRegNN?
     md["xdim"] = 1
     md["ydim"] = 1
     return md
@@ -169,8 +171,8 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.cam.num_triggers, num_frames)
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    pe.caput('8idi:StrReg24', file_name)
-    pe.caput('8idi:StrReg30', f"{data_full_path}{file_name}.hdf")
+    yield from bps.mv(registers.image_file_name, file_name)
+    yield from bps.mv(registers.full_file_name, f"{data_full_path}{file_name}.hdf")
 
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
@@ -186,8 +188,8 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.cam.num_triggers, 1)  # Need to put num_trigger to 1 for internal mode
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    pe.caput('8idi:StrReg24', file_name)
-    pe.caput('8idi:StrReg30', f"{data_full_path}{file_name}.hdf")
+    yield from bps.mv(registers.image_file_name, file_name)
+    yield from bps.mv(registers.full_file_name, f"{data_full_path}{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
@@ -262,7 +264,7 @@ def eiger_acq_ext_trig(det = eiger4M,
                   num_rep = 3,
                   att_level = 0,
 ):
-    pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
+    yield from bps.mv(filter3, att_level)
 
     yield from post_align()
     yield from shutteron()
@@ -270,7 +272,7 @@ def eiger_acq_ext_trig(det = eiger4M,
 
     yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
 
-    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = sort_qnw()
+    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = yield from sort_qnw()
     temp_name = int(temp*10)
 
     samx_list = np.linspace(x_cen-0.5, x_cen+0.5, num=x_pts)
@@ -308,12 +310,12 @@ def eiger_acq_int_series(det = eiger4M,
                   att_level = 0,
 ):
     acq_time = acq_period
-    pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
+    yield from bps.mv(filter3, att_level)
 
     yield from post_align()
     yield from shutteroff()
 
-    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = sort_qnw()
+    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = yield from sort_qnw()
     temp_name = int(temp*10)
 
     samx_list = np.linspace(x_cen-0.5, x_cen+0.5, num=x_pts)

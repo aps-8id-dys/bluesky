@@ -4,19 +4,19 @@ This one is to operate the filters (FL2 in the 8-ID-E hutch through
 The filter PV prefix can be changed to use for a different set of
   hardware.
 
-The porper way to do this, of course, is to use opyd layer but this
+The proper way to do this, of course, is to use ophyd layer but this
   is a quick and dirty hack.
 
-This one can set attnenuation or transmission, though the EPICS layer
+This one can set attenuation or transmission, though the EPICS layer
   takes only attenuation, which should be >= 1 always.
 For transmission, it would be always <= 1.
 
-Attnuation and transmission can also be read back.
+Attenuation and transmission can also be read back.
 
 Another function is to enable/disable the blades, most likely the whole
   bank altogether, when the next hutch is running.
 
-Note diable a blade means pulling out the blade and locking it in the
+Note disable a blade means pulling out the blade and locking it in the
   out position.
 
 ============ Zhan Zhang, 10/21/2024, =============
@@ -31,6 +31,7 @@ To do list:
 """
 
 import epics as pe
+from aps_8idi_instrument.devices import filter2
 
 EMPTY_LIST = []
 
@@ -111,6 +112,7 @@ def filter_trans(trans=1 / ATTN_DEFAULT):
     pe.caput((FILTER_PV_PREFIX + FILTER_CONTROL), attn)
 
 
+# hint: to make it an alias, just assign it (no need for a new def):  attn = filter_attn
 def attn(attn):
     """
     Alias for filter_attn()
@@ -132,7 +134,7 @@ def FL2_enable(enable_flag="Enabled", blade_list=EMPTY_LIST):
     Example:
             FL2_enable()
             FL2_enable("Disabled", [1,2,3])
-            FL2_enable("Eabled")
+            FL2_enable("Enabled")
     """
     if not blade_list:
         blade_list = range(1, 13)

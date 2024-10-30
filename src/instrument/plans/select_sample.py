@@ -14,9 +14,9 @@ import time
 import json
 
 import bluesky.plan_stubs as bps
-import epics as pe
 
 from ..devices import eiger4M
+from ..devices import registers
 from ..devices import sample
 from ..devices import qnw_env1, qnw_env2, qnw_env3
 
@@ -38,13 +38,13 @@ def select_sample(env: int):
     yield from bps.mv(sample.x, x_cen)
     yield from bps.mv(sample.y, y_cen)
 
-    pe.caput('8idi:StrReg22', str(env))
+    yield from bps.mv(registers.qnw_index, str(env))
 
 
 def sort_qnw():
 
-    meas_num = int(pe.caget('8idi:StrReg21', as_string=True))
-    qnw_index = int(pe.caget('8idi:StrReg22', as_string=True))
+    meas_num = int(registers.measurement_num.get())
+    qnw_index = int(registers.qnw_index.get())
     sample_key = f"sample_{qnw_index}"
 
     with open("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json", "r") as f:
@@ -68,6 +68,6 @@ def sort_qnw():
  
     header_name = f"{header}{meas_num:03d}"
 
-    pe.caput('8idi:StrReg21', str(meas_num+1))
+    yield from bps.mv(registers.measurement_num, str(meas_num+1))
 
     return header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts

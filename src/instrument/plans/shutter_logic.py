@@ -1,6 +1,6 @@
 
 
-from aps_8id_bs_instrument.devices.labjack_support import labjack
+from ..devices import labjack
 from bluesky import plans as bp
 from bluesky import plan_stubs as bps
 

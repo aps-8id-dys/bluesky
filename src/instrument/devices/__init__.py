@@ -25,6 +25,7 @@ except Exception as excuse:
 ## Beamline specific devices
 from .bd_5a import bd5a
 from .damm import damm
+from .filters import filter2, filter3
 from .fl import fl2, fl3
 from .flag_4 import flag4
 from .granite import granite
@@ -34,6 +35,7 @@ from .idt_mono import idt_mono
 from .labjack_support import labjack
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
+from .registers_device import registers
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .softglue import softglue_8idi
