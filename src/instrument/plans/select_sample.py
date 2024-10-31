@@ -16,9 +16,9 @@ import json
 import bluesky.plan_stubs as bps
 import epics as pe
 
-from ..devices import eiger4M
-from ..devices import sample
-from ..devices import qnw_env1, qnw_env2, qnw_env3
+from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
+from aps_8id_bs_instrument.devices.aerotech_stages import sample
+from aps_8id_bs_instrument.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 
 
 def select_sample(env: int):
@@ -58,16 +58,19 @@ def sort_qnw():
     y_radius = loaded_dict[sample_key]["y_radius"]
     x_pts = loaded_dict[sample_key]["x_pts"]
     y_pts = loaded_dict[sample_key]["y_pts"]    
-   
-    if qnw_index == 1 or 2 or 3:
-        temp = qnw_env1.setpoint.get()
-    if qnw_index == 4 or 5 or 6:
-        temp = qnw_env2.setpoint.get()
-    if qnw_index == 7 or 8 or 9:
-        temp = qnw_env3.setpoint.get()
+
+    str_index = f"8idi:Reg{int(190+qnw_index)}"
+    sam_pos = int(pe.caget(str_index))
+
+    if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+        temp = qnw_env1.readback.get()
+    elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+        temp = qnw_env2.readback.get()
+    else: 
+        temp = qnw_env3.readback.get()
  
     header_name = f"{header}{meas_num:03d}"
-
+    
     pe.caput('8idi:StrReg21', str(meas_num+1))
 
-    return header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts
+    return header_name, qnw_index, sam_pos, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts
