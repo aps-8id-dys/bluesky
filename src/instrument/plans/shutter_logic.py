@@ -1,4 +1,5 @@
 
+import epics as pe
 
 from aps_8id_bs_instrument.devices.labjack_support import labjack
 from bluesky import plans as bp
@@ -22,5 +23,10 @@ def shutteroff():
 
 
 def post_align():
-    ### Placeholder for putting the pind in and out
+    pe.caput('8idiSoft:FLIGHT:bo1:8',1)
     yield from blockbeam()
+
+
+def pre_align():
+    pe.caput('8idiSoft:FLIGHT:bo1:8',0)
+    yield from shutteroff()

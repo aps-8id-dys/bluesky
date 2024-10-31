@@ -97,7 +97,7 @@ def create_run_metadata_dict(det):
     md["pix_dim_y"] = 75e-6
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pe.caget('8idi:StrReg27')
+    md["metadatafile"] = pe.caget('8idi:StrReg30')
     md["xdim"] = 1
     md["ydim"] = 1
     return md
@@ -127,12 +127,13 @@ def simple_acquire_ext_trig(det, md):
 
     # Start the acquire. Eiger will wait for external trigger pulse sequence
     yield from acquire()
-    softglue_8idi.sg_stop_trigger.put("1!")
+    yield from bps.mv(softglue_8idi.stop_trigger, "1!")
 
     # Wait for NeXus metadata file content to flush to disk.
     # If next acquisition proceeds without waiting, the
     # metadata file will be spoiled.
     yield from nxwriter.wait_writer_plan_stub()
+
 
 def simple_acquire_int_series(det, md):
     """Just run the acquisition and save the file, nothing else."""
@@ -224,8 +225,8 @@ def kickoff_dm_workflow(
         experimentName=experiment_name,
         qmap=qmap_file,
         smooth="sqmap",
-        gpuID=-1,
-        beginFrame=1,
+        gpuID=-2,
+        beginFrame=3,
         endFrame=-1,
         strideFrame=1,
         avgFrame=1,
@@ -261,7 +262,9 @@ def eiger_acq_ext_trig(det = eiger4M,
                   num_frame = 10,
                   num_rep = 3,
                   att_level = 0,
+                  sample_move = False,
 ):
+
     pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
 
     yield from post_align()
@@ -279,10 +282,13 @@ def eiger_acq_ext_trig(det = eiger4M,
     for ii in range(num_rep): 
         
         pos_index = np.mod(ii,x_pts*y_pts)
-        yield from bps.mv(
-            sample.x, samx_list[np.mod(pos_index,x_pts)],
-            sample.y, samy_list[int(np.floor(pos_index/y_pts))]
-        )
+        if sample_move == True:
+            yield from bps.mv(
+                sample.x, samx_list[np.mod(pos_index,x_pts)],
+                sample.y, samy_list[int(np.floor(pos_index/y_pts))]
+            )
+        else:
+            pass
 
         filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
 
@@ -306,7 +312,9 @@ def eiger_acq_int_series(det = eiger4M,
                   num_frame = 10,
                   num_rep = 3,
                   att_level = 0,
+                  sample_move = False
 ):
+
     acq_time = acq_period
     pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
 
@@ -322,10 +330,14 @@ def eiger_acq_int_series(det = eiger4M,
     for ii in range(num_rep): 
         
         pos_index = np.mod(ii,x_pts*y_pts)
-        yield from bps.mv(
-            sample.x, samx_list[np.mod(pos_index,x_pts)],
-            sample.y, samy_list[int(np.floor(pos_index/y_pts))]
-        )
+
+        if sample_move == True:
+            yield from bps.mv(
+                sample.x, samx_list[np.mod(pos_index,x_pts)],
+                sample.y, samy_list[int(np.floor(pos_index/y_pts))]
+            )
+        else:
+            pass
 
         filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
 
