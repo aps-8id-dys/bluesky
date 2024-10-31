@@ -21,4 +21,4 @@ class EpicsPvStorageRegisters(Device):
     full_file_name = Component(EpicsSignal, "StrReg30", string=True)
 
 
-registers = EpicsPvStorageRegisters("8idi:", name="registers")
+pv_registers = EpicsPvStorageRegisters("8idi:", name="pv_registers")

@@ -60,7 +60,7 @@ from bluesky import preprocessors as bpp
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices import filter3
-from ..devices import registers
+from ..devices import pv_registers
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
@@ -72,11 +72,11 @@ from ..plans.shutter_logic import shutteron, shutteroff, showbeam, blockbeam, po
  
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
-QMAP_NAME = registers.qmap_file.get()
-EXP_NAME = registers.experiment_name.get()
-CYCLE_NAME = registers.cycle_name.get()
-WORKFLOW_NAME = registers.workflow_name.get()
-ANALYSIS_MACHINE = registers.analysis_machine.get()
+QMAP_NAME = pv_registers.qmap_file.get()
+EXP_NAME = pv_registers.experiment_name.get()
+CYCLE_NAME = pv_registers.cycle_name.get()
+WORKFLOW_NAME = pv_registers.workflow_name.get()
+ANALYSIS_MACHINE = pv_registers.analysis_machine.get()
 
 
 def create_run_metadata_dict(det):
@@ -99,7 +99,7 @@ def create_run_metadata_dict(det):
     md["pix_dim_y"] = 75e-6
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = registers.metadata_file.get()  # FIXME:  Which StrRegNN?
+    md["metadatafile"] = pv_registers.metadata_file.get()  # FIXME:  Which StrRegNN?
     md["xdim"] = 1
     md["ydim"] = 1
     return md
@@ -171,8 +171,8 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.cam.num_triggers, num_frames)
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    yield from bps.mv(registers.image_file_name, file_name)
-    yield from bps.mv(registers.full_file_name, f"{data_full_path}{file_name}.hdf")
+    yield from bps.mv(pv_registers.image_file_name, file_name)
+    yield from bps.mv(pv_registers.full_file_name, f"{data_full_path}{file_name}.hdf")
 
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
@@ -188,8 +188,8 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.cam.num_triggers, 1)  # Need to put num_trigger to 1 for internal mode
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    yield from bps.mv(registers.image_file_name, file_name)
-    yield from bps.mv(registers.full_file_name, f"{data_full_path}{file_name}.hdf")
+    yield from bps.mv(pv_registers.image_file_name, file_name)
+    yield from bps.mv(pv_registers.full_file_name, f"{data_full_path}{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
