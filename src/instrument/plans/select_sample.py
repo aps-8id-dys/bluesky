@@ -19,6 +19,7 @@ import epics as pe
 from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
 from aps_8id_bs_instrument.devices.aerotech_stages import sample
 from aps_8id_bs_instrument.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 
 
 def select_sample(env: int):
@@ -62,12 +63,21 @@ def sort_qnw():
     str_index = f"8idi:Reg{int(190+qnw_index)}"
     sam_pos = int(pe.caget(str_index))
 
+    # For ambient QNW
+    # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+    #     temp = qnw_env1.readback.get()
+    # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+    #     temp = qnw_env2.readback.get()
+    # else: 
+    #     temp = qnw_env3.readback.get()
+
+    # For vacuum QNW
     if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
-        temp = qnw_env1.readback.get()
+        temp = qnw_vac1.readback.get()
     elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
-        temp = qnw_env2.readback.get()
+        temp = qnw_vac2.readback.get()
     else: 
-        temp = qnw_env3.readback.get()
+        temp = qnw_vac3.readback.get()
  
     header_name = f"{header}{meas_num:03d}"
     

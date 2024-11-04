@@ -34,6 +34,7 @@ from .idt_mono import idt_mono
 from .labjack_support import labjack
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
+from .qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .softglue import softglue_8idi

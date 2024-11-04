@@ -14,6 +14,7 @@ from .demo_hello_world import hello_world
 from .demo_sim_1d import demo_sim_1d
 from .mesh_plans import xpcs_mesh
 from .qnw_plans import set_qnw
+from .qnw_vac_plans import set_qnw_vac
 # from .select_sample_env import select_sample_env
 from .select_sample import select_sample, sort_qnw
 

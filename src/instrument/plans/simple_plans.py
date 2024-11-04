@@ -1,6 +1,9 @@
 
 import epics as pe
 import numpy as np
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
