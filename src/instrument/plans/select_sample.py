@@ -10,20 +10,18 @@ __all__ = """
     shutter_off
 """.split()
 
-import time
 import json
 
 import bluesky.plan_stubs as bps
 import epics as pe
-
 from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
 from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
+from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac1
+from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac2
+from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac3
 
 
 def select_sample(env: int):
-
     yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
     yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
     yield from bps.mv(eiger4M.cam.num_images, 1)
@@ -39,13 +37,12 @@ def select_sample(env: int):
     yield from bps.mv(sample.x, x_cen)
     yield from bps.mv(sample.y, y_cen)
 
-    pe.caput('8idi:StrReg22', str(env))
+    pe.caput("8idi:StrReg22", str(env))
 
 
 def sort_qnw():
-
-    meas_num = int(pe.caget('8idi:StrReg21', as_string=True))
-    qnw_index = int(pe.caget('8idi:StrReg22', as_string=True))
+    meas_num = int(pe.caget("8idi:StrReg21", as_string=True))
+    qnw_index = int(pe.caget("8idi:StrReg22", as_string=True))
     sample_key = f"sample_{qnw_index}"
 
     with open("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json", "r") as f:
@@ -58,7 +55,7 @@ def sort_qnw():
     x_radius = loaded_dict[sample_key]["x_radius"]
     y_radius = loaded_dict[sample_key]["y_radius"]
     x_pts = loaded_dict[sample_key]["x_pts"]
-    y_pts = loaded_dict[sample_key]["y_pts"]    
+    y_pts = loaded_dict[sample_key]["y_pts"]
 
     str_index = f"8idi:Reg{int(190+qnw_index)}"
     sam_pos = int(pe.caget(str_index))
@@ -68,7 +65,7 @@ def sort_qnw():
     #     temp = qnw_env1.readback.get()
     # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
     #     temp = qnw_env2.readback.get()
-    # else: 
+    # else:
     #     temp = qnw_env3.readback.get()
 
     # For vacuum QNW
@@ -76,11 +73,23 @@ def sort_qnw():
         temp = qnw_vac1.readback.get()
     elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
         temp = qnw_vac2.readback.get()
-    else: 
+    else:
         temp = qnw_vac3.readback.get()
- 
-    header_name = f"{header}{meas_num:03d}"
-    
-    pe.caput('8idi:StrReg21', str(meas_num+1))
 
-    return header_name, qnw_index, sam_pos, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts
+    header_name = f"{header}{meas_num:03d}"
+
+    pe.caput("8idi:StrReg21", str(meas_num + 1))
+
+    return (
+        header_name,
+        qnw_index,
+        sam_pos,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    )

@@ -32,7 +32,9 @@ logger.info(__file__)
 qnw_controllers = [qnw_vac1, qnw_vac2, qnw_vac3]
 
 
-def set_qnw_vac(qnw_number: int, setpoint: float, wait: bool = True, ramprate: float = 0.3):
+def set_qnw_vac(
+    qnw_number: int, setpoint: float, wait: bool = True, ramprate: float = 0.3
+):
     """
     Change temperature on a QNW controller from a bluesky plan.
     """
