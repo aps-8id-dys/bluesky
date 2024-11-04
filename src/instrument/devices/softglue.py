@@ -1,24 +1,20 @@
-from ophyd import Component, Device, EpicsSignal
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
 
 
 class SoftGlue(Device):
-
     acq_period = Component(EpicsSignal, "8idi:SGControl1.A", kind="config")
     acq_time = Component(EpicsSignal, "8idi:SGControl1.C", kind="config")
     num_triggers = Component(EpicsSignal, "8idi:SGControl1.J", kind="config")
+    stop_trigger = Component(
+        EpicsSignal, "8idi:softGlueA:OR-1_IN2_Signal", kind="config"
+    )
 
     # avoid the name 'trigger' since Device has a '.trigger()' method.
     sg_trigger = Component(
         EpicsSignal,
         "8idi:softGlueA:MUX2-1_IN0_Signal",
-        kind="omitted",
-        string=True,
-        trigger_value="1!",
-    )
-
-    sg_stop_trigger = Component(
-        EpicsSignal,
-        "8idi:softGlueA:OR-1_IN2_Signal",
         kind="omitted",
         string=True,
         trigger_value="1!",

@@ -1,8 +1,11 @@
+"""
+Plan stubs (from the SPEC macros) for the shutters.
+"""
 
-
-from ..devices import labjack
-from bluesky import plans as bp
 from bluesky import plan_stubs as bps
+
+from ..devices.flight_tube import flight_tube_shutter
+from ..devices.labjack_support import labjack
 
 
 def showbeam():
@@ -22,5 +25,10 @@ def shutteroff():
 
 
 def post_align():
-    ### Placeholder for putting the pind in and out
+    yield from flight_tube_shutter.close()
     yield from blockbeam()
+
+
+def pre_align():
+    yield from flight_tube_shutter.open()
+    yield from shutteroff()
