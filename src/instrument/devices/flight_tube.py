@@ -10,6 +10,7 @@ __all__ = """
 
 import logging
 
+from apstools.devices import EpicsOnOffShutter
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
@@ -31,3 +32,10 @@ class FlightTubeBeamStop(Device):
 
 det_motors = FlightTubeDetector("8idiSoft:FLIGHT:", name="det_motors")
 bs_motors = FlightTubeBeamStop("8idiSoft:FLIGHT:", name="bs_motors")
+
+flight_tube_shutter = EpicsOnOffShutter(
+    "8idiSoft:FLIGHT:bo1:8",
+    name="flight_tube_shutter",
+)
+flight_tube_shutter.close_value = 1
+flight_tube_shutter.open_value = 0

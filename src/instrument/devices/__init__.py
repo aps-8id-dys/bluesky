@@ -17,6 +17,7 @@ try:
     from .flight_tube import (
         det_motors,
         bs_motors,
+        flight_tube_shutter,
     )
 except Exception as excuse:
     print(f"Could not import Flight Tube: {excuse}")

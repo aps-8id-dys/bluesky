@@ -8,6 +8,7 @@ from ophyd import EpicsSignal
 
 
 class EpicsPvStorageRegisters(Device):
+    """Various instrument constants and parameters are defined in PVs."""
     measurement_num = Component(EpicsSignal, "StrReg21", string=True)
     qnw_index = Component(EpicsSignal, "StrReg22", string=True)
     qmap_file = Component(EpicsSignal, "StrReg23", string=True)
@@ -19,6 +20,10 @@ class EpicsPvStorageRegisters(Device):
     # TODO StrReg28?
     # metadata_file = Component(EpicsSignal, "StrReg27", string=True)  # FIXME: same as workflow_name
     full_file_name = Component(EpicsSignal, "StrReg30", string=True)
+
+    # TODO:
+    # str_index = f"8idi:Reg{int(190+qnw_index)}"
+    # pe.caput(str_index, pos_index)
 
 
 pv_registers = EpicsPvStorageRegisters("8idi:", name="pv_registers")
