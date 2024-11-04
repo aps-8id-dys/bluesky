@@ -1,10 +1,11 @@
 import epics as pe
-from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.tetramm_picoammeter import tetramm1
-from aps_8id_bs_instrument.plans.shutter_logic import blockbeam
-from aps_8id_bs_instrument.plans.shutter_logic import pre_align
-from aps_8id_bs_instrument.plans.shutter_logic import showbeam
 from bluesky import plans as bp
+
+from ..devices.aerotech_stages import sample
+from ..devices.tetramm_picoammeter import tetramm1
+from .shutter_logic import blockbeam
+from .shutter_logic import pre_align
+from .shutter_logic import showbeam
 
 
 def x_lup(

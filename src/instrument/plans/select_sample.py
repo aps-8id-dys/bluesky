@@ -14,11 +14,12 @@ import json
 
 import bluesky.plan_stubs as bps
 import epics as pe
-from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
-from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac1
-from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac2
-from aps_8id_bs_instrument.devices.qnw_vac_device import qnw_vac3
+
+from ..devices.ad_eiger_4M import eiger4M
+from ..devices.aerotech_stages import sample
+from ..devices.qnw_vac_device import qnw_vac1
+from ..devices.qnw_vac_device import qnw_vac2
+from ..devices.qnw_vac_device import qnw_vac3
 
 
 def select_sample(env: int):

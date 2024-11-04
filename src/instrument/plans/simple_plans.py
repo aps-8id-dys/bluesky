@@ -9,22 +9,23 @@ import numpy as np
 
 warnings.filterwarnings("ignore")
 
-from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
-from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.softglue import softglue_8idi
-from aps_8id_bs_instrument.initialize_bs_tools import cat
-from aps_8id_bs_instrument.plans.select_sample import sort_qnw
-from aps_8id_bs_instrument.plans.shutter_logic import blockbeam
-from aps_8id_bs_instrument.plans.shutter_logic import post_align
-from aps_8id_bs_instrument.plans.shutter_logic import showbeam
-from aps_8id_bs_instrument.plans.shutter_logic import shutteroff
-from aps_8id_bs_instrument.plans.shutter_logic import shutteron
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
+
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices.ad_eiger_4M import eiger4M
+from ..devices.aerotech_stages import sample
+from ..devices.softglue import softglue_8idi
+from ..initialize_bs_tools import cat
+from .select_sample import sort_qnw
+from .shutter_logic import blockbeam
+from .shutter_logic import post_align
+from .shutter_logic import showbeam
+from .shutter_logic import shutteroff
+from .shutter_logic import shutteron
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
