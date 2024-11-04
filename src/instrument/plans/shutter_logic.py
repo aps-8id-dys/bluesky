@@ -1,9 +1,7 @@
-
 import epics as pe
-
-from aps_8id_bs_instrument.devices.labjack_support import labjack
-from bluesky import plans as bp
 from bluesky import plan_stubs as bps
+
+from ..devices.labjack_support import labjack
 
 
 def showbeam():
@@ -23,10 +21,10 @@ def shutteroff():
 
 
 def post_align():
-    pe.caput('8idiSoft:FLIGHT:bo1:8',1)
+    pe.caput("8idiSoft:FLIGHT:bo1:8", 1)
     yield from blockbeam()
 
 
 def pre_align():
-    pe.caput('8idiSoft:FLIGHT:bo1:8',0)
+    pe.caput("8idiSoft:FLIGHT:bo1:8", 0)
     yield from shutteroff()

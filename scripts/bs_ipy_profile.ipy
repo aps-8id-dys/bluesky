@@ -45,6 +45,7 @@ if iconfig.get("WRITE_SPEC_DATA_FILES", False):
         logger.info("   file will be created when bluesky ends its next scan")
         logger.info("   to change SPEC file, use command:   newSpecFile('title')")
 
+oregistry.auto_register = False
 
 print(f"Finished initalization in {time.monotonic() - t0:.2f} seconds.")
 

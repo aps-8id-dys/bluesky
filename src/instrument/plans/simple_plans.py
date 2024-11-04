@@ -1,57 +1,13 @@
 """
-Data acquisition steps as independent bluesky plans.
-
-.. autosummary::
-    ~kickoff_dm_workflow
-    ~pre_align
-    ~setup_det_ext_trig
-    ~setup_softglue_ext_trig
-    ~simple_acquire
-
-This plan is an example that combines the above plans.
-
-.. autosummary::
-    ~example_full_acquisition
-
-Example (external mode)::
-
-    RE(pre_align())  # Permit detector to open the shutter.
-    det = eiger4M
-    filename = "
-    RE(setup_det_ext_trig(det, 0.1, 1, 10, "A001_001"))
-    RE(setup_softglue_ext_trig(0.1, 1, 10))
-    (uid,) = RE(simple_acquire_ext_trig(det))
-    RE(
-        kickoff_dm_workflow(
-            "comm202410",
-            "A001_001.h5",
-            "eiger4m_qmap_1024_s360_d36_linear.h5",
-            cat[uid],
-            analysisMachine="amazonite"
-        )
-    )
-
-Example (internal mode)::
-
-    RE(pre_align())  # Permit detector to open the shutter.
-    det = eiger4M
-    filename = "A001_001"
-    RE(setup_det_int_series(det, 0.1, 1, 10, filename))
-    (uid,) = RE(simple_acquire_int_series(det))
-    RE(
-        kickoff_dm_workflow(
-            "comm202410",
-            filename+".h5",
-            "eiger4m_qmap_1024_s360_d36_linear.h5",
-            cat[uid],
-            analysisMachine="amazonite"
-        )
-    )
-
+Simple, modular Bluesky plans for users.
 """
+
+import warnings
 
 import epics as pe
 import numpy as np
+
+warnings.filterwarnings("ignore")
 
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
@@ -59,23 +15,25 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
-from aps_8id_bs_instrument.callbacks.nexus_data_file_writer import nxwriter
-from aps_8id_bs_instrument.devices.ad_eiger_4M import eiger4M
-from aps_8id_bs_instrument.devices.aerotech_stages import sample
-from aps_8id_bs_instrument.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from aps_8id_bs_instrument.devices.softglue import softglue_8idi
-from aps_8id_bs_instrument.initialize_bs_tools import oregistry, cat
-from aps_8id_bs_instrument.plans.select_sample import sort_qnw
-from aps_8id_bs_instrument.plans.shutter_logic import shutteron, shutteroff, showbeam, blockbeam, post_align
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices.ad_eiger_4M import eiger4M
+from ..devices.aerotech_stages import sample
+from ..devices.softglue import softglue_8idi
+from ..initialize_bs_tools import cat
+from .select_sample import sort_qnw
+from .shutter_logic import blockbeam
+from .shutter_logic import post_align
+from .shutter_logic import showbeam
+from .shutter_logic import shutteroff
+from .shutter_logic import shutteron
 
- 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
-QMAP_NAME = pe.caget('8idi:StrReg23', as_string=True)
-EXP_NAME = pe.caget('8idi:StrReg25', as_string=True)
-CYCLE_NAME = pe.caget('8idi:StrReg26', as_string=True)
-WORKFLOW_NAME = pe.caget('8idi:StrReg27', as_string=True)
-ANALYSIS_MACHINE = pe.caget('8idi:StrReg29', as_string=True)
+# These variables most likely won't change so keep them outside functions
+CYCLE_NAME = pe.caget("8idi:StrReg26", as_string=True)
+WORKFLOW_NAME = pe.caget("8idi:StrReg27", as_string=True)
+EXP_NAME = pe.caget("8idi:StrReg25", as_string=True)
+
 
 def create_run_metadata_dict(det):
     md = {}
@@ -97,7 +55,7 @@ def create_run_metadata_dict(det):
     md["pix_dim_y"] = 75e-6
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pe.caget('8idi:StrReg30')
+    md["metadatafile"] = pe.caget("8idi:StrReg30")
     md["xdim"] = 1
     md["ydim"] = 1
     return md
@@ -170,8 +128,8 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.cam.num_triggers, num_frames)
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    pe.caput('8idi:StrReg24', file_name)
-    pe.caput('8idi:StrReg30', f"{data_full_path}{file_name}.hdf")
+    pe.caput("8idi:StrReg24", file_name)
+    pe.caput("8idi:StrReg30", f"{data_full_path}{file_name}.hdf")
 
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
@@ -184,11 +142,13 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.hdf1.file_name, file_name)
     yield from bps.mv(det.hdf1.file_path, data_full_path)
     yield from bps.mv(det.cam.num_images, num_frames)
-    yield from bps.mv(det.cam.num_triggers, 1)  # Need to put num_trigger to 1 for internal mode
+    yield from bps.mv(
+        det.cam.num_triggers, 1
+    )  # Need to put num_trigger to 1 for internal mode
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    pe.caput('8idi:StrReg24', file_name)
-    pe.caput('8idi:StrReg30', f"{data_full_path}{file_name}.hdf")
+    pe.caput("8idi:StrReg24", file_name)
+    pe.caput("8idi:StrReg30", f"{data_full_path}{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
@@ -206,7 +166,7 @@ def kickoff_dm_workflow(
     file_name,
     qmap_file,
     run,
-    analysisMachine=ANALYSIS_MACHINE,
+    analysisMachine,
 ):
     """Start a DM workflow for this bluesky run."""
     # oregistry.auto_register = False  # Ignore re-creations of this device.
@@ -214,7 +174,6 @@ def kickoff_dm_workflow(
     # oregistry.auto_register = True
 
     forever = 999_999_999_999  # long time, s, disables periodic reports
-    workflow_name = WORKFLOW_NAME
 
     yield from bps.mv(dm_workflow.concise_reporting, True)
     yield from bps.mv(dm_workflow.reporting_period, forever)
@@ -238,15 +197,17 @@ def kickoff_dm_workflow(
         analysisMachine=analysisMachine,
     )
 
+    workflow_name_run = pe.caget("8idi:StrReg27", as_string=True)
+
     yield from dm_workflow.run_as_plan(
-        workflow=workflow_name,
+        workflow=workflow_name_run,
         wait=False,
         timeout=forever,
         **argsDict,
     )
 
     # Upload bluesky run metadata to APS DM.
-    share_bluesky_metadata_with_dm(experiment_name, workflow_name, run)
+    share_bluesky_metadata_with_dm(experiment_name, workflow_name_run, run)
 
     # Users requested the DM workflow job ID be printed to the console.
     dm_workflow._update_processing_data()
@@ -256,16 +217,16 @@ def kickoff_dm_workflow(
     print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
-def eiger_acq_ext_trig(det = eiger4M,
-                  acq_time = 1,
-                  acq_period = 2,
-                  num_frame = 10,
-                  num_rep = 3,
-                  att_level = 0,
-                  sample_move = False,
+def eiger_acq_ext_trig(
+    det=eiger4M,
+    acq_time=1,
+    acq_period=2,
+    num_frame=10,
+    num_rep=3,
+    att_level=0,
+    sample_move=False,
 ):
-
-    pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
+    pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
 
     yield from post_align()
     yield from shutteron()
@@ -273,21 +234,43 @@ def eiger_acq_ext_trig(det = eiger4M,
 
     yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
 
-    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = sort_qnw()
-    temp_name = int(temp*10)
+    (
+        header_name,
+        qnw_index,
+        sam_pos,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    ) = sort_qnw()
+    temp_name = int(temp * 10)
 
-    samx_list = np.linspace(x_cen-0.5, x_cen+0.5, num=x_pts)
-    samy_list = np.linspace(y_cen-0.5, y_cen+0.5, num=y_pts)
- 
-    for ii in range(num_rep): 
-        
-        pos_index = np.mod(ii,x_pts*y_pts)
-        if sample_move == True:
-            yield from bps.mv(
-                sample.x, samx_list[np.mod(pos_index,x_pts)],
-                sample.y, samy_list[int(np.floor(pos_index/y_pts))]
-            )
-        else:
+    samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
+    samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
+
+    for ii in range(num_rep):
+        pos_index = np.mod(sam_pos, x_pts * y_pts)
+        pos_index = pos_index + ii + 1
+
+        try:
+            if sample_move:
+                yield from bps.mv(
+                    sample.x,
+                    samx_list[np.mod(pos_index, x_pts)],
+                    sample.y,
+                    samy_list[int(np.floor(pos_index / y_pts))],
+                )
+                str_index = f"8idi:Reg{int(190+qnw_index)}"
+                pe.caput(str_index, pos_index)
+            else:
+                pass
+        except Exception as e:
+            print(f"Error occurred in sample motion: {e}")
+        finally:
             pass
 
         filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
@@ -298,45 +281,66 @@ def eiger_acq_ext_trig(det = eiger4M,
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         yield from simple_acquire_ext_trig(det, md)
 
-        yield from kickoff_dm_workflow(
-            experiment_name=EXP_NAME,
-            file_name = f"{filename}.h5",
-            qmap_file = QMAP_NAME,
-            run = cat[-1],
-            analysisMachine=ANALYSIS_MACHINE,
-        )
+        try:
+            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
+            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
+            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
+
+            yield from kickoff_dm_workflow(
+                experiment_name=experiment_name_run,
+                file_name=f"{filename}.h5",
+                qmap_file=qmap_file_run,
+                run=cat[-1],
+                analysisMachine=analysisMachine_run,
+            )
+        except Exception as e:
+            print(f"Error occurred in DM Workflow: {e}")
+        finally:
+            pass
 
 
-def eiger_acq_int_series(det = eiger4M,
-                  acq_period = 1,
-                  num_frame = 10,
-                  num_rep = 3,
-                  att_level = 0,
-                  sample_move = False
+def eiger_acq_int_series(
+    det=eiger4M, acq_period=1, num_frame=10, num_rep=3, att_level=0, sample_move=False
 ):
-
     acq_time = acq_period
-    pe.caput('8idPyFilter:FL3:sortedIndex', att_level)
+    pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
 
     yield from post_align()
     yield from shutteroff()
 
-    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = sort_qnw()
-    temp_name = int(temp*10)
+    (
+        header_name,
+        qnw_index,
+        sam_pos,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    ) = sort_qnw()
+    temp_name = int(temp * 10)
 
-    samx_list = np.linspace(x_cen-0.5, x_cen+0.5, num=x_pts)
-    samy_list = np.linspace(y_cen-0.5, y_cen+0.5, num=y_pts)
- 
-    for ii in range(num_rep): 
-        
-        pos_index = np.mod(ii,x_pts*y_pts)
+    samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
+    samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
-        if sample_move == True:
-            yield from bps.mv(
-                sample.x, samx_list[np.mod(pos_index,x_pts)],
-                sample.y, samy_list[int(np.floor(pos_index/y_pts))]
-            )
-        else:
+    for ii in range(num_rep):
+        pos_index = np.mod(sam_pos, x_pts * y_pts)
+
+        try:
+            if sample_move:
+                x_pos = samx_list[np.mod(pos_index, x_pts)]
+                y_pos = samy_list[int(np.floor(pos_index / y_pts))]
+                yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
+                str_index = f"8idi:Reg{int(190+qnw_index)}"
+                pe.caput(str_index, pos_index)
+            else:
+                pass
+        except Exception as e:
+            print(f"Error occurred in sample motion: {e}")
+        finally:
             pass
 
         filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
@@ -349,10 +353,19 @@ def eiger_acq_int_series(det = eiger4M,
         yield from simple_acquire_int_series(det, md)
         yield from blockbeam()
 
-        yield from kickoff_dm_workflow(
-            experiment_name=EXP_NAME,
-            file_name = f"{filename}.h5",
-            qmap_file = QMAP_NAME,
-            run = cat[-1],
-            analysisMachine=ANALYSIS_MACHINE,
-        )
+        try:
+            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
+            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
+            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
+
+            yield from kickoff_dm_workflow(
+                experiment_name=experiment_name_run,
+                file_name=f"{filename}.h5",
+                qmap_file=qmap_file_run,
+                run=cat[-1],
+                analysisMachine=analysisMachine_run,
+            )
+        except Exception as e:
+            print(f"Error occurred in DM Workflow: {e}")
+        finally:
+            pass
