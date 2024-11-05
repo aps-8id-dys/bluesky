@@ -1,11 +1,6 @@
 """
 This one is to operate the filters (FL2 in the 8-ID-E hutch through
   the EPICS interface pydev_filter_12
-The filter PV prefix can be changed to use for a different set of
-  hardware.
-
-The proper way to do this, of course, is to use ophyd layer but this
-  is a quick and dirty hack.
 
 This one can set attenuation or transmission, though the EPICS layer
   takes only attenuation, which should be >= 1 always.
@@ -23,15 +18,15 @@ Note disable a blade means pulling out the blade and locking it in the
 
 To do list:
         - check the current setting of the blade, if the same as the target,
-          do not operate.  The EPICS operates the blades every time it gets
-          a input, even if it is the same value. And it first insert all
+          do not operate.  EPICS operates the blades every time it gets
+          an input, even if it is the same value. And it first insert all
           blades, then remove those not needed.
           Or maybe this should be in the EPICS layer.
 
 """
 
-import epics as pe
 from aps_8idi_instrument.devices import filter2
+from bluesky import plan_stubs as bps
 
 EMPTY_LIST = []
 
@@ -66,7 +61,7 @@ def filter_attn(attn=ATTN_DEFAULT):
         attn = ATTN_DEFAULT
     else:
         print(f" Set attenuation factor to {attn:5.3e}.")
-    pe.caput((FILTER_PV_PREFIX + FILTER_CONTROL), attn)
+    yield from bps.mv(filter2.attenuation, attn)
 
 
 def filter_read():
@@ -80,10 +75,10 @@ def filter_read():
             filter_read()
 
     """
-    curr_attn = pe.caget(FILTER_PV_PREFIX + FILTER_RDBK)
+    curr_attn = filter2.attenuation.get()
     print(f" Current attenuation is {curr_attn:5.3e}.")
     print(f"         transmission is {1/curr_attn:5.3e}")
-    return pe.caget(FILTER_PV_PREFIX + FILTER_RDBK)
+    return curr_attn
 
 
 def filter_trans(trans=1 / ATTN_DEFAULT):
@@ -109,15 +104,11 @@ def filter_trans(trans=1 / ATTN_DEFAULT):
     else:
         attn = 1 / trans
         print(f" Set transmission factor to {1/attn:5.3e}.")
-    pe.caput((FILTER_PV_PREFIX + FILTER_CONTROL), attn)
+    yield from bps.mv(filter2.attenuation, attn)
 
 
-# hint: to make it an alias, just assign it (no need for a new def):  attn = filter_attn
-def attn(attn):
-    """
-    Alias for filter_attn()
-    """
-    filter_attn(attn)
+attn = filter_attn
+"""Alias for filter_attn()"""
 
 
 def FL2_enable(enable_flag="Enabled", blade_list=EMPTY_LIST):
@@ -142,13 +133,12 @@ def FL2_enable(enable_flag="Enabled", blade_list=EMPTY_LIST):
         enable_flag = "Enabled"
     for blade_num in blade_list:
         if blade_num in range(1, 13):
-            pe.caput(
-                (FILTER_PV_PREFIX + f"filter{blade_num:02d}" + "_Enable"), enable_flag
-            )
+            signal = filter2.filter_enable_signal(blade_num)
+            yield from bps.mv(signal, enable_flag)
 
 
 def FL2_disable():
     """
     Disable the filter blades. A shortcut.
     """
-    FL2_enable("Disabled")
+    yield from FL2_enable("Disabled")

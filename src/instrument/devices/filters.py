@@ -6,8 +6,10 @@ from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
 
+
 class Filter2Device(Device):
     """For 8-ID-E station.  (see scripts/user/filter_op.py)"""
+
     attenuation = Component(EpicsSignal, "attenuation", read_pv="attenuation_actual")
 
     # simple v. elegant - simple wins
@@ -23,6 +25,14 @@ class Filter2Device(Device):
     filter10_enable = Component(EpicsSignal, "filter10_Enable")
     filter11_enable = Component(EpicsSignal, "filter11_Enable")
     filter12_enable = Component(EpicsSignal, "filter12_Enable")
+
+    def filter_enable_signal(self, blade_num):
+        """
+        Return the indexed sample position register signal.
+
+        Replaces: PyEpics calls involving FILTER_PV_PREFIX + f"filter{blade_num:02d}" + "_Enable"
+        """
+        return getattr(self, f"filter{blade_num:02d}_enable")
 
 
 filter2 = Filter2Device("8idPyFilter:FL2:", name="filter2")
