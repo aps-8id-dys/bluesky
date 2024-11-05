@@ -1,3 +1,5 @@
+"""Utility scans."""
+
 from bluesky import plans as bp
 from bluesky import plan_stubs as bps
 
@@ -19,6 +21,7 @@ def x_lup(
     yield from bps.mv(filter3, att_level)
 
     yield from showbeam()
+    # TODO: consider apstools.plans.lineup2
     yield from bp.rel_scan([tetramm1], sample.x, rel_begin, rel_end, num_pts)
     yield from blockbeam()
 
@@ -33,5 +36,6 @@ def y_lup(
     yield from bps.mv(filter3, att_level)
 
     yield from showbeam()
+    # TODO: consider apstools.plans.lineup2
     yield from bp.rel_scan([tetramm1], sample.y, rel_begin, rel_end, num_pts)
     yield from blockbeam()
