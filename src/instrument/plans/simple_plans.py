@@ -195,7 +195,7 @@ def kickoff_dm_workflow(
         analysisMachine=analysisMachine,
     )
 
-    workflow_name_run = pe.caget("8idi:StrReg27", as_string=True)
+    workflow_name_run = pv_registers.workflow_name.get()
 
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name_run,
@@ -259,9 +259,9 @@ def eiger_acq_ext_trig(
                 x_pos = samx_list[np.mod(pos_index, x_pts)]
                 y_pos = samy_list[int(np.floor(pos_index / y_pts))]
                 yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
-                import epics as pe  # FIXME: PyEpics -> ophyd
 
-                pe.caput(f"8idi:Reg{int(190+qnw_index)}", pos_index)
+                sample_pos_register = pv_registers.sample_position_register(qnw_index)
+                yield from bps.mv(sample_pos_register, pos_index)
             else:
                 pass
         except Exception as e:
@@ -278,9 +278,9 @@ def eiger_acq_ext_trig(
         yield from simple_acquire_ext_trig(det, md)
 
         try:
-            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
-            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
-            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
+            qmap_file_run = pv_registers.qmap_file.get()
+            experiment_name_run = pv_registers.experiment_name.get()
+            analysisMachine_run = pv_registers.analysis_machine.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
@@ -304,9 +304,19 @@ def eiger_acq_int_series(
     yield from post_align()
     yield from shutteroff()
 
-    header_name, temp, sample_name, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts = (
-        yield from sort_qnw()
-    )
+    (
+        header_name,
+        qnw_index,
+        sam_pos,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    ) = yield from sort_qnw()
     temp_name = int(temp * 10)
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
@@ -320,11 +330,9 @@ def eiger_acq_int_series(
                 x_pos = samx_list[np.mod(pos_index, x_pts)]
                 y_pos = samy_list[int(np.floor(pos_index / y_pts))]
                 yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
-                # TODO: PyEpics -> ophyd
-                import epics as pe
 
-                str_index = f"8idi:Reg{int(190+qnw_index)}"
-                pe.caput(str_index, pos_index)
+                sample_pos_register = pv_registers.sample_position_register(qnw_index)
+                yield from bps.mv(sample_pos_register, pos_index)
             else:
                 pass
         except Exception as e:
@@ -343,9 +351,9 @@ def eiger_acq_int_series(
         yield from blockbeam()
 
         try:
-            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
-            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
-            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
+            qmap_file_run = pv_registers.qmap_file.get()
+            experiment_name_run = pv_registers.experiment_name.get()
+            analysisMachine_run = pv_registers.analysis_machine.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,

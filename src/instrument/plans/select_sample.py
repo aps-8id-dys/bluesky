@@ -65,10 +65,8 @@ def sort_qnw():
     x_pts = loaded_dict[sample_key]["x_pts"]
     y_pts = loaded_dict[sample_key]["y_pts"]
 
-    # TODO: PyEpics -> ophyd
-    str_index = f"8idi:Reg{int(190+qnw_index)}"
-    import epics as pe
-    sam_pos = int(pe.caget(str_index))
+    sample_pos_register = pv_registers.sample_position_register(qnw_index)
+    sam_pos = int(sample_pos_register.get())
 
     # For ambient QNW
     # if qnw_index in (1, 2, 3):

@@ -1,8 +1,9 @@
-import epics as pe
 from bluesky import plans as bp
+from bluesky import plan_stubs as bps
 
 from ..devices.aerotech_stages import sample
 from ..devices.tetramm_picoammeter import tetramm1
+from ..devices.filters import filter3
 from .shutter_logic import blockbeam
 from .shutter_logic import pre_align
 from .shutter_logic import showbeam
@@ -15,7 +16,7 @@ def x_lup(
     att_level=0,
 ):
     yield from pre_align()
-    pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
+    yield from bps.mv(filter3, att_level)
 
     yield from showbeam()
     yield from bp.rel_scan([tetramm1], sample.x, rel_begin, rel_end, num_pts)
@@ -29,7 +30,7 @@ def y_lup(
     att_level=0,
 ):
     yield from pre_align()
-    pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
+    yield from bps.mv(filter3, att_level)
 
     yield from showbeam()
     yield from bp.rel_scan([tetramm1], sample.y, rel_begin, rel_end, num_pts)
