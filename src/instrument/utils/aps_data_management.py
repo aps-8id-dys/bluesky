@@ -27,7 +27,6 @@ APS Data Management utility support.
     ~dm_update_workflow
     ~get_workflow_last_stage
     ~share_bluesky_metadata_with_dm
-    ~ts2iso
     ~validate_experiment_dataDirectory
     ~SECOND
     ~MINUTE
@@ -64,7 +63,6 @@ __all__ = """
     dm_update_workflow
     get_workflow_last_stage
     share_bluesky_metadata_with_dm
-    ts2iso
     validate_experiment_dataDirectory
     SECOND
     MINUTE
@@ -87,6 +85,7 @@ from bluesky import plan_stubs as bps
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+from .conversions import ts2iso
 from .iconfig_loader import iconfig  # noqa
 
 SECOND = 1
@@ -467,11 +466,6 @@ def share_bluesky_metadata_with_dm(
         logger.error(ex)
         if should_raise:
             raise ex
-
-
-def ts2iso(ts: float, sep: str = " ") -> str:
-    """Convert Python timestamp (float) to IS8601 time in current time zone."""
-    return datetime.datetime.fromtimestamp(ts).isoformat(sep=sep)
 
 
 class WorkflowCache:
