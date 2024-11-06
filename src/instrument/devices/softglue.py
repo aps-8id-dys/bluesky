@@ -13,9 +13,9 @@ Example acquisition sequence::
 
 """
 
-from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
+from ophyd import FormattedComponent as FCpt
 
 
 class SoftGlue(Device):
@@ -25,26 +25,47 @@ class SoftGlue(Device):
     The value to write to start & stop is the same text: 1!
     """
 
-    acq_period = Component(EpicsSignal, "8idi:SGControl1.A", kind="config")
-    acq_time = Component(EpicsSignal, "8idi:SGControl1.C", kind="config")
-    num_triggers = Component(EpicsSignal, "8idi:SGControl1.J", kind="config")
-    stop_trigger = Component(
-        EpicsSignal, "8idi:softGlueA:OR-1_IN2_Signal", kind="config"
-    )
-
-    start_pulses = Component(
+    acq_period = FCpt(EpicsSignal, "{prefix}{pv_acq_period}", kind="config")
+    acq_time = FCpt(EpicsSignal, "{prefix}{pv_acq_time}", kind="config")
+    num_triggers = FCpt(EpicsSignal, "{prefix}{pv_num_triggers}", kind="config")
+    start_pulses = FCpt(
         EpicsSignal,
-        "8idi:softGlueA:MUX2-1_IN0_Signal",
+        "{prefix}{_pv_start_pulses}",
+        kind="omitted",
+        string=True,
+    )
+    stop_pulses = FCpt(
+        EpicsSignal,
+        "{prefix}{_pv_stop_pulses}",
         kind="omitted",
         string=True,
     )
 
-    stop_pulses = Component(
-        EpicsSignal,
-        "8idi:softGlueA:OR-1_IN2_Signal",
-        kind="omitted",
-        string=True,
-    )
+    def __init__(
+        self,
+        prefix: str,
+        *args,
+        pv_acq_period: str = "",
+        pv_acq_time: str = "",
+        pv_num_triggers: str = "",
+        pv_start_pulses: str = "",
+        pv_stop_pulses: str = "",
+        **kwargs,
+    ):
+        self._pv_acq_period = pv_acq_period
+        self._pv_acq_time = pv_acq_time
+        self._pv_num_triggers = pv_num_triggers
+        self._pv_start_pulses = pv_start_pulses
+        self._pv_stop_pulses = pv_stop_pulses
+        super().__init__(prefix, *args, **kwargs)
 
 
-softglue_8idi = SoftGlue("", name="softglue_8idi")
+softglue_8idi = SoftGlue(
+    "",
+    name="softglue_8idi",
+    pv_acq_period="8idi:SGControl1.A",
+    pv_acq_time="8idi:SGControl1.C",
+    pv_num_triggers="8idi:SGControl1.J",
+    pv_start_pulses="8idi:softGlueA:MUX2-1_IN0_Signal",
+    pv_stop_pulses="8idi:softGlueA:OR-1_IN2_Signal",
+)
