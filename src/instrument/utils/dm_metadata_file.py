@@ -13,9 +13,9 @@ import h5py
 import yaml
 
 from .conversions import ts2iso
-from .iconfig_loader import iconfig  # noqa
+from .iconfig_loader import iconfig
 
-CATALOG = iconfig.get("DATABROKER_CATALOG", "8idi_xpcs")
+CATALOG = iconfig["DATABROKER_CATALOG"]
 XPCS_LAYOUT_VERSION = "APS-8IDI-202310"
 
 logger = logging.getLogger(__name__)
