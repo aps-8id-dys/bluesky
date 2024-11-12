@@ -55,7 +55,7 @@ def create_run_metadata_dict(det):
     md["pix_dim_y"] = 75e-6
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pe.caget("8idi:StrReg30", as_string=True)
+    md["metadatafile"] = pe.caget("8idi:StrReg30")
     md["xdim"] = 1
     md["ydim"] = 1
     return md
@@ -247,8 +247,7 @@ def eiger_acq_ext_trig(
 
     (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,
@@ -258,7 +257,9 @@ def eiger_acq_ext_trig(
         x_pts,
         y_pts,
     ) = sort_qnw()
+
     temp_name = int(temp * 10)
+    sam_pos = int(pe.caget(str_index))
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
@@ -275,7 +276,6 @@ def eiger_acq_ext_trig(
                     sample.y,
                     samy_list[int(np.floor(pos_index / y_pts))],
                 )
-                str_index = f"8idi:Reg{int(190+qnw_index)}"
                 pe.caput(str_index, pos_index)
             else:
                 pass
@@ -287,10 +287,6 @@ def eiger_acq_ext_trig(
         filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
-
-        # Remove this once StrReg is in Ophyd so the execution is blocking
-        yield from bps.sleep(1)
-        # Remove this once StrReg is in Ophyd so the execution is blocking
 
         md = create_run_metadata_dict(det)
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
@@ -325,8 +321,7 @@ def eiger_acq_int_series(
 
     (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,
@@ -336,22 +331,21 @@ def eiger_acq_int_series(
         x_pts,
         y_pts,
     ) = sort_qnw()
+
     temp_name = int(temp * 10)
+    sam_pos = int(pe.caget(str_index))
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
     for ii in range(num_rep):
         pos_index = np.mod(sam_pos, x_pts * y_pts)
-        pos_index = pos_index + ii + 1
 
         try:
             if sample_move:
                 x_pos = samx_list[np.mod(pos_index, x_pts)]
                 y_pos = samy_list[int(np.floor(pos_index / y_pts))]
                 yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
-                # str_index = f"8idi:Reg{int(190+qnw_index)}"
-                str_index = "8idi:Reg191"
                 pe.caput(str_index, pos_index)
             else:
                 pass

@@ -17,9 +17,6 @@ import epics as pe
 
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
-from ..devices.qnw_device import qnw_env1
-from ..devices.qnw_device import qnw_env2
-from ..devices.qnw_device import qnw_env3
 from ..devices.qnw_vac_device import qnw_vac1
 from ..devices.qnw_vac_device import qnw_vac2
 from ..devices.qnw_vac_device import qnw_vac3
@@ -61,34 +58,34 @@ def sort_qnw():
     x_pts = loaded_dict[sample_key]["x_pts"]
     y_pts = loaded_dict[sample_key]["y_pts"]
 
-    # str_index = f"8idi:Reg{int(190+qnw_index)}"
-    str_index = "8idi:Reg191"
-    sam_pos = int(pe.caget(str_index))
+    if qnw_index <= 9:
+        str_index = f"8idi:Reg{int(190+qnw_index)}"
+    else:
+        str_index = "8idi:Reg191"
 
     # For ambient QNW
-    if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
-        temp = qnw_env1.readback.get()
-    elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
-        temp = qnw_env2.readback.get()
-    else:
-        temp = qnw_env3.readback.get()
+    # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+    #     temp = qnw_env1.readback.get()
+    # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+    #     temp = qnw_env2.readback.get()
+    # else:
+    #     temp = qnw_env3.readback.get()
 
     # For vacuum QNW
-    # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
-    #     temp = qnw_vac1.readback.get()
-    # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
-    #     temp = qnw_vac2.readback.get()
-    # else:
-    #     temp = qnw_vac3.readback.get()
+    if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+        temp = qnw_vac1.readback.get()
+    elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+        temp = qnw_vac2.readback.get()
+    else:
+        temp = qnw_vac3.readback.get()
 
-    header_name = f"{header}{meas_num:04d}"
+    header_name = f"{header}{meas_num:03d}"
 
     pe.caput("8idi:StrReg21", str(meas_num + 1))
 
     return (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,
