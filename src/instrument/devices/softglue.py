@@ -1,55 +1,71 @@
-from ophyd import Component
+"""
+The BCDA SoftGlue FPGA generates pulses to trigger an area detector.
+
+Example acquisition sequence::
+
+    fpga = SoftGlue("", name="fpga")
+    ...
+    # configure fpga & area_detector
+    ...
+    yield from bps.mv(fpga.start_pulses, "1!")
+    yield from bp.count([area_detector])
+    yield from bps.mv(fpga.stop_pulses, "1!")
+
+"""
+
 from ophyd import Device
 from ophyd import EpicsSignal
+from ophyd import FormattedComponent as FCpt
 
 
 class SoftGlue(Device):
-    acq_period = Component(EpicsSignal, "8idi:SGControl1.A", kind="config")
-    acq_time = Component(EpicsSignal, "8idi:SGControl1.C", kind="config")
-    num_triggers = Component(EpicsSignal, "8idi:SGControl1.J", kind="config")
-    stop_trigger = Component(
-        EpicsSignal, "8idi:softGlueA:OR-1_IN2_Signal", kind="config"
-    )
+    """
+    BCDA SoftGlue FPGA to provide external trigger signal for detectors.
 
-    # avoid the name 'trigger' since Device has a '.trigger()' method.
-    sg_trigger = Component(
+    The value to write to start & stop is the same text: 1!
+    """
+
+    acq_period = FCpt(EpicsSignal, "{prefix}{pv_acq_period}", kind="config")
+    acq_time = FCpt(EpicsSignal, "{prefix}{pv_acq_time}", kind="config")
+    num_triggers = FCpt(EpicsSignal, "{prefix}{pv_num_triggers}", kind="config")
+    start_pulses = FCpt(
         EpicsSignal,
-        "8idi:softGlueA:MUX2-1_IN0_Signal",
+        "{prefix}{_pv_start_pulses}",
         kind="omitted",
         string=True,
-        trigger_value="1!",
+    )
+    stop_pulses = FCpt(
+        EpicsSignal,
+        "{prefix}{_pv_stop_pulses}",
+        kind="omitted",
+        string=True,
     )
 
-    # FIXME upstream : This code uses self.trigger_value
-    # https://github.com/aps-8id-dys/bluesky/issues/99
-    def trigger(self):
-        """BUGFIX - Put the acq_signal's 'trigger_value' instead of 1."""
-        from ophyd.status import DeviceStatus
-
-        signals = self.trigger_signals
-        if len(signals) > 1:
-            raise NotImplementedError(
-                "More than one trigger signal is not currently supported."
-            )
-        status = DeviceStatus(self)
-        if not signals:
-            status.set_finished()
-            return status
-
-        (acq_signal,) = signals
-
-        self.subscribe(status._finished, event_type=self.SUB_ACQ_DONE, run=False)
-
-        def done_acquisition(**ignored_kwargs):
-            # Keyword arguments are ignored here from the EpicsSignal
-            # subscription, as the important part is that the put completion
-            # has finished
-            self._done_acquiring()
-
-        # acq_signal.put(1, wait=False, callback=done_acquisition)  # ORIGINAL
-        trigger_value = self._sig_attrs[acq_signal.attr_name].trigger_value
-        acq_signal.put(trigger_value, wait=False, callback=done_acquisition)
-        return status
+    def __init__(
+        self,
+        prefix: str,
+        *args,
+        pv_acq_period: str = "",
+        pv_acq_time: str = "",
+        pv_num_triggers: str = "",
+        pv_start_pulses: str = "",
+        pv_stop_pulses: str = "",
+        **kwargs,
+    ):
+        self._pv_acq_period = pv_acq_period
+        self._pv_acq_time = pv_acq_time
+        self._pv_num_triggers = pv_num_triggers
+        self._pv_start_pulses = pv_start_pulses
+        self._pv_stop_pulses = pv_stop_pulses
+        super().__init__(prefix, *args, **kwargs)
 
 
-softglue_8idi = SoftGlue("", name="softglue_8idi")
+softglue_8idi = SoftGlue(
+    "",
+    name="softglue_8idi",
+    pv_acq_period="8idi:SGControl1.A",
+    pv_acq_time="8idi:SGControl1.C",
+    pv_num_triggers="8idi:SGControl1.J",
+    pv_start_pulses="8idi:softGlueA:MUX2-1_IN0_Signal",
+    pv_stop_pulses="8idi:softGlueA:OR-1_IN2_Signal",
+)

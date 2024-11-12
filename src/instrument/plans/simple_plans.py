@@ -61,6 +61,16 @@ def create_run_metadata_dict(det):
     return md
 
 
+def softglue_start_pulses():
+    """Tell the FPGA to start generating pulses."""
+    yield from bps.mv(softglue_8idi.start_pulses, "1!")
+
+
+def softglue_stop_pulses():
+    """Tell the FPGA to stop generating pulses."""
+    yield from bps.mv(softglue_8idi.stop_pulses, "1!")
+
+
 def simple_acquire_ext_trig(det, md):
     """Just run the acquisition and save the file, nothing else."""
 
@@ -79,13 +89,14 @@ def simple_acquire_ext_trig(det, md):
     def acquire():
         # TODO: Some users want periodic update of acquisition progress.
         # Softglue is a detector here, so it is triggered with the area detector.
-        yield from bp.count([det, softglue_8idi], md=md)
+        yield from bp.count([det], md=md)
 
     # RE.unsubscribe(subscription_id)
 
     # Start the acquire. Eiger will wait for external trigger pulse sequence
+    yield from softglue_start_pulses()
     yield from acquire()
-    yield from bps.mv(softglue_8idi.stop_trigger, "1!")
+    yield from softglue_stop_pulses()
 
     # Wait for NeXus metadata file content to flush to disk.
     # If next acquisition proceeds without waiting, the

@@ -20,6 +20,7 @@ from .qnw_vac_plans import set_qnw_vac
 # from .select_sample_env import select_sample_env
 from .select_sample import select_sample, sort_qnw
 
+from .simple_plans import create_run_metadata_dict
 from .simple_plans import eiger_acq_ext_trig
 from .simple_plans import eiger_acq_int_series
 from .simple_plans import kickoff_dm_workflow
@@ -28,7 +29,8 @@ from .simple_plans import setup_det_int_series
 from .simple_plans import setup_softglue_ext_trig
 from .simple_plans import simple_acquire_ext_trig
 from .simple_plans import simple_acquire_int_series
-from .simple_plans import create_run_metadata_dict
+from .simple_plans import softglue_start_pulses
+from .simple_plans import softglue_start_pulses
 
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
