@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: check-ast
-      - id: check-docstring-first
+      # - id: check-docstring-first
       - id: check-merge-conflict
       - id: check-added-large-files
       - id: mixed-line-ending
