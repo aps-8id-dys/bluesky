@@ -71,6 +71,14 @@ def write_nexus_file(md):
         hf.create_dataset('/entry/instrument/bluesky/metadata/ccdx0', data=md['ccdx0'])
         hf.create_dataset('/entry/instrument/sample/stage/x_position', data=md['sample_x'])
 
+        # Assign NeXus base classes to each group
+        hf["/entry"].attrs["NX_class"] = "NXentry"
+        hf["/entry/instrument"].attrs["NX_class"] = "NXinstrument"
+        hf["/entry/instrument/bluesky"].attrs["NX_class"] = "NXnote"
+        hf["/entry/instrument/bluesky/metadata"].attrs["NX_class"] = "NXnote"
+        hf["/entry/instrument/sample"].attrs["NX_class"] = "NXsample"
+        hf["/entry/instrument/sample/stage"].attrs["NX_class"] = "NXnote"
+
 
 def softglue_start_pulses():
     """Tell the FPGA to start generating pulses."""
