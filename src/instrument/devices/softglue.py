@@ -24,23 +24,6 @@ class SoftGlue(Device):
 
     The value to write to start & stop is the same text: 1!
     """
-
-    acq_period = FCpt(EpicsSignal, "{prefix}{pv_acq_period}", kind="config")
-    acq_time = FCpt(EpicsSignal, "{prefix}{pv_acq_time}", kind="config")
-    num_triggers = FCpt(EpicsSignal, "{prefix}{pv_num_triggers}", kind="config")
-    start_pulses = FCpt(
-        EpicsSignal,
-        "{prefix}{_pv_start_pulses}",
-        kind="omitted",
-        string=True,
-    )
-    stop_pulses = FCpt(
-        EpicsSignal,
-        "{prefix}{_pv_stop_pulses}",
-        kind="omitted",
-        string=True,
-    )
-
     def __init__(
         self,
         prefix: str,
@@ -58,6 +41,23 @@ class SoftGlue(Device):
         self._pv_start_pulses = pv_start_pulses
         self._pv_stop_pulses = pv_stop_pulses
         super().__init__(prefix, *args, **kwargs)
+
+
+    acq_period = FCpt(EpicsSignal, "{prefix}{_pv_acq_period}", kind="config")
+    acq_time = FCpt(EpicsSignal, "{prefix}{_pv_acq_time}", kind="config")
+    num_triggers = FCpt(EpicsSignal, "{prefix}{_pv_num_triggers}", kind="config")
+    start_pulses = FCpt(
+        EpicsSignal,
+        "{prefix}{_pv_start_pulses}",
+        kind="omitted",
+        string=True,
+    )
+    stop_pulses = FCpt(
+        EpicsSignal,
+        "{prefix}{_pv_stop_pulses}",
+        kind="omitted",
+        string=True,
+    )
 
 
 softglue_8idi = SoftGlue(

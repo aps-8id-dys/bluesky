@@ -6,6 +6,7 @@ import warnings
 
 import epics as pe
 import numpy as np
+import h5py 
 
 warnings.filterwarnings("ignore")
 
@@ -35,7 +36,8 @@ WORKFLOW_NAME = pe.caget("8idi:StrReg27", as_string=True)
 EXP_NAME = pe.caget("8idi:StrReg25", as_string=True)
 
 
-def create_run_metadata_dict(det):
+def create_run_metadata_dict(det=None,
+                             sam_stage = sample):
     md = {}
     md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
@@ -53,12 +55,21 @@ def create_run_metadata_dict(det):
     md["incident_energy_spread"] = 1
     md["pix_dim_x"] = 75e-6
     md["pix_dim_y"] = 75e-6
-    md["t0"] = det.cam.acquire_time.get()
-    md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pe.caget("8idi:StrReg30")
+    # md["t0"] = det.cam.acquire_time.get()
+    # md["t1"] = det.cam.acquire_period.get()
+    # Will change to Ophyd in the future
+    md["nexus_filename"] = pe.caget("8idi:StrReg30", as_string=True)
     md["xdim"] = 1
     md["ydim"] = 1
+    md["sample_x"] = sample.x.position
     return md
+
+def write_nexus_file(md):
+
+    with h5py.File(md['nexus_filename'], 'w') as hf:
+        # This is an example of writing metadata from existing fields in md
+        hf.create_dataset('/entry/instrument/bluesky/metadata/ccdx0', data=md['ccdx0'])
+        hf.create_dataset('/entry/instrument/sample/stage/x_position', data=md['sample_x'])
 
 
 def softglue_start_pulses():
