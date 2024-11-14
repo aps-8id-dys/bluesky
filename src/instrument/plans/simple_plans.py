@@ -16,10 +16,11 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
-from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample
-from ..devices.softglue import softglue_8idi
+# from ..callbacks.nexus_data_file_writer import nxwriter
+# from ..devices.ad_eiger_4M import eiger4M
+# from ..devices.aerotech_stages import sample
+# from ..devices.softglue import softglue_8idi
+from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
 from .shutter_logic import blockbeam
@@ -37,7 +38,11 @@ EXP_NAME = pe.caget("8idi:StrReg25", as_string=True)
 
 
 def create_run_metadata_dict(det=None,
-                             sam_stage = sample):
+                             sample = sample,
+                             qnw_env1 = qnw_env1,
+                             qnw_env2 = qnw_env2,
+                             qnw_env3 = qnw_env3,
+                             ):
     md = {}
     md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
@@ -55,21 +60,114 @@ def create_run_metadata_dict(det=None,
     md["incident_energy_spread"] = 1
     md["pix_dim_x"] = 75e-6
     md["pix_dim_y"] = 75e-6
-    # md["t0"] = det.cam.acquire_time.get()
-    # md["t1"] = det.cam.acquire_period.get()
+    md["acquire_time"] = det.cam.acquire_time.get()
+    md["acquire_period"] = det.cam.acquire_period.get()
     # Will change to Ophyd in the future
     md["nexus_filename"] = pe.caget("8idi:StrReg30", as_string=True)
     md["xdim"] = 1
     md["ydim"] = 1
     md["sample_x"] = sample.x.position
+    md["sample_y"] = sample.y.position
+    md["sample_z"] = sample.z.position
+    md["qnw1_temp"] = qnw_env1.readback.get()
+    md["qnw2_temp"] = qnw_env2.readback.get()
+    md["qnw3_temp"] = qnw_env3.readback.get()
     return md
 
 def write_nexus_file(md):
 
     with h5py.File(md['nexus_filename'], 'w') as hf:
+     
+        # Assign NeXus base classes to each group
+        hf["/entry"].attrs["NX_class"] = "NXentry"
+        hf["/entry/instrument"].attrs["NX_class"] = "NXinstrument"
+        hf["/entry/instrument/attenunator"].attrs["NX_class"] = "NXattenuator"
+        hf["/entry/instrument/bluesky"].attrs["NX_class"] = "NXnote"
+        hf["/entry/instrument/bluesky/metadata"].attrs["NX_class"] = "NXnote"
+        hf["/entry/instrument/beam"].attrs["NX_class"] = "NXbeam"
+        hf["/entry/instrument/beamstop"].attrs["NX_class"] = "NXbeam_stop"
+        hf["/entry/instrument/detector"].attrs["NX_class"] = "NXdetector"
+        hf["/entry/instrument/detector_module"].attrs["NX_class"] = "NXdetector_module"
+        hf["/entry/instrument/environment"].attrs["NX_class"] = "NXenvironment"
+        hf["/entry/instrument/insertion_device"].attrs["NX_class"] = "NXinsertion_device"
+        hf["/entry/instrument/mirror"].attrs["NX_class"] = "NXmirror"
+        hf["/entry/instrument/monitor"].attrs["NX_class"] = "NXmonitor"
+        hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
+        hf["/entry/instrument/parameters"].attrs["NX_class"] = "NXmonochromator"
+        hf["/entry/instrument/positioner"].attrs["NX_class"] = "NXpositioner"
+        hf["/entry/instrument/sample"].attrs["NX_class"] = "NXsample"
+        hf["/entry/instrument/slits"].attrs["NX_class"] = "NXslit"
+        hf["/entry/instrument/xraylens"].attrs["NX_class"] = "NXxraylens"
+
         # This is an example of writing metadata from existing fields in md
         hf.create_dataset('/entry/instrument/bluesky/metadata/ccdx0', data=md['ccdx0'])
-        hf.create_dataset('/entry/instrument/sample/stage/x_position', data=md['sample_x'])
+        hf.create_dataset('/entry/instrument/positioner/sample_x_position', data=md['sample_x'])
+        hf.create_dataset('/entry/instrument/positioner/sample_y_position', data=md['sample_y'])
+        hf.create_dataset('/entry/instrument/positioner/sample_z_position', data=md['sample_z'])
+        hf.create_dataset('/entry/instrument/environment/qnw1_temp', data=md['qnw1_temp'])
+        hf.create_dataset('/entry/instrument/environment/qnw2_temp', data=md['qnw2_temp'])
+        hf.create_dataset('/entry/instrument/environment/qnw3_temp', data=md['qnw3_temp'])     
+        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I0'])
+        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I1'])  
+
+
+# /entry/instrument/bluesky/metadata/X_energy Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/absolute_cross_section_scale Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/acquire_period Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/acquire_time Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/bcx Dataset {SCALAR} -> beam_center_x
+# /entry/instrument/bluesky/metadata/bcy Dataset {SCALAR} -> beam_center_y
+# /entry/instrument/bluesky/metadata/beamline_id Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/ccdx Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/ccdx0 Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/ccdy Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/ccdy0 Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/concise Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/conda_prefix Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/cycle Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/dataDir Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/data_management Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/databroker_catalog Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/datetime Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/description Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/det_dist Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/detector_name Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/detectors Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/header Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/hints Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/iconfig Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/incident_beam_size_nm_xy Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/incident_energy_spread Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/index Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/instrument_name Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/login_id Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/metadatafile Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_capture Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_exposures Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_images Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_intervals Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_points Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/num_triggers Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/owner Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/pid Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/pix_dim_x Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/pix_dim_y Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/plan_args Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/plan_name Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/plan_type Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/proposal_id Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/qmap_file Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/run_start_uid Dataset, same as /entry/entry_identifier
+# /entry/instrument/bluesky/metadata/safe_title Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/t0 Dataset {SCALAR} remove, duplicate acquire_time
+# /entry/instrument/bluesky/metadata/t1 Dataset {SCALAR} remove, duplicate acquire_period
+# /entry/instrument/bluesky/metadata/title Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/versions Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/workflow Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/xdim Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/xpcs_header Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/xpcs_index Dataset {SCALAR}
+# /entry/instrument/bluesky/metadata/ydim Dataset {SCALAR}
 
 
 def softglue_start_pulses():
