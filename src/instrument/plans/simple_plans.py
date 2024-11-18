@@ -86,35 +86,34 @@ def write_nexus_file(md):
         hf.create_dataset('/entry/instrument/qnw1/readback_temp', data=md['qnw1_temp'])
         hf.create_dataset('/entry/instrument/qnw2/readback_temp', data=md['qnw2_temp'])
         hf.create_dataset('/entry/instrument/qnw3/readback_temp', data=md['qnw3_temp'])     
-        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I0'])
-        hf.create_dataset('/entry/instrument/monitor/I1', data=md['I1'])  
+        hf.create_dataset('/entry/instrument/incoming_IC', data=md['I0'])
+        hf.create_dataset('/entry/instrument/outgoing_IC', data=md['I1'])  
      
         # Assign NeXus base classes to each group
         hf["/entry"].attrs["NX_class"] = "NXentry"
         hf["/entry/instrument"].attrs["NX_class"] = "NXinstrument"
-        hf["/entry/instrument/attenunator"].attrs["NX_class"] = "NXattenuator"
+        # hf["/entry/instrument/attenunator"].attrs["NX_class"] = "NXattenuator"
         hf["/entry/instrument/bluesky"].attrs["NX_class"] = "NXnote"
         hf["/entry/instrument/bluesky/metadata"].attrs["NX_class"] = "NXnote"
-        hf["/entry/instrument/beam"].attrs["NX_class"] = "NXbeam"
-        hf["/entry/instrument/beamstop"].attrs["NX_class"] = "NXbeam_stop"
-        hf["/entry/instrument/detector"].attrs["NX_class"] = "NXdetector"
-        hf["/entry/instrument/detector_module"].attrs["NX_class"] = "NXdetector_module"
+        # hf["/entry/instrument/beam"].attrs["NX_class"] = "NXbeam"
+        # hf["/entry/instrument/beamstop"].attrs["NX_class"] = "NXbeam_stop"
+        # hf["/entry/instrument/detector"].attrs["NX_class"] = "NXdetector"
+        # hf["/entry/instrument/detector_module"].attrs["NX_class"] = "NXdetector_module"
         hf["/entry/instrument/qnw1"].attrs["NX_class"] = "NXenvironment"
         hf["/entry/instrument/qnw2"].attrs["NX_class"] = "NXenvironment"
         hf["/entry/instrument/qnw3"].attrs["NX_class"] = "NXenvironment"
-        hf["/entry/instrument/insertion_device"].attrs["NX_class"] = "NXinsertion_device"
-        hf["/entry/instrument/mirror"].attrs["NX_class"] = "NXmirror"
-        hf["/entry/instrument/monitor"].attrs["NX_class"] = "NXmonitor"
-        hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
-        hf["/entry/instrument/parameters"].attrs["NX_class"] = "NXmonochromator"
+        # hf["/entry/instrument/insertion_device"].attrs["NX_class"] = "NXinsertion_device"
+        # hf["/entry/instrument/mirror"].attrs["NX_class"] = "NXmirror"
+        hf["/entry/instrument/incoming_IC"].attrs["NX_class"] = "NXmonitor"
+        hf["/entry/instrument/outgoing_IC"].attrs["NX_class"] = "NXmonitor"
+        # hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
+        # hf["/entry/instrument/parameters"].attrs["NX_class"] = "NXmonochromator"
         hf["/entry/instrument/sample_x"].attrs["NX_class"] = "NXpositioner"
         hf["/entry/instrument/sample_y"].attrs["NX_class"] = "NXpositioner"
         hf["/entry/instrument/sample_z"].attrs["NX_class"] = "NXpositioner"
-        hf["/entry/instrument/sample"].attrs["NX_class"] = "NXsample"
-        hf["/entry/instrument/slits"].attrs["NX_class"] = "NXslit"
-        hf["/entry/instrument/xraylens"].attrs["NX_class"] = "NXxraylens"
-
-
+        # hf["/entry/instrument/sample"].attrs["NX_class"] = "NXsample"
+        # hf["/entry/instrument/slits"].attrs["NX_class"] = "NXslit"
+        # hf["/entry/instrument/xraylens"].attrs["NX_class"] = "NXxraylens"
 
 
 # /entry/instrument/bluesky/metadata/X_energy Dataset {SCALAR}
