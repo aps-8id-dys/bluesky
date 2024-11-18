@@ -17,9 +17,9 @@ import epics as pe
 
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
-from ..devices.qnw_vac_device import qnw_vac1
-from ..devices.qnw_vac_device import qnw_vac2
-from ..devices.qnw_vac_device import qnw_vac3
+# from ..devices.qnw_vac_device import qnw_vac1
+# from ..devices.qnw_vac_device import qnw_vac2
+# from ..devices.qnw_vac_device import qnw_vac3
 
 
 def select_sample(env: int):
@@ -72,14 +72,17 @@ def sort_qnw():
     #     temp = qnw_env3.readback.get()
 
     # For vacuum QNW
-    if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
-        temp = qnw_vac1.readback.get()
-    elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
-        temp = qnw_vac2.readback.get()
-    else:
-        temp = qnw_vac3.readback.get()
+    # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+    #     temp = qnw_vac1.readback.get()
+    # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+    #     temp = qnw_vac2.readback.get()
+    # else:
+    #     temp = qnw_vac3.readback.get()
 
-    header_name = f"{header}{meas_num:03d}"
+    # Bypassing qnw
+    temp = 25
+
+    header_name = f"{header}{meas_num:04d}"
 
     pe.caput("8idi:StrReg21", str(meas_num + 1))
 
