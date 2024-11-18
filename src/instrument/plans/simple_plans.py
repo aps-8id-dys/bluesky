@@ -77,6 +77,17 @@ def create_run_metadata_dict(det=None,
 def write_nexus_file(md):
 
     with h5py.File(md['nexus_filename'], 'w') as hf:
+
+        # This is an example of writing metadata from existing fields in md
+        hf.create_dataset('/entry/instrument/bluesky/metadata/ccdx0', data=md['ccdx0'])
+        hf.create_dataset('/entry/instrument/sample_x_position', data=md['sample_x'])
+        hf.create_dataset('/entry/instrument/sample_y_position', data=md['sample_y'])
+        hf.create_dataset('/entry/instrument/sample_z_position', data=md['sample_z'])
+        hf.create_dataset('/entry/instrument/environment/qnw1_temp', data=md['qnw1_temp'])
+        hf.create_dataset('/entry/instrument/environment/qnw2_temp', data=md['qnw2_temp'])
+        hf.create_dataset('/entry/instrument/environment/qnw3_temp', data=md['qnw3_temp'])     
+        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I0'])
+        hf.create_dataset('/entry/instrument/monitor/I1', data=md['I1'])  
      
         # Assign NeXus base classes to each group
         hf["/entry"].attrs["NX_class"] = "NXentry"
@@ -99,16 +110,7 @@ def write_nexus_file(md):
         hf["/entry/instrument/slits"].attrs["NX_class"] = "NXslit"
         hf["/entry/instrument/xraylens"].attrs["NX_class"] = "NXxraylens"
 
-        # This is an example of writing metadata from existing fields in md
-        hf.create_dataset('/entry/instrument/bluesky/metadata/ccdx0', data=md['ccdx0'])
-        hf.create_dataset('/entry/instrument/positioner/sample_x_position', data=md['sample_x'])
-        hf.create_dataset('/entry/instrument/positioner/sample_y_position', data=md['sample_y'])
-        hf.create_dataset('/entry/instrument/positioner/sample_z_position', data=md['sample_z'])
-        hf.create_dataset('/entry/instrument/environment/qnw1_temp', data=md['qnw1_temp'])
-        hf.create_dataset('/entry/instrument/environment/qnw2_temp', data=md['qnw2_temp'])
-        hf.create_dataset('/entry/instrument/environment/qnw3_temp', data=md['qnw3_temp'])     
-        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I0'])
-        hf.create_dataset('/entry/instrument/monitor/I0', data=md['I1'])  
+
 
 
 # /entry/instrument/bluesky/metadata/X_energy Dataset {SCALAR}
