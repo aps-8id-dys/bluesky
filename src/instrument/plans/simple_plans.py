@@ -44,7 +44,7 @@ def create_run_metadata_dict(det=None,
                              qnw_env3 = qnw_env3,
                              ):
     md = {}
-    md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
+    md["energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
     md["absolute_cross_section_scale"] = 1
     md["bcx"] = 1044
@@ -86,8 +86,9 @@ def write_nexus_file(md):
         hf.create_dataset('/entry/instrument/qnw1/readback_temp', data=md['qnw1_temp'])
         hf.create_dataset('/entry/instrument/qnw2/readback_temp', data=md['qnw2_temp'])
         hf.create_dataset('/entry/instrument/qnw3/readback_temp', data=md['qnw3_temp'])     
-        hf.create_dataset('/entry/instrument/incoming_IC', data=md['I0'])
-        hf.create_dataset('/entry/instrument/outgoing_IC', data=md['I1'])  
+        hf.create_dataset('/entry/instrument/incoming_IC/nominal', data=md['I0'])
+        hf.create_dataset('/entry/instrument/outgoing_IC/nominal', data=md['I1'])  
+        hf.create_dataset('/entry/instrument/monochromator/energy', data=md['energy'])
      
         # Assign NeXus base classes to each group
         hf["/entry"].attrs["NX_class"] = "NXentry"
@@ -106,7 +107,7 @@ def write_nexus_file(md):
         # hf["/entry/instrument/mirror"].attrs["NX_class"] = "NXmirror"
         hf["/entry/instrument/incoming_IC"].attrs["NX_class"] = "NXmonitor"
         hf["/entry/instrument/outgoing_IC"].attrs["NX_class"] = "NXmonitor"
-        # hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
+        hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
         # hf["/entry/instrument/parameters"].attrs["NX_class"] = "NXmonochromator"
         hf["/entry/instrument/sample_x"].attrs["NX_class"] = "NXpositioner"
         hf["/entry/instrument/sample_y"].attrs["NX_class"] = "NXpositioner"
