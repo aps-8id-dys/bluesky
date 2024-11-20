@@ -11,4 +11,3 @@ class LabJack(Device):
 
 
 labjack = LabJack("8idiSoft:LJT705:", name="labjack")
-

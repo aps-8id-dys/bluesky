@@ -48,19 +48,20 @@ def create_run_metadata_dict(det=None,
     md["ccdx0"] = 1
     md["ccdy"] = 1
     md["ccdy0"] = 1
-    md["det_dist"] = 12.5
+    md["det_dist"] = 12500
     md["I0"] = 1
     md["I1"] = 1
     md["incident_beam_size_nm_xy"] = 10_000
     md["incident_energy_spread"] = 1
-    md["pix_dim_x"] = 75e-6
-    md["pix_dim_y"] = 75e-6
+    md["pix_dim_x"] = 75e-3
+    md["pix_dim_y"] = 75e-3
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
     # md["acquire_time"] = det.cam.acquire_time.get()
     # md["acquire_period"] = det.cam.acquire_period.get()
     # Will change to Ophyd in the future
     md["nexus_filename"] = pe.caget("8idi:StrReg30", as_string=True)
+    md["dataDir"] = pe.caget("8idi:StrReg28", as_string=True)
     md["xdim"] = 1
     md["ydim"] = 1
     md["sample_x"] = sample.x.position
@@ -138,7 +139,7 @@ def simple_acquire_int_series(det, md):
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
 
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}/"
+    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
 
     yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -151,12 +152,13 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
     pe.caput("8idi:StrReg24", file_name)
-    pe.caput("8idi:StrReg30", f"{data_full_path}{file_name}.hdf")
+    pe.caput("8idi:StrReg28", f"{data_full_path}")
+    pe.caput("8idi:StrReg30", f"{data_full_path}/{file_name}.hdf")
 
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}/"
+    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -170,6 +172,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
     pe.caput("8idi:StrReg24", file_name)
+    pe.caput("8idi:StrReg28", f"{data_full_path}")
     pe.caput("8idi:StrReg30", f"{data_full_path}{file_name}.hdf")
 
 
