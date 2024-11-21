@@ -17,10 +17,9 @@ class EpicsPvStorageRegisters(Device):
     experiment_name = Component(EpicsSignal, "StrReg25", string=True)
     cycle_name = Component(EpicsSignal, "StrReg26", string=True)
     workflow_name = Component(EpicsSignal, "StrReg27", string=True)
+    full_file_name = Component(EpicsSignal, "StrReg28", string=True)
     analysis_machine = Component(EpicsSignal, "StrReg29", string=True)
-    # TODO StrReg28?
-    # metadata_file = Component(EpicsSignal, "StrReg27", string=True)  # FIXME: same as workflow_name
-    full_file_name = Component(EpicsSignal, "StrReg30", string=True)
+    metadata_file = Component(EpicsSignal, "StrReg30", string=True)
 
     pos_sample1 = Component(EpicsSignal, "Reg191")
     pos_sample2 = Component(EpicsSignal, "Reg192")
