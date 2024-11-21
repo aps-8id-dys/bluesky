@@ -84,14 +84,13 @@ def sort_qnw():
     else:
         temp = qnw_vac3.readback.get()
 
-    header_name = f"{header}{meas_num:03d}"
+    header_name = f"{header}{meas_num:04d}"
 
     yield from bps.mv(pv_registers.measurement_num, str(meas_num+1))
 
     return (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,

@@ -3,6 +3,9 @@ Simple, modular Bluesky plans for users.
 """
 
 import numpy as np
+import h5py 
+
+warnings.filterwarnings("ignore")
 
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
@@ -16,13 +19,13 @@ from ..devices import pv_registers
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.softglue import softglue_8idi
+from ..devices.slit import sl4
+# from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+# from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
-from .shutter_logic import blockbeam
-from .shutter_logic import post_align
-from .shutter_logic import showbeam
-from .shutter_logic import shutteroff
-from .shutter_logic import shutteron
+# from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
+from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
@@ -33,7 +36,9 @@ WORKFLOW_NAME = pv_registers.workflow_name.get()
 ANALYSIS_MACHINE = pv_registers.analysis_machine.get()
 
 
-def create_run_metadata_dict(det):
+def create_run_metadata_dict(det=None,
+                             sample = sample,
+                             ):
     md = {}
     md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
@@ -44,19 +49,40 @@ def create_run_metadata_dict(det):
     md["ccdx0"] = 1
     md["ccdy"] = 1
     md["ccdy0"] = 1
-    md["det_dist"] = 12.5
+    md["det_dist"] = 12500
     md["I0"] = 1
     md["I1"] = 1
     md["incident_beam_size_nm_xy"] = 10_000
     md["incident_energy_spread"] = 1
-    md["pix_dim_x"] = 75e-6
-    md["pix_dim_y"] = 75e-6
+    md["pix_dim_x"] = 75e-3
+    md["pix_dim_y"] = 75e-3
     md["t0"] = det.cam.acquire_time.get()
     md["t1"] = det.cam.acquire_period.get()
-    md["metadatafile"] = pv_registers.metadata_file.get()  # FIXME:  Which StrRegNN?
+    md["metadatafile"] = pv_registers.metadata_file.get()
     md["xdim"] = 1
     md["ydim"] = 1
+    md["sample_x"] = sample.x.position
+    md["sample_y"] = sample.y.position
+    md["sample_z"] = sample.z.position
+    md["sl4_h_size"] = sl4.h.size.position
+    md["sl4_h_center"] = sl4.h.center.position
+    md["sl4_v_size"] = sl4.v.size.position
+    md["sl4_v_center"] = sl4.v.center.position
+
+    # md["qnw1_temp"] = qnw_env1.readback.get()
+    # md["qnw2_temp"] = qnw_env2.readback.get()
+    # md["qnw3_temp"] = qnw_env3.readback.get()
     return md
+
+
+def softglue_start_pulses():
+    """Tell the FPGA to start generating pulses."""
+    yield from bps.mv(softglue_8idi.start_pulses, "1!")
+
+
+def softglue_stop_pulses():
+    """Tell the FPGA to stop generating pulses."""
+    yield from bps.mv(softglue_8idi.stop_pulses, "1!")
 
 
 def simple_acquire_ext_trig(det, md):
@@ -77,13 +103,14 @@ def simple_acquire_ext_trig(det, md):
     def acquire():
         # TODO: Some users want periodic update of acquisition progress.
         # Softglue is a detector here, so it is triggered with the area detector.
-        yield from bp.count([det, softglue_8idi], md=md)
+        yield from bp.count([det], md=md)
 
     # RE.unsubscribe(subscription_id)
 
     # Start the acquire. Eiger will wait for external trigger pulse sequence
+    yield from softglue_start_pulses()
     yield from acquire()
-    yield from bps.mv(softglue_8idi.stop_trigger, "1!")
+    yield from softglue_stop_pulses()
 
     # Wait for NeXus metadata file content to flush to disk.
     # If next acquisition proceeds without waiting, the
@@ -114,7 +141,7 @@ def simple_acquire_int_series(det, md):
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
 
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}/"
+    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
 
     yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -132,7 +159,7 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}/"
+    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -226,7 +253,7 @@ def eiger_acq_ext_trig(
 ):
     # yield from bps.mv(filter_8idi, att_level)
 
-    yield from post_align()
+    # yield from post_align()
     yield from shutteron()
     yield from showbeam()
 
@@ -234,8 +261,7 @@ def eiger_acq_ext_trig(
 
     (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,
@@ -246,6 +272,7 @@ def eiger_acq_ext_trig(
         y_pts,
     ) = yield from sort_qnw()
     temp_name = int(temp * 10)
+    sam_pos = int(pe.caget(str_index))
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
@@ -306,8 +333,7 @@ def eiger_acq_int_series(
 
     (
         header_name,
-        qnw_index,
-        sam_pos,
+        str_index,
         temp,
         sample_name,
         x_cen,
@@ -318,6 +344,7 @@ def eiger_acq_int_series(
         y_pts,
     ) = yield from sort_qnw()
     temp_name = int(temp * 10)
+    sam_pos = int(pe.caget(str_index))
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
