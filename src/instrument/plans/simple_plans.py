@@ -20,6 +20,7 @@ from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.softglue import softglue_8idi
+from ..devices.slit import sl4
 # from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
@@ -67,6 +68,11 @@ def create_run_metadata_dict(det=None,
     md["sample_x"] = sample.x.position
     md["sample_y"] = sample.y.position
     md["sample_z"] = sample.z.position
+    md["sl4_h_size"] = sl4.h.size.position
+    md["sl4_h_center"] = sl4.h.center.position
+    md["sl4_v_size"] = sl4.v.size.position
+    md["sl4_v_center"] = sl4.v.center.position
+
     # md["qnw1_temp"] = qnw_env1.readback.get()
     # md["qnw2_temp"] = qnw_env2.readback.get()
     # md["qnw3_temp"] = qnw_env3.readback.get()
@@ -173,7 +179,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
     pe.caput("8idi:StrReg24", file_name)
     pe.caput("8idi:StrReg28", f"{data_full_path}")
-    pe.caput("8idi:StrReg30", f"{data_full_path}{file_name}.hdf")
+    pe.caput("8idi:StrReg30", f"{data_full_path}/{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
