@@ -11,7 +11,7 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
 from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices import filter3
+# from ..devices import filter_8idi, filter_8ide
 from ..devices import pv_registers
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
@@ -224,7 +224,7 @@ def eiger_acq_ext_trig(
     att_level=0,
     sample_move=False,
 ):
-    yield from bps.mv(filter3, att_level)
+    # yield from bps.mv(filter_8idi, att_level)
 
     yield from post_align()
     yield from shutteron()
@@ -299,7 +299,7 @@ def eiger_acq_int_series(
     det=eiger4M, acq_period=1, num_frame=10, num_rep=3, att_level=0, sample_move=False
 ):
     acq_time = acq_period
-    yield from bps.mv(filter3, att_level)
+    # yield from bps.mv(filter_8idi, att_level)
 
     yield from post_align()
     yield from shutteroff()

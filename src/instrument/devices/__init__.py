@@ -26,7 +26,8 @@ except Exception as excuse:
 ## Beamline specific devices
 from .bd_5a import bd5a
 from .damm import damm
-from .filters import filter2, filter3
+# from .filters import filter2, filter3
+# from .filters_8id import filter_8ide, filter_8idi
 from .fl import fl2, fl3
 from .flag_4 import flag4
 from .granite import granite
