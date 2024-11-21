@@ -36,6 +36,8 @@ from .fast_shutter import shutter_8ide
 from .meascomp_usb_ctr import mcs
 # from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from .qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
+from .filters_8id import filter_8ide, filter_8idi
+from .registers_device import pv_registers
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .individual_slits import sl5_motors, sl9_motors
