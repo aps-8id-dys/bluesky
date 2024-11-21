@@ -22,7 +22,7 @@ def select_sample_env(env: str):
     #     raise KeyError(f"Unkown environment {env=!r}")
 
     if env == "qnw":
-        yield from bps.mv(granite.x, 917.0)
+        yield from bps.mv(granite.x, 923.0)
         yield from bps.mv(sample.x, 150)
     if env == "rheometer":
         yield from bps.mv(granite.x, 65)

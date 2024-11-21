@@ -34,12 +34,14 @@ from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
 from .labjack_support import labjack
+from .fast_shutter import shutter_8ide
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3
 from .registers_device import pv_registers
 from .qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
+from .individual_slits import sl5_motors, sl9_motors
 from .softglue import softglue_8idi
 from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
 from .transfocator_8idd import rl1
