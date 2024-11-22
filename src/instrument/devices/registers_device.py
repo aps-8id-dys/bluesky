@@ -9,35 +9,39 @@ from ophyd import EpicsSignal
 
 
 class EpicsPvStorageRegisters(Device):
-    """Various instrument constants and parameters are defined in PVs."""
-    measurement_num = Component(EpicsSignal, "StrReg21", string=True)
-    qnw_index = Component(EpicsSignal, "StrReg22", string=True)
-    qmap_file = Component(EpicsSignal, "StrReg23", string=True)
-    file_name = Component(EpicsSignal, "StrReg24", string=True)
-    experiment_name = Component(EpicsSignal, "StrReg25", string=True)
-    cycle_name = Component(EpicsSignal, "StrReg26", string=True)
-    workflow_name = Component(EpicsSignal, "StrReg27", string=True)
-    folder_name = Component(EpicsSignal, "StrReg28", string=True)
-    analysis_machine = Component(EpicsSignal, "StrReg29", string=True)
-    metadata_full_path = Component(EpicsSignal, "StrReg30", string=True)
 
-    pos_sample1 = Component(EpicsSignal, "Reg191")
-    pos_sample2 = Component(EpicsSignal, "Reg192")
-    pos_sample3 = Component(EpicsSignal, "Reg193")
-    pos_sample4 = Component(EpicsSignal, "Reg194")
-    pos_sample5 = Component(EpicsSignal, "Reg195")
-    pos_sample6 = Component(EpicsSignal, "Reg196")
-    pos_sample7 = Component(EpicsSignal, "Reg197")
-    pos_sample8 = Component(EpicsSignal, "Reg198")
-    pos_sample9 = Component(EpicsSignal, "Reg199")
+    file_name = Component(EpicsSignal, "StrReg1", string=True)
+    file_path = Component(EpicsSignal, "StrReg2", string=True)
+    metadata_path = Component(EpicsSignal, "StrReg3", string=True)
+    qmap_file = Component(EpicsSignal, "StrReg4", string=True)
+    analysis_machine = Component(EpicsSignal, "StrReg5", string=True)
+    workflow_name = Component(EpicsSignal, "StrReg6", string=True)
+    experiment_name = Component(EpicsSignal, "StrReg7", string=True)
+    cycle_name = Component(EpicsSignal, "StrReg8", string=True)
 
-    # def sample_position_register(self, qnw_index):
-    #     """
-    #     Return the indexed sample position register signal.
+    measurement_num = Component(EpicsSignal, "Reg1")
+    qnw_index = Component(EpicsSignal, "Reg2")
 
-    #     Replaces: PyEpics calls involving f"8idi:Reg{int(190+qnw_index)}"
-    #     """
-    #     return getattr(self, f"pos_sample{qnw_index}")
+    sample1_pos = Component(EpicsSignal, "Reg11")
+    sample2_pos = Component(EpicsSignal, "Reg12")
+    sample3_pos = Component(EpicsSignal, "Reg13")
+    sample4_pos = Component(EpicsSignal, "Reg14")
+    sample5_pos = Component(EpicsSignal, "Reg15")
+    sample6_pos = Component(EpicsSignal, "Reg16")
+    sample7_pos = Component(EpicsSignal, "Reg17")
+    sample8_pos = Component(EpicsSignal, "Reg18")
+    sample9_pos = Component(EpicsSignal, "Reg19")
+
+    def sample_position_register(self, qnw_index):
+        """
+        Return the indexed sample position register signal.
+
+        Replaces: PyEpics calls involving f"8idi:Reg{int(190+qnw_index)}"
+        """
+        if qnw_index <= 9:
+            return getattr(self, f"sample{qnw_index}_pos")
+        else:
+            return getattr(self, f"sample9_pos")
 
 
-pv_registers = EpicsPvStorageRegisters("8idi:", name="pv_registers")
+pv_registers = EpicsPvStorageRegisters("8idi:Soft:", name="pv_registers")

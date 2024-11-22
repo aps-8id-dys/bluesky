@@ -17,6 +17,7 @@ import epics as pe
 
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
+from ..devices.registers_device import pv_registers
 # from ..devices.qnw_vac_device import qnw_vac1
 # from ..devices.qnw_vac_device import qnw_vac2
 # from ..devices.qnw_vac_device import qnw_vac3
@@ -38,12 +39,12 @@ def select_sample(env: int):
     yield from bps.mv(sample.x, x_cen)
     yield from bps.mv(sample.y, y_cen)
 
-    pe.caput("8idi:StrReg22", str(env))
+    yield from bps.mv(pv_registers.qnw_index, env)
 
 
 def sort_qnw():
-    meas_num = int(pe.caget("8idi:StrReg21", as_string=True))
-    qnw_index = int(pe.caget("8idi:StrReg22", as_string=True))
+    meas_num = pv_registers.measurement_num.get()
+    qnw_index = pv_registers.qnw_index.get()
     sample_key = f"sample_{qnw_index}"
 
     with open("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json", "r") as f:
@@ -58,10 +59,6 @@ def sort_qnw():
     x_pts = loaded_dict[sample_key]["x_pts"]
     y_pts = loaded_dict[sample_key]["y_pts"]
 
-    if qnw_index <= 9:
-        str_index = f"8idi:Reg{int(190+qnw_index)}"
-    else:
-        str_index = "8idi:Reg191"
 
     # For ambient QNW
     # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
@@ -84,11 +81,11 @@ def sort_qnw():
 
     header_name = f"{header}{meas_num:04d}"
 
-    pe.caput("8idi:StrReg21", str(meas_num + 1))
+    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
 
     return (
         header_name,
-        str_index,
+        qnw_index,
         temp,
         sample_name,
         x_cen,

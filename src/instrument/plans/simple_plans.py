@@ -15,8 +15,9 @@ from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-
 from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices.registers_device import pv_registers
+from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.softglue import softglue_8idi
@@ -31,10 +32,10 @@ from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
 # These variables most likely won't change so keep them outside functions
-CYCLE_NAME = pe.caget("8idi:StrReg26", as_string=True)
-WORKFLOW_NAME = pe.caget("8idi:StrReg27", as_string=True)
-EXP_NAME = pe.caget("8idi:StrReg25", as_string=True)
 
+# CYCLE_NAME = pv_registers.cycle_name.get()
+# WORKFLOW_NAME = pv_registers.workflow_name.get()
+# EXP_NAME = pv_registers.experiment_name()
 
 def create_run_metadata_dict(det=None,
                              sample = sample,
@@ -61,8 +62,8 @@ def create_run_metadata_dict(det=None,
     # md["acquire_time"] = det.cam.acquire_time.get()
     # md["acquire_period"] = det.cam.acquire_period.get()
     # Will change to Ophyd in the future
-    md["nexus_filename"] = pe.caget("8idi:StrReg30", as_string=True)
-    md["dataDir"] = pe.caget("8idi:StrReg28", as_string=True)
+    md["nexus_filename"] = pv_registers.metadata_full_path.get()
+    md["dataDir"] = pv_registers.folder_name.get()
     md["xdim"] = 1
     md["ydim"] = 1
     md["sample_x"] = sample.x.position
@@ -142,44 +143,49 @@ def simple_acquire_int_series(det, md):
     yield from nxwriter.wait_writer_plan_stub()
 
 
-def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
-    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
-
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
-
-    yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
-    yield from bps.mv(det.cam.acquire_time, acq_time)
-    yield from bps.mv(det.cam.acquire_period, acq_period)
-    yield from bps.mv(det.hdf1.file_name, file_name)
-    yield from bps.mv(det.hdf1.file_path, data_full_path)
-    # In External trigger mode, then num_images is not writable.
-    # yield from bps.mv(det.cam.num_images, num_frames)
-    yield from bps.mv(det.cam.num_triggers, num_frames)
-    yield from bps.mv(det.hdf1.num_capture, num_frames)
-
-    pe.caput("8idi:StrReg24", file_name)
-    pe.caput("8idi:StrReg28", f"{data_full_path}")
-    pe.caput("8idi:StrReg30", f"{data_full_path}/{file_name}.hdf")
-
-
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
-    data_full_path = f"/gdata/dm/8IDI/{CYCLE_NAME}/{EXP_NAME}/data/{file_name}"
+    cycle_name = pv_registers.cycle_name.get()
+    exp_name = pv_registers.experiment_name()
+    
+    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(det.cam.acquire_time, acq_time)
     yield from bps.mv(det.cam.acquire_period, acq_period)
     yield from bps.mv(det.hdf1.file_name, file_name)
-    yield from bps.mv(det.hdf1.file_path, data_full_path)
+    yield from bps.mv(det.hdf1.file_path, file_path)
     yield from bps.mv(det.cam.num_images, num_frames)
     yield from bps.mv(
         det.cam.num_triggers, 1
     )  # Need to put num_trigger to 1 for internal mode
     yield from bps.mv(det.hdf1.num_capture, num_frames)
 
-    pe.caput("8idi:StrReg24", file_name)
-    pe.caput("8idi:StrReg28", f"{data_full_path}")
-    pe.caput("8idi:StrReg30", f"{data_full_path}/{file_name}.hdf")
+    yield from bps.mv(pv_registers.file_name, file_name)
+    yield from bps.mv(pv_registers.file_path, file_path)
+    yield from bps.mv(pv_registers.metadata_path, f"{file_path}{file_name}.hdf")
+
+
+def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
+    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
+    cycle_name = pv_registers.cycle_name.get()
+    exp_name = pv_registers.experiment_name()
+    
+    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
+
+    yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
+    yield from bps.mv(det.cam.acquire_time, acq_time)
+    yield from bps.mv(det.cam.acquire_period, acq_period)
+    yield from bps.mv(det.hdf1.file_name, file_name)
+    yield from bps.mv(det.hdf1.file_path, file_path)
+    # In External trigger mode, then num_images is not writable.
+    # yield from bps.mv(det.cam.num_images, num_frames)
+    yield from bps.mv(det.cam.num_triggers, num_frames)
+    yield from bps.mv(det.hdf1.num_capture, num_frames)
+
+    yield from bps.mv(pv_registers.file_name, file_name)
+    yield from bps.mv(pv_registers.file_path, file_path)
+    yield from bps.mv(pv_registers.metadata_path, f"{file_path}{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
@@ -228,7 +234,7 @@ def kickoff_dm_workflow(
         analysisMachine=analysisMachine,
     )
 
-    workflow_name_run = pe.caget("8idi:StrReg27", as_string=True)
+    workflow_name_run = pv_registers.workflow_name.get()
 
     yield from dm_workflow.run_as_plan(
         workflow=workflow_name_run,
@@ -248,107 +254,19 @@ def kickoff_dm_workflow(
     print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
-def eiger_acq_ext_trig(
-    det=eiger4M,
-    acq_time=1,
-    acq_period=2,
-    num_frame=10,
-    num_rep=3,
-    att_level=0,
-    sample_move=False,
-):
-    # pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
-    
-    # Change to 8IDE filter
-    pe.caput("8idPyFilter:FL2:sortedIndex", att_level)
-
-
-    # yield from post_align()
-    yield from shutteron()
-    yield from showbeam()
-
-    yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
-
-    (
-        header_name,
-        str_index,
-        temp,
-        sample_name,
-        x_cen,
-        y_cen,
-        x_radius,
-        y_radius,
-        x_pts,
-        y_pts,
-    ) = sort_qnw()
-
-    temp_name = int(temp * 10)
-    sam_pos = int(pe.caget(str_index))
-
-    samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
-    samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
-
-    for ii in range(num_rep):
-        pos_index = np.mod(sam_pos, x_pts * y_pts)
-        pos_index = pos_index + ii + 1
-
-        try:
-            if sample_move:
-                yield from bps.mv(
-                    sample.x,
-                    samx_list[np.mod(pos_index, x_pts)],
-                    sample.y,
-                    samy_list[int(np.floor(pos_index / y_pts))],
-                )
-                pe.caput(str_index, pos_index)
-            else:
-                pass
-        except Exception as e:
-            print(f"Error occurred in sample motion: {e}")
-        finally:
-            pass
-
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
-
-        yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
-
-        md = create_run_metadata_dict(det)
-        # (uid,) = yield from simple_acquire_ext_trig(det, md)
-        yield from simple_acquire_ext_trig(det, md)
-
-        try:
-            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
-            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
-            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
-
-            yield from kickoff_dm_workflow(
-                experiment_name=experiment_name_run,
-                file_name=f"{filename}.h5",
-                qmap_file=qmap_file_run,
-                run=cat[-1],
-                analysisMachine=analysisMachine_run,
-            )
-        except Exception as e:
-            print(f"Error occurred in DM Workflow: {e}")
-        finally:
-            pass
-
-
 def eiger_acq_int_series(
     det=eiger4M, acq_period=1, num_frame=10, num_rep=3, att_level=0, sample_move=False
 ):
     acq_time = acq_period
-    # pe.caput("8idPyFilter:FL3:sortedIndex", att_level)
-    
-    # Change to 8IDE filter
-    pe.caput("8idPyFilter:FL2:sortedIndex", att_level)
+
+    yield from bps.mv(filter_8ide.atten_index, att_level)
 
     # yield from post_align()
     yield from shutteroff()
 
     (
         header_name,
-        str_index,
+        qnw_index,
         temp,
         sample_name,
         x_cen,
@@ -360,7 +278,9 @@ def eiger_acq_int_series(
     ) = sort_qnw()
 
     temp_name = int(temp * 10)
-    sam_pos = int(pe.caget(str_index))
+
+    sample_pos_register = pv_registers.sample_position_register(qnw_index)
+    sam_pos = sample_pos_register.get()
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
@@ -373,7 +293,7 @@ def eiger_acq_int_series(
                 x_pos = samx_list[np.mod(pos_index, x_pts)]
                 y_pos = samy_list[int(np.floor(pos_index / y_pts))]
                 yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
-                pe.caput(str_index, pos_index)
+                yield from bps.mv(sample_pos_register, pos_index)
             else:
                 pass
         except Exception as e:
@@ -392,9 +312,95 @@ def eiger_acq_int_series(
         yield from blockbeam()
 
         try:
-            qmap_file_run = pe.caget("8idi:StrReg23", as_string=True)
-            experiment_name_run = pe.caget("8idi:StrReg25", as_string=True)
-            analysisMachine_run = pe.caget("8idi:StrReg29", as_string=True)
+            # qmap_file_run = pv_registers.qmap_file.get()
+            # experiment_name_run = pv_registers.experiment_name.get()
+            # analysisMachine_run = pv_registers.analysis_machine()
+
+            yield from kickoff_dm_workflow(
+                experiment_name=experiment_name_run,
+                file_name=f"{filename}.h5",
+                qmap_file=Q,
+                run=cat[-1],
+                analysisMachine=analysisMachine_run,
+            )
+        except Exception as e:
+            print(f"Error occurred in DM Workflow: {e}")
+        finally:
+            pass
+
+
+
+def eiger_acq_ext_trig(
+    det=eiger4M,
+    acq_time=1,
+    acq_period=2,
+    num_frame=10,
+    num_rep=3,
+    att_level=0,
+    sample_move=False,
+):
+
+    yield from bps.mv(filter_8ide.atten_index, att_level)
+
+    # yield from post_align()
+    yield from shutteron()
+    yield from showbeam()
+
+    yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
+
+    (
+        header_name,
+        qnw_index,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    ) = sort_qnw()
+
+    temp_name = int(temp * 10)
+
+    sample_pos_register = pv_registers.sample_position_register(qnw_index)
+    sam_pos = sample_pos_register.get()
+
+    samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
+    samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
+
+    for ii in range(num_rep):
+        pos_index = np.mod(sam_pos, x_pts * y_pts)
+        pos_index = pos_index + ii + 1
+
+        try:
+            if sample_move:
+                yield from bps.mv(
+                    sample.x,
+                    samx_list[np.mod(pos_index, x_pts)],
+                    sample.y,
+                    samy_list[int(np.floor(pos_index / y_pts))],
+                )
+                yield from bps.mv(sample_pos_register, pos_index)
+            else:
+                pass
+        except Exception as e:
+            print(f"Error occurred in sample motion: {e}")
+        finally:
+            pass
+
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+
+        yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
+
+        md = create_run_metadata_dict(det)
+        # (uid,) = yield from simple_acquire_ext_trig(det, md)
+        yield from simple_acquire_ext_trig(det, md)
+
+        try:
+            qmap_file_run = pv_registers.qmap_file.get()
+            experiment_name_run = pv_registers.experiment_name.get()
+            analysisMachine_run = pv_registers.analysis_machine()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
