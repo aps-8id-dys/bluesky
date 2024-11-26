@@ -26,8 +26,8 @@ from ..devices.slit import sl4
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
-# from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
-from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
+# from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
 
