@@ -18,6 +18,7 @@ class EpicsPvStorageRegisters(Device):
     workflow_name = Component(EpicsSignal, "StrReg6", string=True)
     experiment_name = Component(EpicsSignal, "StrReg7", string=True)
     cycle_name = Component(EpicsSignal, "StrReg8", string=True)
+    sample_name = Component(EpicsSignal, "StrReg9", string=True)
 
     measurement_num = Component(EpicsSignal, "Reg1")
     qnw_index = Component(EpicsSignal, "Reg2")

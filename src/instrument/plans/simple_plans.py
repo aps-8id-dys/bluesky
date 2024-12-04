@@ -282,6 +282,7 @@ def eiger_acq_int_series(det=eiger4M,
         y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
 
@@ -368,6 +369,7 @@ def eiger_acq_ext_trig(
         y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
 
