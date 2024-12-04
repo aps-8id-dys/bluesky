@@ -43,8 +43,8 @@ def select_sample(env: int):
 
 
 def sort_qnw():
-    meas_num = pv_registers.measurement_num.get()
-    qnw_index = pv_registers.qnw_index.get()
+    meas_num = int(pv_registers.measurement_num.get())
+    qnw_index = int(pv_registers.qnw_index.get())
     sample_key = f"sample_{qnw_index}"
 
     with open("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json", "r") as f:
@@ -81,10 +81,11 @@ def sort_qnw():
 
     header_name = f"{header}{meas_num:04d}"
 
-    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    # yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
 
     return (
         header_name,
+        meas_num,
         qnw_index,
         temp,
         sample_name,

@@ -12,7 +12,7 @@ class EpicsPvStorageRegisters(Device):
 
     file_name = Component(EpicsSignal, "StrReg1", string=True)
     file_path = Component(EpicsSignal, "StrReg2", string=True)
-    metadata_path = Component(EpicsSignal, "StrReg3", string=True)
+    metadata_full_path = Component(EpicsSignal, "StrReg3", string=True)
     qmap_file = Component(EpicsSignal, "StrReg4", string=True)
     analysis_machine = Component(EpicsSignal, "StrReg5", string=True)
     workflow_name = Component(EpicsSignal, "StrReg6", string=True)
@@ -44,4 +44,4 @@ class EpicsPvStorageRegisters(Device):
             return getattr(self, f"sample9_pos")
 
 
-pv_registers = EpicsPvStorageRegisters("8idi:Soft:", name="pv_registers")
+pv_registers = EpicsPvStorageRegisters("8idiSoft:", name="pv_registers")

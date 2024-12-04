@@ -17,7 +17,7 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
+from ..devices.filters_8id import filter_8ide
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.softglue import softglue_8idi
@@ -26,7 +26,7 @@ from ..devices.slit import sl4
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
-from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
+from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
@@ -63,7 +63,7 @@ def create_run_metadata_dict(det=None,
     # md["acquire_period"] = det.cam.acquire_period.get()
     # Will change to Ophyd in the future
     md["nexus_filename"] = pv_registers.metadata_full_path.get()
-    md["dataDir"] = pv_registers.folder_name.get()
+    md["dataDir"] = pv_registers.file_path.get()
     md["xdim"] = 1
     md["ydim"] = 1
     md["sample_x"] = sample.x.position
@@ -146,7 +146,7 @@ def simple_acquire_int_series(det, md):
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
-    exp_name = pv_registers.experiment_name()
+    exp_name = pv_registers.experiment_name.get()
     
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
@@ -163,13 +163,13 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_path, f"{file_path}{file_name}.hdf")
+    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}{file_name}.hdf")
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
-    exp_name = pv_registers.experiment_name()
+    exp_name = pv_registers.experiment_name.get()
     
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
@@ -185,7 +185,7 @@ def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_path, f"{file_path}{file_name}.hdf")
+    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}{file_name}.hdf")
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
@@ -254,9 +254,13 @@ def kickoff_dm_workflow(
     print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
-def eiger_acq_int_series(
-    det=eiger4M, acq_period=1, num_frame=10, num_rep=3, att_level=0, sample_move=False
-):
+def eiger_acq_int_series(det=eiger4M, 
+                         acq_period=1, 
+                         num_frame=10, 
+                         num_rep=3, 
+                         att_level=0, 
+                         sample_move=False
+                         ):
     acq_time = acq_period
 
     yield from bps.mv(filter_8ide.atten_index, att_level)
@@ -266,6 +270,7 @@ def eiger_acq_int_series(
 
     (
         header_name,
+        meas_num,
         qnw_index,
         temp,
         sample_name,
@@ -276,11 +281,12 @@ def eiger_acq_int_series(
         x_pts,
         y_pts,
     ) = sort_qnw()
+    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
 
     temp_name = int(temp * 10)
 
     sample_pos_register = pv_registers.sample_position_register(qnw_index)
-    sam_pos = sample_pos_register.get()
+    sam_pos = int(sample_pos_register.get())
 
     samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
@@ -312,14 +318,14 @@ def eiger_acq_int_series(
         yield from blockbeam()
 
         try:
-            # qmap_file_run = pv_registers.qmap_file.get()
-            # experiment_name_run = pv_registers.experiment_name.get()
-            # analysisMachine_run = pv_registers.analysis_machine()
+            qmap_file_run = pv_registers.qmap_file.get()
+            experiment_name_run = pv_registers.experiment_name.get()
+            analysisMachine_run = pv_registers.analysis_machine.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
                 file_name=f"{filename}.h5",
-                qmap_file=Q,
+                qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
             )
@@ -350,6 +356,7 @@ def eiger_acq_ext_trig(
 
     (
         header_name,
+        meas_num,
         qnw_index,
         temp,
         sample_name,
@@ -360,6 +367,7 @@ def eiger_acq_ext_trig(
         x_pts,
         y_pts,
     ) = sort_qnw()
+    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
 
     temp_name = int(temp * 10)
 
@@ -400,7 +408,7 @@ def eiger_acq_ext_trig(
         try:
             qmap_file_run = pv_registers.qmap_file.get()
             experiment_name_run = pv_registers.experiment_name.get()
-            analysisMachine_run = pv_registers.analysis_machine()
+            analysisMachine_run = pv_registers.analysis_machine.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,

@@ -30,8 +30,7 @@ from .simple_plans import setup_softglue_ext_trig
 from .simple_plans import simple_acquire_ext_trig
 from .simple_plans import simple_acquire_int_series
 from .simple_plans import softglue_start_pulses
-from .simple_plans import softglue_start_pulses
-# from .simple_plans import write_nexus_file
+from .nexus_writer import create_run_metadata_dict, write_nexus_file
 
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
