@@ -264,6 +264,7 @@ def eiger_acq_int_series(det=eiger4M,
     acq_time = acq_period
 
     yield from bps.mv(filter_8ide.atten_index, att_level)
+    yield from bps.sleep(3)
 
     # yield from post_align()
     yield from shutteroff()
@@ -315,6 +316,7 @@ def eiger_acq_int_series(det=eiger4M,
         md = create_run_metadata_dict(det)
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         yield from showbeam()
+        yield from bps.sleep(0.1)
         yield from simple_acquire_int_series(det, md)
         yield from blockbeam()
 
