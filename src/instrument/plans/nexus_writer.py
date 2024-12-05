@@ -78,6 +78,9 @@ def write_nexus_file(md):
         nxdetector = nxinstrument.create_group("detector")
         nxdetector.attrs["NX_Class"] = "NXdetector"
 
+        nxdetector = nxinstrument.create_group("monochromator")
+        nxdetector.attrs["NX_Class"] = "NXmonochromator"
+
         # hf["/entry/instrument/attenunator"].attrs["NX_class"] = "NXattenuator"
         # hf["/entry/instrument/beam"].attrs["NX_class"] = "NXbeam"
         # hf["/entry/instrument/beamstop"].attrs["NX_class"] = "NXbeam_stop"
@@ -89,7 +92,6 @@ def write_nexus_file(md):
         # # hf["/entry/instrument/mirror"].attrs["NX_class"] = "NXmirror"
         # hf["/entry/instrument/incoming_IC"].attrs["NX_class"] = "NXmonitor"
         # hf["/entry/instrument/outgoing_IC"].attrs["NX_class"] = "NXmonitor"
-        # hf["/entry/instrument/monochromator"].attrs["NX_class"] = "NXmonochromator"
         # hf["/entry/instrument/sample_x"].attrs["NX_class"] = "NXpositioner"
         # hf["/entry/instrument/sample_y"].attrs["NX_class"] = "NXpositioner"
         # hf["/entry/instrument/sample_z"].attrs["NX_class"] = "NXpositioner"
@@ -113,7 +115,7 @@ def write_nexus_file(md):
         hf.create_dataset('/entry/instrument/bluesky/metadata/databroker_catalog', data=md['databroker_catalog'])
 
         # # Mono, NXmonochromator
-        # hf.create_dataset('/entry/instrument/monochromator/energy', data=md['energy'])
+        hf.create_dataset('/entry/instrument/monochromator/energy', data=md['energy'])
 
         # # Ion chambers, NXmonitor
         # hf.create_dataset('/entry/instrument/incoming_IC/nominal', data=md['I0'])

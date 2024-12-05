@@ -48,6 +48,7 @@ from .transfocator_8ide import rl2
 from .xbpm2_in_8ide import bd6a
 from .xbpm2_in_8ide import xbpm2
 from .win import win_e, win_i
+from .func_gen import dpKeysight
 
 
 ## Beamline Area Detectors
