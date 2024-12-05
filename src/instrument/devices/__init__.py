@@ -49,6 +49,7 @@ from .xbpm2_in_8ide import bd6a
 from .xbpm2_in_8ide import xbpm2
 from .win import win_e, win_i
 from .func_gen import dpKeysight
+from .huber_diffractometer import huber
 
 
 ## Beamline Area Detectors
