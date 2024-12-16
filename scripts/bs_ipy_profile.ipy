@@ -12,6 +12,7 @@ from bluesky.magics import BlueskyMagics
 from apstools.plans import lineup2
 from IPython import get_ipython
 import matplotlib.pyplot as plt
+from aps_8id_bs_instrument.devices.registers_device import pv_registers
 
 logger.info(__file__)
 plt.ion()
@@ -19,6 +20,8 @@ plt.ion()
 _ip = get_ipython()
 if _ip is not None:
     _xmode_level = iconfig.get("XMODE_DEBUG_LEVEL", "Minimal")
+    # Pete suggested changing to 'verbose' for debugging purposes
+    # _xmode_level = iconfig.get("XMODE_DEBUG_LEVEL", "Verbose")
     _ip.register_magics(BlueskyMagics)
     _ip.run_line_magic("xmode", _xmode_level)
     logger.info("xmode exception level: '%s'", _xmode_level)
@@ -39,6 +42,23 @@ from aps_8id_bs_instrument.data_collection import *  # noqa
 
 if iconfig.get("WRITE_SPEC_DATA_FILES", False):
     if specwriter is not None:
+        # TODO: use the correct PV name
+        # TODO: move the ophyd object creation to an appropriate file in devices/
+        spec_file_name = pv_registers.spec_file
+        spec_file_name.wait_for_connection()
+        _fname = spec_file_name.get()
+        if len(_fname) > 0 and _fname.endswith(".dat"):
+            # PV should contain a valid file name
+            specwriter.newfile(_fname)
+        else:
+            logger.warning(
+                f"SPEC file name {_fname!r} from EPICS PV"
+                f" {spec_file_name.pvname!r} is unacceptable."
+                "  File name must be of form 'NAME.dat' where NAME"
+                " is at least 1 character."
+                f"  Using {specwriter.spec_filename}."
+            )
+
         RE.subscribe(specwriter.receiver)
         logger.info(f"writing to SPEC file: {specwriter.spec_filename.resolve()}")
         logger.info("   >>>>   Using default SPEC file name   <<<<")

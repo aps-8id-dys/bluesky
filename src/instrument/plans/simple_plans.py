@@ -17,16 +17,16 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide
+from ..devices.filters_8id import filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
-# from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
-from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 EMPTY_DICT = {}  # Defined as symbol to pass the style checks.
@@ -74,9 +74,9 @@ def create_run_metadata_dict(det=None,
     md["sl4_v_size"] = sl4.v.size.position
     md["sl4_v_center"] = sl4.v.center.position
 
-    # md["qnw1_temp"] = qnw_env1.readback.get()
-    # md["qnw2_temp"] = qnw_env2.readback.get()
-    # md["qnw3_temp"] = qnw_env3.readback.get()
+    md["qnw1_temp"] = qnw_env1.readback.get()
+    md["qnw2_temp"] = qnw_env2.readback.get()
+    md["qnw3_temp"] = qnw_env3.readback.get()
     return md
 
 
@@ -263,8 +263,10 @@ def eiger_acq_int_series(det=eiger4M,
                          ):
     acq_time = acq_period
 
-    yield from bps.mv(filter_8ide.atten_index, att_level)
-    yield from bps.sleep(3)
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
 
     # yield from post_align()
     yield from shutteroff()
@@ -283,6 +285,7 @@ def eiger_acq_int_series(det=eiger4M,
         y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
@@ -294,7 +297,8 @@ def eiger_acq_int_series(det=eiger4M,
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
     for ii in range(num_rep):
-        pos_index = np.mod(sam_pos, x_pts * y_pts)
+
+        pos_index = np.mod(sam_pos+ii, x_pts * y_pts)
 
         try:
             if sample_move:
@@ -338,7 +342,6 @@ def eiger_acq_int_series(det=eiger4M,
             pass
 
 
-
 def eiger_acq_ext_trig(
     det=eiger4M,
     acq_time=1,
@@ -349,7 +352,10 @@ def eiger_acq_ext_trig(
     sample_move=False,
 ):
 
-    yield from bps.mv(filter_8ide.atten_index, att_level)
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
 
     # yield from post_align()
     yield from shutteron()
@@ -371,6 +377,7 @@ def eiger_acq_ext_trig(
         y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
@@ -382,8 +389,7 @@ def eiger_acq_ext_trig(
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
     for ii in range(num_rep):
-        pos_index = np.mod(sam_pos, x_pts * y_pts)
-        pos_index = pos_index + ii + 1
+        pos_index = np.mod(sam_pos+ii, x_pts * y_pts)
 
         try:
             if sample_move:
@@ -408,6 +414,102 @@ def eiger_acq_ext_trig(
         md = create_run_metadata_dict(det)
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         yield from simple_acquire_ext_trig(det, md)
+
+        try:
+            qmap_file_run = pv_registers.qmap_file.get()
+            experiment_name_run = pv_registers.experiment_name.get()
+            analysisMachine_run = pv_registers.analysis_machine.get()
+
+            yield from kickoff_dm_workflow(
+                experiment_name=experiment_name_run,
+                file_name=f"{filename}.h5",
+                qmap_file=qmap_file_run,
+                run=cat[-1],
+                analysisMachine=analysisMachine_run,
+            )
+        except Exception as e:
+            print(f"Error occurred in DM Workflow: {e}")
+        finally:
+            pass
+
+
+def eiger_acq_flyscan(det=eiger4M, 
+                         acq_period=1, 
+                         num_frame=10, 
+                         num_rep=3, 
+                         att_level=0, 
+                         sample_move=False,
+                         flyspeed=0.1
+                         ):
+    acq_time = acq_period
+
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
+    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.sleep(5)
+
+    # yield from post_align()
+    yield from shutteroff()
+
+    (
+        header_name,
+        meas_num,
+        qnw_index,
+        temp,
+        sample_name,
+        x_cen,
+        y_cen,
+        x_radius,
+        y_radius,
+        x_pts,
+        y_pts,
+    ) = sort_qnw()
+    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+    # yield from bps.mv(pv_registers.sample_name, sample_name)
+    sample_name = pv_registers.sample_name.get()
+
+    temp_name = int(temp * 10)
+
+    sample_pos_register = pv_registers.sample_position_register(qnw_index)
+    sam_pos = int(sample_pos_register.get())
+
+    samx_list = np.linspace(x_cen - x_radius, x_cen + x_radius, num=x_pts)
+    samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
+
+    for ii in range(num_rep):
+        pos_index = np.mod(sam_pos, x_pts * y_pts)
+
+        try:
+            if sample_move:
+                x_pos = samx_list[np.mod(pos_index, x_pts)]
+                y_pos = samy_list[int(np.floor(pos_index / y_pts))]
+                yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
+                yield from bps.mv(sample_pos_register, pos_index)
+            else:
+                pass
+        except Exception as e:
+            print(f"Error occurred in sample motion: {e}")
+        finally:
+            pass
+
+        flyspeed_um = int(flyspeed*1e3)
+        filename = f"{header_name}_{sample_name}_fs{flyspeed_um:04d}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+
+        yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
+
+        md = create_run_metadata_dict(det)
+        # (uid,) = yield from simple_acquire_ext_trig(det, md)
+        extra_acq_time = 1.0
+        total_travel = flyspeed*(acq_period*num_frame+extra_acq_time)
+        yield from showbeam()
+        yield from bps.sleep(0.1)
+        yield from bps.mv(sample.y.velocity, flyspeed)
+        yield from bps.mvr(sample.y.user_setpoint, total_travel)
+        yield from simple_acquire_int_series(det, md)
+        yield from blockbeam()
+        yield from bps.sleep(1)
+        yield from bps.mv(sample.y.velocity, 5)
+        yield from bps.mvr(sample.y, -total_travel)
 
         try:
             qmap_file_run = pv_registers.qmap_file.get()
