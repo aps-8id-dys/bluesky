@@ -17,7 +17,7 @@ from .mesh_plans import xpcs_mesh
 from .qnw_plans import set_qnw
 # from .qnw_vac_plans import set_qnw_vac
 
-# from .select_sample_env import select_sample_env
+from .select_sample_env import select_sample_env
 from .select_sample import select_sample, sort_qnw
 
 from .simple_plans import create_run_metadata_dict
@@ -45,4 +45,7 @@ from .shutter_logic import shutteroff
 from .scan_8idi import x_lup
 from .scan_8idi import y_lup
 from .scan_8idi import rheo_x_lup
+from .scan_8idi import rheo_set_x_lup
 
+from .rheometer_wait import wait_for_mcr
+from .move_sample import mesh_grid_move

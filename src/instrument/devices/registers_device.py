@@ -20,10 +20,12 @@ class EpicsPvStorageRegisters(Device):
     cycle_name = Component(EpicsSignal, "StrReg8", string=True)
     sample_name = Component(EpicsSignal, "StrReg9", string=True)
     spec_file = Component(EpicsSignal, "StrReg10", string=True)
+    analysis_type = Component(EpicsSignal, "StrReg11", string=True)
 
     measurement_num = Component(EpicsSignal, "Reg1")
     qnw_index = Component(EpicsSignal, "Reg2")
 
+    sample0_pos = Component(EpicsSignal, "Reg3")
     sample1_pos = Component(EpicsSignal, "Reg4")
     sample2_pos = Component(EpicsSignal, "Reg5")
     sample3_pos = Component(EpicsSignal, "Reg6")

@@ -28,6 +28,7 @@ from .damm import damm
 from .fl import fl2, fl3
 from .flag_4 import flag4
 from .granite import granite
+from .granite_enable import granite_8idi_valve
 from .hhl_mirrors import mr1, mr2
 from .hhl_slits import wb_slit, mono_slit
 from .idt_mono import idt_mono
@@ -50,6 +51,7 @@ from .xbpm2_in_8ide import xbpm2
 from .win import win_e, win_i
 from .func_gen import dpKeysight
 from .huber_diffractometer import huber
+from .rheometer_wait_signal import mcr_wait_signal
 
 
 ## Beamline Area Detectors

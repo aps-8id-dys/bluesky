@@ -7,6 +7,7 @@ import warnings
 import epics as pe
 import numpy as np
 import h5py 
+import datetime
 
 warnings.filterwarnings("ignore")
 
@@ -17,9 +18,9 @@ from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8idi
+from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample
+from ..devices.aerotech_stages import sample, rheometer
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
@@ -69,6 +70,9 @@ def create_run_metadata_dict(det=None,
     md["sample_x"] = sample.x.position
     md["sample_y"] = sample.y.position
     md["sample_z"] = sample.z.position
+    md["rheometer_x"] = rheometer.x.position
+    md["rheometer_y"] = rheometer.y.position
+    md["rheometer_z"] = rheometer.z.position
     md["sl4_h_size"] = sl4.h.size.position
     md["sl4_h_center"] = sl4.h.center.position
     md["sl4_v_size"] = sl4.v.size.position
@@ -77,6 +81,9 @@ def create_run_metadata_dict(det=None,
     md["qnw1_temp"] = qnw_env1.readback.get()
     md["qnw2_temp"] = qnw_env2.readback.get()
     md["qnw3_temp"] = qnw_env3.readback.get()
+
+    md["att_8ide"] = filter_8ide.attenuation_readback.get()
+    md["att_8idi"] = filter_8idi.attenuation_readback.get()
     return md
 
 
@@ -204,6 +211,7 @@ def kickoff_dm_workflow(
     qmap_file,
     run,
     analysisMachine,
+    analysis_type
 ):
     """Start a DM workflow for this bluesky run."""
     # oregistry.auto_register = False  # Ignore re-creations of this device.
@@ -226,7 +234,7 @@ def kickoff_dm_workflow(
         endFrame=-1,
         strideFrame=1,
         avgFrame=1,
-        type="Multitau",
+        type=analysis_type,
         dq="all",
         verbose=False,
         saveG2=False,
@@ -259,13 +267,13 @@ def eiger_acq_int_series(det=eiger4M,
                          num_frame=10, 
                          num_rep=3, 
                          att_level=0, 
-                         sample_move=False
+                         sample_move=False,
                          ):
     acq_time = acq_period
 
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
 
     # yield from post_align()
@@ -313,7 +321,8 @@ def eiger_acq_int_series(det=eiger4M,
         finally:
             pass
 
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
 
@@ -328,6 +337,7 @@ def eiger_acq_int_series(det=eiger4M,
             qmap_file_run = pv_registers.qmap_file.get()
             experiment_name_run = pv_registers.experiment_name.get()
             analysisMachine_run = pv_registers.analysis_machine.get()
+            analysis_type_run = pv_registers.analysis_type.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
@@ -335,6 +345,7 @@ def eiger_acq_int_series(det=eiger4M,
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")
@@ -352,9 +363,9 @@ def eiger_acq_ext_trig(
     sample_move=False,
 ):
 
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
 
     # yield from post_align()
@@ -407,7 +418,8 @@ def eiger_acq_ext_trig(
         finally:
             pass
 
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
 
@@ -419,6 +431,7 @@ def eiger_acq_ext_trig(
             qmap_file_run = pv_registers.qmap_file.get()
             experiment_name_run = pv_registers.experiment_name.get()
             analysisMachine_run = pv_registers.analysis_machine.get()
+            analysis_type_run = pv_registers.analysis_type.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
@@ -426,6 +439,7 @@ def eiger_acq_ext_trig(
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")
@@ -443,9 +457,9 @@ def eiger_acq_flyscan(det=eiger4M,
                          ):
     acq_time = acq_period
 
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
-    yield from bps.mv(filter_8idi.atten_index, att_level)
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
 
     # yield from post_align()
@@ -515,6 +529,7 @@ def eiger_acq_flyscan(det=eiger4M,
             qmap_file_run = pv_registers.qmap_file.get()
             experiment_name_run = pv_registers.experiment_name.get()
             analysisMachine_run = pv_registers.analysis_machine.get()
+            analysis_type_run = pv_registers.analysis_type.get()
 
             yield from kickoff_dm_workflow(
                 experiment_name=experiment_name_run,
@@ -522,6 +537,7 @@ def eiger_acq_flyscan(det=eiger4M,
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")
