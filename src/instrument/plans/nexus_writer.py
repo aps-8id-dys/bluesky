@@ -48,7 +48,8 @@ def create_run_metadata_dict(det=eiger4M):
     md["detector_y"] = detector.y.position
     md["count_time"] = det.cam.acquire_time.get()
     md["frame_time"] = det.cam.acquire_period.get()
-    md["nexus_fullname"] = pv_registers.metadata_full_path.get()
+    # md["nexus_fullname"] = pv_registers.metadata_full_path.get()
+    md["nexus_fullname"] = '/home/8-id-i/2025-1/bluesky_metadata_test/A001_001/A001_001.hdf'
     md["file_name"] = pv_registers.file_name.get()
     md["file_path"] = pv_registers.file_path.get()
     md["sample_x"] = sample.x.position
@@ -68,18 +69,26 @@ def write_nexus_file(md):
 
         nxinstrument = nxentry.create_group("instrument")
         nxinstrument.attrs["NX_Class"]="NXinstrument"
-        
-        nxbluesky = nxinstrument.create_group("bluesky")
-        nxbluesky.attrs["NX_Class"] = "NXnote"
-
-        nxmetadata = nxbluesky.create_group("metadata")
-        nxmetadata.attrs["NX_Class"] = "NXnote"
                 
         nxdetector = nxinstrument.create_group("detector")
         nxdetector.attrs["NX_Class"] = "NXdetector"
+        ds_count_time = nxdetector.create_dataset('count_time', data=md['count_time'])
+        ds_count_time.attrs["units"] = 'second'
+        ds_frame_time = nxdetector.create_dataset('frame_time', data=md['count_time'])
+        ds_frame_time.attrs["units"] = 'second'
+        ds_beam_center_x = nxdetector.create_dataset('beam_center_x', data=md['count_time'])
+        ds_beam_center_x.attrs["units"] = 'None'
+        ds_beam_center_y = nxdetector.create_dataset('beam_center_y', data=md['count_time'])
+        ds_beam_center_y.attrs["units"] = 'None'
+        ds_detector_x_direct_beam = nxdetector.create_dataset('detector_x_direct_beam', data=md['count_time'])
+        ds_detector_x_direct_beam.attrs["units"] = 'mm'
+        ds_detector_y_direct_beam = nxdetector.create_dataset('detector_y_direct_beam', data=md['count_time'])
+        ds_detector_y_direct_beam.attrs["units"] = 'mm'
 
         nxmonochromator = nxinstrument.create_group("monochromator")
         nxmonochromator.attrs["NX_Class"] = "NXmonochromator"
+        ds_energy = nxmonochromator.create_dataset('energy', data=md['energy'])
+        ds_energy.attrs["units"] = 'kev'
 
         nxsample_x = nxinstrument.create_group("sample_x")
         nxsample_x.attrs["NX_Class"] = "NXpositioner"
@@ -92,9 +101,13 @@ def write_nexus_file(md):
 
         nxdetector_x = nxinstrument.create_group("detector_x")
         nxdetector_x.attrs["NX_Class"] = "NXpositioner"
-
+        ds_detx_position = nxdetector_x.create_dataset('position', data = md["detector_x"])
+        ds_detx_position.attrs["units"] = 'mm'
+        
         nxdetector_y = nxinstrument.create_group("detector_y")
         nxdetector_y.attrs["NX_Class"] = "NXpositioner"
+        ds_dety_position = nxdetector_y.create_dataset('position', data = md["detector_y"])
+        ds_dety_position.attrs["units"] = 'mm'
 
         nxqnw_1 = nxinstrument.create_group("qnw_1")
         nxqnw_1.attrs["NX_Class"] = "NXenvironment"  
@@ -139,53 +152,55 @@ def write_nexus_file(md):
         nxcrl_1.attrs["NX_Class"] = "NXxraylens"     
 
         nxcrl_2 = nxinstrument.create_group("crl_2")
-        nxcrl_2.attrs["NX_Class"] = "NXxraylens"      
+        nxcrl_2.attrs["NX_Class"] = "NXxraylens"    
 
-        # Devices not yet implemented
-        # hf["/entry/instrument/sample"].attrs["NX_class"] = "NXsample"
-        # hf["/entry/instrument/slits"].attrs["NX_class"] = "NXslit"
+        si5 = nxinstrument.create_group("si5")
+        si5.attrs["NX_Class"] = "NXslit"  
+
+        qnw_sam1 = nxinstrument.create_group("qnw_sam1")
+        qnw_sam1.attrs["NX_Class"] = "NXsample"     
 
         # All undefined variables go into bluesky metadata
-        hf.create_dataset('/entry/instrument/bluesky/metadata/absolute_cross_section_scale', 
-                          data=md["absolute_cross_section_scale"])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/detector_x_direct_beam', 
-                          data=md['detector_x_direct_beam'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/detector_y_direct_beam', 
-                          data=md['detector_y_direct_beam'])    
-        hf.create_dataset('/entry/instrument/bluesky/metadata/beamline_id', 
-                          data=md['beamline_id'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/concise', data=md['concise'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/conda_prefix', data=md['conda_prefix'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/cycle', data=md['cycle'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/data_management', data=md['data_management'])
-        hf.create_dataset('/entry/instrument/bluesky/metadata/databroker_catalog', data=md['databroker_catalog'])
+        nxbluesky = nxinstrument.create_group("bluesky")
+        nxbluesky.attrs["NX_Class"] = "NXnote"
 
-        # # Mono, NXmonochromator
-        hf.create_dataset('/entry/instrument/monochromator/energy', data=md['energy'])
+        nxmetadata = nxbluesky.create_group("metadata")
+        nxmetadata.attrs["NX_Class"] = "NXnote"
+        ds_absolute_cross_section_scale = nxmetadata.create_dataset('absolute_cross_section_scale', data = md["absolute_cross_section_scale"])
+        ds_absolute_cross_section_scale.attrs["units"] = 'cm-1'
+        ds_detector_x_direct_beam = nxmetadata.create_dataset('detector_x_direct_beam', data = md["detector_x_direct_beam"])
+        ds_detector_x_direct_beam.attrs["units"] = 'None'
+        ds_detector_y_direct_beam = nxmetadata.create_dataset('detector_y_direct_beam',
+                                                data = md["detector_y_direct_beam"])
+        ds_detector_y_direct_beam.attrs["units"] = 'None'
+        ds_beamline_id = nxmetadata.create_dataset('beamline_id', data = md["beamline_id"])
+        ds_beamline_id.attrs["units"] = 'None'
+        ds_concise = nxmetadata.create_dataset('concise', data = md["beamline_id"])
+        ds_concise.attrs["units"] = 'None'
+        ds_conda_prefix = nxmetadata.create_dataset('conda_prefix', data = md["conda_prefix"])
+        ds_conda_prefix.attrs["units"] = 'None'
+        ds_cycle = nxmetadata.create_dataset('cycle', data = md["cycle"])
+        ds_cycle.attrs["units"] = 'None'
+        ds_data_management = nxmetadata.create_dataset('data_management', data = md["cycle"])
+        ds_data_management.attrs["units"] = 'None'
+        ds_databroker_catalog = nxmetadata.create_dataset('databroker_catalog', data = md["cycle"])
+        ds_databroker_catalog.attrs["units"] = 'None'
 
-        # # Ion chambers, NXmonitor.
-        hf.create_dataset('/entry/instrument/upstream_IC/nominal', data=md['I0'])
-        hf.create_dataset('/entry/instrument/downstream_IC/nominal', data=md['I1'])  
+        # # # Ion chambers, NXmonitor.
+        # hf.create_dataset('/entry/instrument/upstream_IC/nominal', data=md['I0'])
+        # hf.create_dataset('/entry/instrument/downstream_IC/nominal', data=md['I1'])  
 
-        # # Motors, NXpositioner
-        hf.create_dataset('/entry/instrument/sample_x/position', data=md['sample_x'])
-        hf.create_dataset('/entry/instrument/sample_y/position', data=md['sample_y'])
-        hf.create_dataset('/entry/instrument/sample_z/position', data=md['sample_z'])
-        hf.create_dataset('/entry/instrument/detector_x/position', data=md['detector_x'])
-        hf.create_dataset('/entry/instrument/detector_y/position', data=md['detector_y'])
+        # # # Motors, NXpositioner
+        # hf.create_dataset('/entry/instrument/sample_x/position', data=md['sample_x'])
+        # hf.create_dataset('/entry/instrument/sample_y/position', data=md['sample_y'])
+        # hf.create_dataset('/entry/instrument/sample_z/position', data=md['sample_z'])
+        # hf.create_dataset('/entry/instrument/detector_x/position', data=md['detector_x'])
+        # hf.create_dataset('/entry/instrument/detector_y/position', data=md['detector_y'])
 
-        # # Temperature control, NXenvironment
-        hf.create_dataset('/entry/instrument/qnw1/readback_temp', data=md['qnw1_temp'])
-        hf.create_dataset('/entry/instrument/qnw2/readback_temp', data=md['qnw2_temp'])
-        hf.create_dataset('/entry/instrument/qnw3/readback_temp', data=md['qnw3_temp'])     
-
-        # Detector (just Eiger for now), NXdetector
-        hf.create_dataset('/entry/instrument/detector/count_time', data=md['count_time'])
-        hf.create_dataset('/entry/instrument/detector/frame_time', data=md['frame_time'])
-        hf.create_dataset('/entry/instrument/detector/beam_center_x', data=md['beam_center_x'])
-        hf.create_dataset('/entry/instrument/detector/beam_center_y', data=md['beam_center_y'])
-        hf.create_dataset('/entry/instrument/detector/detector_x_direct_beam', data=md['detector_x_direct_beam'])
-        hf.create_dataset('/entry/instrument/detector/detector_y_direct_beam', data=md['detector_y_direct_beam'])
+        # # # Temperature control, NXenvironment
+        # hf.create_dataset('/entry/instrument/qnw1/readback_temp', data=md['qnw1_temp'])
+        # hf.create_dataset('/entry/instrument/qnw2/readback_temp', data=md['qnw2_temp'])
+        # hf.create_dataset('/entry/instrument/qnw3/readback_temp', data=md['qnw3_temp'])     
 
 
 # /entry/instrument/bluesky/metadata/datetime Dataset {SCALAR}
