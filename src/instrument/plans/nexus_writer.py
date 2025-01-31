@@ -48,6 +48,7 @@ def create_run_metadata_dict(det=eiger4M):
     md["detector_y"] = detector.y.position
     md["count_time"] = det.cam.acquire_time.get()
     md["frame_time"] = det.cam.acquire_period.get()
+    md["sam_det_dist"] = 12000
     # md["nexus_fullname"] = pv_registers.metadata_full_path.get()
     md["nexus_fullname"] = '/home/8-id-i/2025-1/bluesky_metadata_test/A001_001/A001_001.hdf'
     md["file_name"] = pv_registers.file_name.get()
@@ -84,6 +85,8 @@ def write_nexus_file(md):
         ds_detector_x_direct_beam.attrs["units"] = 'mm'
         ds_detector_y_direct_beam = nxdetector.create_dataset('detector_y_direct_beam', data=md['count_time'])
         ds_detector_y_direct_beam.attrs["units"] = 'mm'
+        ds_detector_distance = nxdetector.create_dataset('distance', data=md['sam_det_dist'])
+        ds_detector_distance.attrs["units"] = 'mm'
 
         nxmonochromator = nxinstrument.create_group("monochromator")
         nxmonochromator.attrs["NX_Class"] = "NXmonochromator"
