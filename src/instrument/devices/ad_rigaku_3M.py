@@ -15,7 +15,7 @@ logger.info(__file__)
 
 
 # rigaku3M = None  # TODO: IOC is still in development
-rigaku3M = XpcsAreaDetectorFactory("RIGAKU_3M", use_image=False)
+rigaku3M = XpcsAreaDetectorFactory("RIGAKU_3M", use_hdf=False, use_image=False)
 
 # # Remove any stage_sigs here
 # rigaku3M.cam.stage_sigs.pop("wait_for_plugins", None)

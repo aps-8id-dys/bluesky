@@ -135,8 +135,10 @@ class Rigaku3MCam(CamBase_V34):
     )
 
     # sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
-    fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
-    fast_file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True)
+    # fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
+    # fast_file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True)
+    file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
+    file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True)
     image_mode = ADComponent(EpicsSignalWithRBV, "ImageMode", string=True)
     output_resolution = ADComponent(EpicsSignalWithRBV, "OutputResolution", string=True)
     dual_threshold = ADComponent(EpicsSignal, "DualThreshold")
@@ -154,8 +156,8 @@ class Rigaku3MCam(CamBase_V34):
         # kind attribute must be set after Components are initialized
         attrs = """
             dual_threshold
-            fast_file_name
-            fast_file_path
+            file_name
+            file_path
             image_mode
             lower_threshold
             output_control
@@ -278,6 +280,7 @@ def XpcsAD_factory(
     write_path,
     read_path,
     labels=("area_detector",),
+    use_hdf=True,
     use_image=True,
     use_overlay=True,
     use_process=True,
@@ -320,13 +323,14 @@ def XpcsAD_factory(
             image = ADComponent(XpcsAD_ImagePlugin, "image1:")
 
         # In the AD IOC, codec1 --> hdf1 & pva
-        hdf1 = ADComponent(
-            XpcsAD_EpicsFileNameHDF5Plugin,
-            "HDF1:",
-            write_path_template=f"{PurePath(write_path)}/",
-            read_path_template=f"{PurePath(read_path)}/",
-            kind="normal",
-        )
+        if use_hdf:
+            hdf1 = ADComponent(
+                XpcsAD_EpicsFileNameHDF5Plugin,
+                "HDF1:",
+                write_path_template=f"{PurePath(write_path)}/",
+                read_path_template=f"{PurePath(read_path)}/",
+                kind="normal",
+            )
         if use_pva:
             pva = ADComponent(XpcsAD_PvaPlugin, "Pva1:")
 
@@ -376,13 +380,14 @@ def XpcsAD_factory(
             if "blocking_callbacks" in dir(obj):  # is it a plugin?
                 obj.stage_sigs["blocking_callbacks"] = "No"
 
-        plugin = det.hdf1  # for convenience below
-        plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
-        plugin.stage_sigs.move_to_end("capture", last=True)
+        if use_hdf:
+            plugin = det.hdf1  # for convenience below
+            plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
+            plugin.stage_sigs.move_to_end("capture", last=True)
 
-        if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
-            if det.connected:
-                if not AD_plugin_primed(plugin):
-                    AD_prime_plugin2(plugin)
+            if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
+                if det.connected:
+                    if not AD_plugin_primed(plugin):
+                        AD_prime_plugin2(plugin)
 
     return det
