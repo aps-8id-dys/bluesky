@@ -11,6 +11,7 @@ from ..devices.aerotech_stages import sample, detector
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ..devices.lakeshore import lakeshore1, lakeshore2
 from .APS8IDI_xpcs_schema import xpcs_schema
 from .APS8IDI_default_metadata import default_metadata
 
@@ -144,6 +145,7 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/sample/position_x": sample.x.position,
         "/entry/sample/position_y": sample.y.position,
         "/entry/sample/position_z": sample.z.position,
+        "/entry/sample/qnw_lakeshore": lakeshore1.readback_ch3.get(),
         "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),
         "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),
         "/entry/sample/qnw2_temperature": qnw_env2.readback.get(),

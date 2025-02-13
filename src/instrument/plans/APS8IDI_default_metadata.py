@@ -61,6 +61,7 @@ default_metadata = {
     "/entry/sample/position_x": 1.0,
     "/entry/sample/position_y": 1.0,
     "/entry/sample/position_z": 1.0,
+    "/entry/sample/qnw_lakeshore": 1.0,
     "/entry/sample/qnw1_temperature": 1.0,
     "/entry/sample/qnw1_temperature_set": 1.0,
     "/entry/sample/qnw2_temperature": 1.0,

@@ -26,11 +26,10 @@ from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
 from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
 from .nexus_utils import create_nexus_format_metadata
+from .move_sample import mesh_grid_move
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
-from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
-from dm.common.utility.configurationManager import ConfigurationManager
 
-def setup_eiger_int_series_test(acq_time, acq_period, num_frames, file_name):
+def setup_eiger_int_series(acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
@@ -50,19 +49,13 @@ def setup_eiger_int_series_test(acq_time, acq_period, num_frames, file_name):
     yield from bps.mv(pv_registers.file_path, file_path)
     yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
 
-def eiger_acq_int_series_test(acq_period=1, 
+
+def eiger_acq_int_series(acq_period=1, 
                          num_frame=10, 
                          num_rep=3, 
                          att_level=0, 
                          sample_move=False,
-                         process=False
                          ):
-    if process:
-        configManager = ConfigurationManager.getInstance()  # Object that tracks beamline-specific configuration
-        dmuser, password = configManager.parseLoginFile()
-        serviceUrl = configManager.getProcWebServiceUrl()
-        workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) # user/password/url info passed to DM API
-    
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -76,17 +69,23 @@ def eiger_acq_int_series_test(acq_period=1,
     (header_name, meas_num, qnw_index, temp, sample_name, 
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
+
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    # yield from bps.mv(pv_registers.sample_name, sample_name)
-    sample_name = pv_registers.sample_name.get()
+    yield from bps.mv(pv_registers.sample_name, sample_name)
+    # sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
 
     for ii in range(num_rep):
 
+        if sample_move is True:
+            mesh_grid_move(qnw_index, x_cen, y_cen, x_radius, y_radius, x_pts, y_pts)
+        else:
+            pass
+
         filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
-        yield from setup_eiger_int_series_test(acq_time, acq_period, num_frame, filename)
+        yield from setup_eiger_int_series(acq_time, acq_period, num_frame, filename)
 
         yield from showbeam()
         yield from bps.sleep(0.1)
@@ -95,10 +94,6 @@ def eiger_acq_int_series_test(acq_period=1,
 
         metadata_fname = pv_registers.metadata_full_path.get()
         create_nexus_format_metadata(metadata_fname, det=eiger4M)
-        if process:
-            exp_name = pv_registers.experiment_name.get()
-            qmap_file = pv_registers.qmap_file.get()
-            workflow_name = pv_registers.qmap_file.get()
-            argsDict = {"experimentName": exp_name, "filePath": f"{filename}.h5", "qmap": f"{qmap_file}"}
-            job = workflowProcApi.startProcessingJob(dmuser, "xpcs8-boost-corr-bin", argsDict=argsDict)
-            print(f"Job {job['id']} processing {filename}")
+
+
+

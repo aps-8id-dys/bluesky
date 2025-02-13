@@ -597,6 +597,13 @@ xpcs_schema = {
                 "units": "NX_LENGTH",
                 "data": 1.0
             },
+            "qnw_lakeshore": {
+                "type": "NX_NUMBER", 
+                "units": "NX_TEMPERATURE", 
+                "required": False,
+                "description": "backup temperature reading from lakeshore for qnw",
+                "data": 1.0
+            },
             "qnw1_temperature": {
                 "type": "NX_NUMBER", 
                 "units": "NX_TEMPERATURE", 

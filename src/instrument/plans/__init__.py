@@ -36,13 +36,15 @@ from .select_sample import select_sample, sort_qnw
 # from .simple_plans_rigaku import simple_acquire_ZDT
 # from .simple_plans_rigaku import rigaku_acq_ZDT
 
+# from .nexus_acq_eiger_int import setup_eiger_int_series
+# from .nexus_acq_eiger_int import eiger_acq_int_series
+
 from .nexus_acq_eiger_int import setup_eiger_int_series
 from .nexus_acq_eiger_int import eiger_acq_int_series
-from .nexus_acq_eiger_int_hparraga import setup_eiger_int_series_test
-from .nexus_acq_eiger_int_hparraga import eiger_acq_int_series_test
+from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
+from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 
 from .nexus_writer import create_run_metadata_dict
-
 from .nexus_writer import write_nexus_file
 
 from .shutter_logic import pre_align
