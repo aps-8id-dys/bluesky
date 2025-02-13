@@ -16,7 +16,7 @@ import bluesky.plan_stubs as bps
 import epics as pe
 
 from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample
+from ..devices.aerotech_stages import sample, rheometer
 from ..devices.registers_device import pv_registers
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from ..devices.qnw_vac_device import qnw_vac1
@@ -25,9 +25,9 @@ from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 
 
 def select_sample(env: int):
-    yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
-    yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
-    yield from bps.mv(eiger4M.cam.num_images, 1)
+    # yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
+    # yield from bps.mv(eiger4M.cam.acquire_period, 0.1)
+    # yield from bps.mv(eiger4M.cam.num_images, 1)
 
     with open("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json", "r") as f:
         loaded_dict = json.load(f)

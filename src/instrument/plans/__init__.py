@@ -13,7 +13,6 @@ Custom Plan Definitions & Instatiations
 # sanity check plans
 from .demo_hello_world import hello_world
 from .demo_sim_1d import demo_sim_1d
-from .mesh_plans import xpcs_mesh
 from .qnw_plans import set_qnw
 # from .qnw_vac_plans import set_qnw_vac
 
@@ -39,6 +38,8 @@ from .select_sample import select_sample, sort_qnw
 
 from .nexus_acq_eiger_int import setup_eiger_int_series
 from .nexus_acq_eiger_int import eiger_acq_int_series
+from .nexus_acq_eiger_int_hparraga import setup_eiger_int_series_test
+from .nexus_acq_eiger_int_hparraga import eiger_acq_int_series_test
 
 from .nexus_writer import create_run_metadata_dict
 
