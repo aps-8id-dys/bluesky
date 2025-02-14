@@ -47,6 +47,8 @@ from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 from .nexus_writer import create_run_metadata_dict
 from .nexus_writer import write_nexus_file
 
+from .move_sample import mesh_grid_move
+
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
 from .shutter_logic import showbeam

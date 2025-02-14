@@ -26,6 +26,7 @@ from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
 from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
 from .nexus_utils import create_nexus_format_metadata
+from .move_sample import mesh_grid_move
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from dm.common.utility.configurationManager import ConfigurationManager
@@ -86,7 +87,10 @@ def eiger_acq_int_series(acq_period=1,
 
     for ii in range(num_rep):
 
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
+        if sample_move:
+            yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
+
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
 
         yield from setup_eiger_int_series(acq_time, acq_period, num_frame, filename)
 

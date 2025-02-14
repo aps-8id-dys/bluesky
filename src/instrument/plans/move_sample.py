@@ -15,7 +15,6 @@ def mesh_grid_move(
     y_radius,
     y_pts 
 ):
-
     sample_pos_register = pv_registers.sample_position_register(sam_index)
     sam_pos = int(sample_pos_register.get())
     
@@ -30,6 +29,7 @@ def mesh_grid_move(
         yield from bps.mv(rheometer.x, x_pos, rheometer.y, y_pos)
     elif sam_index >=1 and sam_index<=27:
         yield from bps.mv(sample.x, x_pos, sample.y, y_pos)
+        print(x_pos, y_pos)
     else:
         pass
 
