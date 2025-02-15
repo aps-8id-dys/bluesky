@@ -90,6 +90,9 @@ def rigaku_acq_ZDT_series(acq_period=1,
 
         for ii in range(num_rep):
 
+            if sample_move:
+                yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
+
             filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
 
             yield from setup_rigaku_ZDT_series(acq_time, acq_period, num_frame, filename)
