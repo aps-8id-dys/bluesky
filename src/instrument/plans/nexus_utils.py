@@ -12,6 +12,7 @@ from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 from ..devices.lakeshore import lakeshore1, lakeshore2
+from ..devices.tetramm_picoammeter import tetramm1
 from .APS8IDI_xpcs_schema import xpcs_schema
 from .APS8IDI_default_metadata import default_metadata
 
@@ -141,7 +142,8 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
     
         "/entry/instrument/incident_beam/incident_energy": 12.0,    # fixme later
         "/entry/instrument/incident_beam/incident_energy_spread": 0.0001,   # fixme later
-    
+        "/entry/instrument/incident_beam/incident_beam_intensity": tetramm1.current1.mean_value.get(),
+        
         "/entry/sample/position_x": sample.x.position,
         "/entry/sample/position_y": sample.y.position,
         "/entry/sample/position_z": sample.z.position,

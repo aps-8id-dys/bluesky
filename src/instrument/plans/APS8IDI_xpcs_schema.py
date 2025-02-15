@@ -228,46 +228,6 @@ xpcs_schema = {
                     "data": 0.0
                 },
             },
-            "masks": {
-                "type": "NXnote",
-                "required": False,
-                "description": "Data masks or mappings to regions of interest (roi) for specific Q",
-                "dynamic_phi_list": {
-                    "type": "NX_NUMBER", 
-                    "units": "NX_PER_LENGTH", 
-                    "required": False,
-                    "description": "Array of φ value for each pixel",
-                    "data": np.zeros((2, 3))
-                },
-                "dynamic_q_list": {
-                    "type": "NX_NUMBER", 
-                    "units": "NX_PER_LENGTH", 
-                    "required": False,
-                    "description": "1-D list of Q values, one for each roi index value",
-                    "data": np.zeros((2, 3))
-                },
-                "dynamic_roi_map": {
-                    "type": "NX_NUMBER", 
-                    "units": "NX_DIMENSIONLESS", 
-                    "required": True,
-                    "description": "roi index array or labeled array",
-                    "data": np.zeros((2, 3))
-                },
-                "static_q_list": {
-                    "type": "NX_NUMBER", 
-                    "units": "NX_PER_LENGTH", 
-                    "required": False,
-                    "description": "1-D list of values, 1 for each roi",
-                    "data": np.zeros((2, 3))
-                },
-                "static_roi_map": {
-                    "type": "NX_NUMBER", 
-                    "units": "NX_DIMENSIONLESS", 
-                    "required": False,
-                    "description": "roi index array",
-                    "data": np.zeros((2, 3))
-                }
-            },
             "undulator_1": {
                 "type": "NXinsertion_device",
                 "required": False,

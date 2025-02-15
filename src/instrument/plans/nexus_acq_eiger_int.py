@@ -69,9 +69,9 @@ def eiger_acq_int_series(acq_period=1,
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    # yield from bps.sleep(5)
+    yield from bps.sleep(2)
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    # yield from bps.sleep(5)
+    yield from bps.sleep(2)
 
     # yield from post_align()
     yield from shutteroff()
@@ -80,7 +80,7 @@ def eiger_acq_int_series(acq_period=1,
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    # yield from bps.mv(pv_registers.sample_name, sample_name)
+    yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
     temp_name = int(temp * 10)
@@ -112,6 +112,7 @@ def eiger_acq_int_series(acq_period=1,
                         "filePath": f"{filename}.h5", 
                         "qmap": f"{qmap_file}",
                         "analysisMachine": f"{analysis_machine}",
+                        "gpuID": -2
                         }
             job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
             print(f"Job {job['id']} processing {filename}")

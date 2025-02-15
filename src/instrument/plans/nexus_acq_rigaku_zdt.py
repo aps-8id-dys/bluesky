@@ -8,6 +8,7 @@ import epics as pe
 import numpy as np
 import h5py 
 import datetime
+import os
 
 warnings.filterwarnings("ignore")
 
@@ -40,13 +41,16 @@ def setup_rigaku_ZDT_series(acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(rigaku3M.cam.acquire_time, acq_time)
     yield from bps.mv(rigaku3M.cam.acquire_period, acq_period)
-    yield from bps.mv(rigaku3M.cam.file_name, file_name)
+    yield from bps.mv(rigaku3M.cam.file_name, f"{file_name}.bin")
     yield from bps.mv(rigaku3M.cam.file_path, file_path)
     yield from bps.mv(rigaku3M.cam.num_images, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
-    yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
+    yield from bps.mv(pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}")
+    yield from bps.mv(pv_registers.metadata_full_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf")
+
+    os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
+
 
 def rigaku_acq_ZDT_series(acq_period=1, 
                          num_frame=10, 
@@ -56,56 +60,66 @@ def rigaku_acq_ZDT_series(acq_period=1,
                          process=False
                          ):
     
-    # Setup DM analysis
-    if process:
-        configManager = ConfigurationManager.getInstance()  # Object that tracks beamline-specific configuration
-        dmuser, password = configManager.parseLoginFile()
-        serviceUrl = configManager.getProcWebServiceUrl()
-        workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) # user/password/url info passed to DM API
-    
-    acq_time = acq_period
+    try:
 
-    yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    # yield from bps.sleep(5)
-    yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    # yield from bps.sleep(5)
-
-    # yield from post_align()
-    yield from shutteroff()
-
-    (header_name, meas_num, qnw_index, temp, sample_name, 
-     x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
-    ) = sort_qnw()
-    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    # yield from bps.mv(pv_registers.sample_name, sample_name)
-    sample_name = pv_registers.sample_name.get()
-
-    temp_name = int(temp * 10)
-
-    for ii in range(num_rep):
-
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
-
-        yield from setup_rigaku_ZDT_series(acq_time, acq_period, num_frame, filename)
-
-        yield from showbeam()
-        yield from bps.sleep(0.1)
-        yield from bp.count([rigaku3M])
-        yield from blockbeam()
-
-        metadata_fname = pv_registers.metadata_full_path.get()
-        create_nexus_format_metadata(metadata_fname, det=rigaku3M)
-
-        # Start DM analysis
+        # Setup DM analysis
         if process:
-            exp_name = pv_registers.experiment_name.get()
-            qmap_file = pv_registers.qmap_file.get()
-            workflow_name = pv_registers.workflow_name.get()
-            analysis_machine = pv_registers.analysis_machine.get()
-            argsDict = {"experimentName": exp_name, 
-                        "filePath": f"{filename}.h5", 
-                        "qmap": f"{qmap_file}",
-                        "analysisMachine": f"{analysis_machine}",
-                        }
-            job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
-            print(f"Job {job['id']} processing {filename}")
+            configManager = ConfigurationManager.getInstance()  # Object that tracks beamline-specific configuration
+            dmuser, password = configManager.parseLoginFile()
+            serviceUrl = configManager.getProcWebServiceUrl()
+            workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) # user/password/url info passed to DM API
+
+        acq_time = acq_period
+
+        yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        yield from bps.sleep(2)
+        yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        yield from bps.sleep(2)
+
+        # yield from post_align()
+        yield from shutteroff()
+
+        (header_name, meas_num, qnw_index, temp, sample_name, 
+        x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
+        ) = sort_qnw()
+        yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
+        # yield from bps.mv(pv_registers.sample_name, sample_name)
+        sample_name = pv_registers.sample_name.get()
+
+        temp_name = int(temp * 10)
+
+        for ii in range(num_rep):
+
+            filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
+
+            yield from setup_rigaku_ZDT_series(acq_time, acq_period, num_frame, filename)
+
+            yield from showbeam()
+            yield from bps.sleep(0.1)
+            yield from bp.count([rigaku3M])
+            yield from blockbeam()
+
+            metadata_fname = pv_registers.metadata_full_path.get()
+            create_nexus_format_metadata(metadata_fname, det=rigaku3M)
+
+            # Start DM analysis
+            if process:
+                exp_name = pv_registers.experiment_name.get()
+                qmap_file = pv_registers.qmap_file.get()
+                workflow_name = pv_registers.workflow_name.get()
+                analysis_machine = pv_registers.analysis_machine.get()
+                argsDict = {"experimentName": exp_name, 
+                            "filePath": f"{filename}.bin.000", 
+                            "qmap": f"{qmap_file}",
+                            "analysisMachine": f"{analysis_machine}",
+                            "gpuID": -2
+                            }
+                job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
+                print(f"Job {job['id']} processing {filename}")
+
+    except Exception as e:
+        print(f"Error occurred during measurement: {e}")
+    finally:
+        pass
+
+
