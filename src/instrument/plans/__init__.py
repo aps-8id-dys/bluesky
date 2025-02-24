@@ -30,17 +30,28 @@ from .select_sample import select_sample, sort_qnw
 
 from .nexus_acq_eiger_int import setup_eiger_int_series
 from .nexus_acq_eiger_int import eiger_acq_int_series
+
 from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
 from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 
+from .nexus_acq_eiger_int_rock import setup_eiger_int_rock
+from .nexus_acq_eiger_int_rock import eiger_acq_int_rock
+
 from .move_sample import mesh_grid_move
+
+# from .shutter_logic import pre_align
+# from .shutter_logic import post_align
+# from .shutter_logic import showbeam
+# from .shutter_logic import blockbeam
+# from .shutter_logic import shutteron
+# from .shutter_logic import shutteroff
 
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
-from .shutter_logic import showbeam
-from .shutter_logic import blockbeam
-from .shutter_logic import shutteron
-from .shutter_logic import shutteroff
+from .shutter_logic_8ide import showbeam
+from .shutter_logic_8ide import blockbeam
+from .shutter_logic_8ide import shutteron
+from .shutter_logic_8ide import shutteroff
 
 from .scan_8idi import x_lup
 from .scan_8idi import y_lup
@@ -49,3 +60,5 @@ from .scan_8idi import rheo_set_x_lup
 
 from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move
+
+from .spec_8IDE_DM_Nexus import submit_Nexus_DM
