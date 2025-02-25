@@ -61,4 +61,4 @@ from .scan_8idi import rheo_set_x_lup
 from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move
 
-from .spec_8IDE_DM_Nexus import submit_Nexus_DM
+from .spec_8IDE_eiger4M import submit_Nexus_DM

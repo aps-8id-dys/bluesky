@@ -40,13 +40,14 @@ def submit_Nexus_DM():
 
             # Code that starts DM workflow
             argsDict = {"experimentName": exp_name, 
-                        "filePath": f"{filename}", 
+                        "filePath": f"{filename}.h5", 
                         "qmap": f"{qmap_file}",
                         "analysisMachine": f"{analysis_machine}",
                         "gpuID": -2
                         }
             job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
             print(f"Job {job['id']} processing {filename}")
+            print(filename)
 
             pv_registers.start_bluesky.put('No')
         else:
