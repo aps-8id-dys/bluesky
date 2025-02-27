@@ -21,7 +21,7 @@ from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample, rheometer
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-# from aps_8id_bs_instrument.devices import *
+from ..devices.softglue import softglue_8idi
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
 from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
@@ -32,33 +32,57 @@ from .util_8idi import get_machine_name, temp2str
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from dm.common.utility.configurationManager import ConfigurationManager
 
-def setup_eiger_int_series(acq_time, acq_period, num_frames, file_name):
+
+def setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
     
-    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
+    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
-    yield from bps.mv(eiger4M.cam.trigger_mode, "Internal Series")  # 0
+    yield from bps.mv(eiger4M.cam.trigger_mode, "External Enable")  # 3
     yield from bps.mv(eiger4M.cam.acquire_time, acq_time)
     yield from bps.mv(eiger4M.cam.acquire_period, acq_period)
     yield from bps.mv(eiger4M.hdf1.file_name, file_name)
     yield from bps.mv(eiger4M.hdf1.file_path, file_path)
-    yield from bps.mv(eiger4M.cam.num_images, num_frames)
-    yield from bps.mv(eiger4M.cam.num_triggers, 1)  # Need to put num_trigger to 1 for internal mode
+    # In External trigger mode, then num_images is not writable.
+    # yield from bps.mv(eiger4M.cam.num_images, num_frames)
+    yield from bps.mv(eiger4M.cam.num_triggers, num_frames)
     yield from bps.mv(eiger4M.hdf1.num_capture, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
     yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
 
-def eiger_acq_int_series(acq_period=1, 
-                         num_frame=10, 
-                         num_rep=3, 
-                         att_level=0, 
-                         sample_move=True,
-                         process=True
-                         ):
+
+def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
+    """Setup external triggering"""
+    yield from bps.mv(softglue_8idi.acq_time, acq_time)
+    yield from bps.mv(softglue_8idi.acq_period, acq_period)
+    # Generate n+1 triggers, in case softglue triggered before area detector.
+    # Because we are also sending signal to softglue to stop the pulse train,
+    # so add 10 more pulses to be on the safe side.
+    yield from bps.mv(softglue_8idi.num_triggers, num_frames + 10)
+
+
+def softglue_start_pulses():
+    """Tell the FPGA to start generating pulses."""
+    yield from bps.mv(softglue_8idi.start_pulses, "1!")
+
+
+def softglue_stop_pulses():
+    """Tell the FPGA to stop generating pulses."""
+    yield from bps.mv(softglue_8idi.stop_pulses, "1!")
+
+
+def eiger_acq_ext_trig(acq_time=1, 
+                       acq_period=2,
+                       num_frame=10, 
+                       num_rep=2, 
+                       att_level=0, 
+                       sample_move=True,
+                       process=True
+                       ):
     
     # Setup DM analysis
     if process:
@@ -66,15 +90,15 @@ def eiger_acq_int_series(acq_period=1,
         dmuser, password = configManager.parseLoginFile()
         serviceUrl = configManager.getProcWebServiceUrl()
         workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) # user/password/url info passed to DM API
-    
-    acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(2)
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(2)
     yield from post_align()
-    yield from shutteroff()
+    yield from shutteron()
+
+    yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
 
     (header_name, meas_num, qnw_index, temp, sample_name, 
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
@@ -92,11 +116,13 @@ def eiger_acq_int_series(acq_period=1,
 
         filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
 
-        yield from setup_eiger_int_series(acq_time, acq_period, num_frame, filename)
+        yield from setup_eiger_ext_trig(acq_time, acq_period, num_frame, filename)
 
         yield from showbeam()
         yield from bps.sleep(0.1)
+        yield from softglue_start_pulses()
         yield from bp.count([eiger4M])
+        yield from softglue_stop_pulses()
         yield from blockbeam()
 
         metadata_fname = pv_registers.metadata_full_path.get()

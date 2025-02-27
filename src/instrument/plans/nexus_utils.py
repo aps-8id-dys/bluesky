@@ -11,6 +11,7 @@ from ..devices.aerotech_stages import sample, detector
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 from ..devices.lakeshore import lakeshore1, lakeshore2
 from ..devices.tetramm_picoammeter import tetramm1
 from .APS8IDI_xpcs_schema import xpcs_schema
@@ -133,27 +134,38 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/start_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
         "/entry/end_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), # fixme later
     
-        "/entry/instrument/detector_1/beam_center_x": 1024.0,
-        "/entry/instrument/detector_1/beam_center_y": 1024.0,
+        "/entry/instrument/detector_1/beam_center_x": 774.5,
+        "/entry/instrument/detector_1/beam_center_y": 799.5,
         "/entry/instrument/detector_1/count_time":  det.cam.acquire_time.get(),
         "/entry/instrument/detector_1/frame_time": det.cam.acquire_period.get(),
         "/entry/instrument/detector_1/detector_name": det.name,
-        "/entry/instrument/detector_1/distance": 12.0, 
+        "/entry/instrument/detector_1/distance": 11.6, 
     
-        "/entry/instrument/incident_beam/incident_energy": 12.0,    # fixme later
+        "/entry/instrument/incident_beam/incident_energy": 12.4,    # fixme later
         "/entry/instrument/incident_beam/incident_energy_spread": 0.0001,   # fixme later
         "/entry/instrument/incident_beam/incident_beam_intensity": tetramm1.current1.mean_value.get(),
+
+        "/entry/instrument/attenuator_1/attenuator_transmission": filter_8ide.transmission_readback.get(),
+        "/entry/instrument/attenuator_1/attenuator_index": filter_8idi.atten_index_readback.get(),
+        "/entry/instrument/attenuator_2/attenuator_transmission": filter_8idi.transmission_readback.get(),
+        "/entry/instrument/attenuator_2/attenuator_index": filter_8idi.atten_index_readback.get(),
         
         "/entry/sample/position_x": sample.x.position,
         "/entry/sample/position_y": sample.y.position,
         "/entry/sample/position_z": sample.z.position,
         "/entry/sample/qnw_lakeshore": lakeshore1.readback_ch3.get(),
-        "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),
-        "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),
-        "/entry/sample/qnw2_temperature": qnw_env2.readback.get(),
-        "/entry/sample/qnw2_temperature_set": qnw_env2.setpoint.get(),
-        "/entry/sample/qnw3_temperature": qnw_env3.readback.get(),
-        "/entry/sample/qnw3_temperature_set": qnw_env3.setpoint.get(),
+        # "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),        # Air QNW
+        # "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),
+        # "/entry/sample/qnw2_temperature": qnw_env2.readback.get(),
+        # "/entry/sample/qnw2_temperature_set": qnw_env2.setpoint.get(),
+        # "/entry/sample/qnw3_temperature": qnw_env3.readback.get(),
+        # "/entry/sample/qnw3_temperature_set": qnw_env3.setpoint.get(),
+        "/entry/sample/qnw1_temperature": qnw_vac1.readback.get(),          # Vacuum QNW
+        "/entry/sample/qnw1_temperature_set": qnw_vac1.setpoint.get(),
+        "/entry/sample/qnw2_temperature": qnw_vac2.readback.get(),
+        "/entry/sample/qnw2_temperature_set": qnw_vac2.setpoint.get(),
+        "/entry/sample/qnw3_temperature": qnw_vac3.readback.get(),
+        "/entry/sample/qnw3_temperature_set": qnw_vac3.setpoint.get(),
     }
     # update the runtime metadata with the runtime updates
     runtime_metadata.update(runtime_updates)

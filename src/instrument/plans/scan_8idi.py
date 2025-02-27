@@ -16,7 +16,7 @@ from .shutter_logic import showbeam
 def x_lup(
     rel_begin=-3,
     rel_end=3,
-    num_pts=30,
+    num_pts=60,
     att_level=7,
     det=tetramm1,
 ):
@@ -31,7 +31,7 @@ def x_lup(
 def y_lup(
     rel_begin=-3,
     rel_end=3,
-    num_pts=30,
+    num_pts=60,
     att_level=7,
     det=tetramm1,
 ):

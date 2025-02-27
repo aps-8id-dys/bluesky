@@ -34,5 +34,3 @@ qnw_vac2 = QnwDevice("8idiSoft:QNWvac_2:", readback_pv=None, name="qnw_vac2")
 qnw_vac3 = QnwDevice("8idiSoft:QNWvac_3:", readback_pv=None, name="qnw_vac3")
 
 
-# TODO:
-# Add read-only temperatures to watch.  (What PVs?)
