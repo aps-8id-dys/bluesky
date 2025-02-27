@@ -134,8 +134,13 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/start_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
         "/entry/end_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), # fixme later
     
-        "/entry/instrument/detector_1/beam_center_x": 774.5,
-        "/entry/instrument/detector_1/beam_center_y": 799.5,
+        "/entry/instrument/detector_1/beam_center_x": pv_registers.eiger_db_x0.get(),
+        "/entry/instrument/detector_1/beam_center_y": pv_registers.eiger_db_y0.get(),
+        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.eiger_det_x0.get(),
+        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.eiger_det_y0.get(),
+        "/entry/instrument/detector_1/position_x": detector.x.position,
+        "/entry/instrument/detector_1/position_y": detector.y.position,
+        
         "/entry/instrument/detector_1/count_time":  det.cam.acquire_time.get(),
         "/entry/instrument/detector_1/frame_time": det.cam.acquire_period.get(),
         "/entry/instrument/detector_1/detector_name": det.name,

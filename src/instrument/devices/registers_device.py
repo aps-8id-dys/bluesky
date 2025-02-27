@@ -55,6 +55,15 @@ class EpicsPvStorageRegisters(Device):
     sample26_pos = Component(EpicsSignal, "Reg29")
     sample27_pos = Component(EpicsSignal, "Reg30")
 
+    eiger_det_x0 = Component(EpicsSignal, "Reg31")
+    eiger_det_y0 = Component(EpicsSignal, "Reg32")
+    eiger_db_x0 = Component(EpicsSignal, "Reg33")
+    eiger_db_y0 = Component(EpicsSignal, "Reg34")
+    rigaku_det_x0 = Component(EpicsSignal, "Reg35")
+    rigaku_det_y0 = Component(EpicsSignal, "Reg36")
+    rigaku_db_x0 = Component(EpicsSignal, "Reg37")
+    rigaku_db_y0 = Component(EpicsSignal, "Reg38")
+
     def sample_position_register(self, qnw_index):
         """
         Return the indexed sample position register signal.
