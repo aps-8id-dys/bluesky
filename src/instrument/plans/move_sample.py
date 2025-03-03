@@ -23,7 +23,11 @@ def mesh_grid_move(
 
     pos_index = np.mod(sam_pos+1, x_pts * y_pts)
     x_pos = samx_list[np.mod(pos_index, x_pts)]
-    y_pos = samy_list[int(np.floor(pos_index / y_pts))]
+    y_pos = samy_list[int(np.floor(pos_index / x_pts))]
+
+    # print(samy_list)
+    # print(int(np.floor(pos_index / y_pts)))
+    print(np.mod(pos_index, x_pts), int(np.floor(pos_index / x_pts)))
 
     if sam_index == 0:
         yield from bps.mv(rheometer.x, x_pos, rheometer.y, y_pos)

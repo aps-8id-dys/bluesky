@@ -45,6 +45,8 @@ from .nexus_acq_eiger_ext import softglue_stop_pulses
 from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
 from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 
+from .eiger_movie_mode import setup_eiger_tv_mode
+
 from .move_sample import mesh_grid_move
 
 # from .shutter_logic import pre_align
