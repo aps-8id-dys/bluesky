@@ -47,7 +47,7 @@ def rheo_x_lup(
     rel_begin=-3,
     rel_end=3,
     num_pts=30,
-    att_level=7,
+    att_level=10,
     det=tetramm1,
 ):
     yield from pre_align()
@@ -58,22 +58,37 @@ def rheo_x_lup(
     yield from blockbeam()
 
 
-def rheo_set_x_lup(att_level=4, det=tetramm1):
+def rheo_y_lup(
+    rel_begin=-3,
+    rel_end=3,
+    num_pts=30,
+    att_level=10,
+    det=tetramm1,
+):
+    yield from pre_align()
+    yield from bps.mv(filter_8idi.attenuation_set, att_level)
+
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.y, rel_begin, rel_end, num_pts)
+    yield from blockbeam()
+
+
+def rheo_set_x_lup(att_level=10, det=tetramm1):
 
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
-    yield from bps.mv(rheometer.x, -15.27)
+    yield from bps.mv(rheometer.x, -8.99)
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
     yield from blockbeam()
 
-    yield from bps.mv(rheometer.x, -4.19)
+    yield from bps.mv(rheometer.x, 2.12)
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
     yield from blockbeam()
 
-    yield from bps.mv(rheometer.x, -9.8)
+    yield from bps.mv(rheometer.x, -3.53)
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
     yield from blockbeam()

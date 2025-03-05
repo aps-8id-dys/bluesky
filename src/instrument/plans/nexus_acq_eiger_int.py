@@ -80,7 +80,7 @@ def eiger_acq_int_series(acq_period=1,
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    yield from bps.mv(pv_registers.sample_name, sample_name)
+    # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
     temp_name = temp2str(temp)
@@ -90,17 +90,18 @@ def eiger_acq_int_series(acq_period=1,
         if sample_move:
             yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
 
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_eiger_int_series(acq_time, acq_period, num_frame, filename)
+
+        metadata_fname = pv_registers.metadata_full_path.get()
+        create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
         yield from showbeam()
         yield from bps.sleep(0.1)
         yield from bp.count([eiger4M])
         yield from blockbeam()
-
-        metadata_fname = pv_registers.metadata_full_path.get()
-        create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
         # Start DM analysis
         if process:

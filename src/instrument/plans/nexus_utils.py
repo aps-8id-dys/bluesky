@@ -7,7 +7,7 @@ import h5py
 from ..devices.registers_device import pv_registers
 from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample, detector
+from ..devices.aerotech_stages import sample, detector, rheometer
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
@@ -158,6 +158,9 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/sample/position_x": sample.x.position,
         "/entry/sample/position_y": sample.y.position,
         "/entry/sample/position_z": sample.z.position,
+        "/entry/sample/position_rheo_x": rheometer.x.position,
+        "/entry/sample/position_rheo_y": rheometer.y.position,
+        "/entry/sample/position_rheo_z": rheometer.z.position,
         "/entry/sample/qnw_lakeshore": lakeshore1.readback_ch3.get(),
         # "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),        # Air QNW
         # "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),

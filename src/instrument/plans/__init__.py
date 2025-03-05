@@ -65,8 +65,7 @@ from .shutter_logic_8ide import shutteroff
 
 from .scan_8idi import x_lup
 from .scan_8idi import y_lup
-from .scan_8idi import rheo_x_lup
-from .scan_8idi import rheo_set_x_lup
+from .scan_8idi import rheo_x_lup, rheo_y_lup, rheo_set_x_lup
 
 from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move

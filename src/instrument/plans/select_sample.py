@@ -34,8 +34,13 @@ def select_sample(env: int):
     y_cen = loaded_dict[sample_key]["y_cen"]
 
     print(f"Moving {sample_key} x to {x_cen} and y to {y_cen}")
-    yield from bps.mv(sample.x, x_cen)
-    yield from bps.mv(sample.y, y_cen)
+
+    if env == 0:
+        yield from bps.mv(rheometer.x, x_cen, rheometer.y, y_cen)
+    elif env >=1 and env <=27:
+        yield from bps.mv(sample.x, x_cen, sample.y, y_cen)
+    else:
+        pass
 
     yield from bps.mv(pv_registers.qnw_index, env)
 

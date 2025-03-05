@@ -104,7 +104,7 @@ def eiger_acq_ext_trig(acq_time=1,
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    yield from bps.mv(pv_registers.sample_name, sample_name)
+    # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
     temp_name = temp2str(temp)

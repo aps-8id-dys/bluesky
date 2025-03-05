@@ -478,6 +478,27 @@ xpcs_schema = {
                 "units": "NX_LENGTH",
                 "data": 1.0
             },
+            "position_rheo_x": {
+                "type": "NXpositioner", 
+                "required": False,
+                "description": "Sample position, x",
+                "units": "NX_LENGTH",
+                "data": 1.0
+            },
+            "position_rheo_y": {
+                "type": "NXpositioner", 
+                "required": False,
+                "description": "Sample position, y",
+                "units": "NX_LENGTH",
+                "data": 1.0
+            },
+            "position_rheo_z": {
+                "type": "NXpositioner", 
+                "required": False,
+                "description": "Sample position, z",
+                "units": "NX_LENGTH",
+                "data": 1.0
+            },
             "qnw_lakeshore": {
                 "type": "NX_NUMBER", 
                 "units": "NX_TEMPERATURE", 
