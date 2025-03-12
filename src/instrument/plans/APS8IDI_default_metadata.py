@@ -47,6 +47,7 @@ default_metadata = {
     "/entry/instrument/bluesky/bluesky_version": "1.0.0",
     "/entry/instrument/bluesky/bluesky_plan": "mesh_scan",
     "/entry/instrument/bluesky/bluesky_plan_kwargs": "mesh_scan_sample_kwargs",
+    "/entry/instrument/bluesky/parent_folder": "/path/to/the/parent/folder",
     "/entry/instrument/bluesky/spec_file": "/path/to/this/spec_file_name",
     "/entry/instrument/slits_1/vertical_gap": 1.0,
     "/entry/instrument/slits_1/vertical_center": 0.0,
@@ -71,7 +72,7 @@ default_metadata = {
     "/entry/sample/rheometer_temperature": 1.0,
     "/entry/user/name": "John Doe",
     "/entry/user/email": "JohnDoe@mail.edu",
-    "/entry/user/institution": "Inititution Name",
+    "/entry/user/institution": "Institution Name",
     "/entry/user/cycle": "2025-1",
     "/entry/user/proposal_id": "none",
 }

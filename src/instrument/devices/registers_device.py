@@ -63,6 +63,10 @@ class EpicsPvStorageRegisters(Device):
     rigaku_det_y0 = Component(EpicsSignal, "Reg36")
     rigaku_db_x0 = Component(EpicsSignal, "Reg37")
     rigaku_db_y0 = Component(EpicsSignal, "Reg38")
+    current_det_x0 = Component(EpicsSignal, "Reg39")
+    current_det_y0 = Component(EpicsSignal, "Reg40")
+    current_db_x0 = Component(EpicsSignal, "Reg41")
+    current_db_y0 = Component(EpicsSignal, "Reg42")
 
     def sample_position_register(self, qnw_index):
         """

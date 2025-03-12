@@ -3,6 +3,7 @@ import h5py
 import time
 import warnings
 import numpy as np
+import datetime
 import h5py 
 from ..devices.registers_device import pv_registers
 from ..devices.filters_8id import filter_8ide, filter_8idi
@@ -131,20 +132,20 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/entry_identifier_uuid": "550e8400-e29b-41d4-a716-446655440000",
         "/entry/scan_number": 1,
         "/entry/user/cycle": pv_registers.cycle_name.get(),
-        "/entry/start_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
-        "/entry/end_time": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), # fixme later
+        "/entry/start_time": str(datetime.datetime.now()),
+        "/entry/end_time": str(datetime.datetime.now()), # fixme later
     
-        "/entry/instrument/detector_1/beam_center_x": pv_registers.eiger_db_x0.get(),
-        "/entry/instrument/detector_1/beam_center_y": pv_registers.eiger_db_y0.get(),
-        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.eiger_det_x0.get(),
-        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.eiger_det_y0.get(),
+        "/entry/instrument/detector_1/beam_center_x": pv_registers.current_db_x0.get(),
+        "/entry/instrument/detector_1/beam_center_y": pv_registers.current_db_y0.get(),
+        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.current_det_x0.get(),
+        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.current_det_y0.get(),
         "/entry/instrument/detector_1/position_x": detector.x.position,
         "/entry/instrument/detector_1/position_y": detector.y.position,
         
         "/entry/instrument/detector_1/count_time":  det.cam.acquire_time.get(),
         "/entry/instrument/detector_1/frame_time": det.cam.acquire_period.get(),
         "/entry/instrument/detector_1/detector_name": det.name,
-        "/entry/instrument/detector_1/distance": 11.6, 
+        "/entry/instrument/detector_1/distance": 11.6,  # fixme later
     
         "/entry/instrument/incident_beam/incident_energy": 12.4,    # fixme later
         "/entry/instrument/incident_beam/incident_energy_spread": 0.0001,   # fixme later
@@ -162,18 +163,20 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
         "/entry/sample/position_rheo_y": rheometer.y.position,
         "/entry/sample/position_rheo_z": rheometer.z.position,
         "/entry/sample/qnw_lakeshore": lakeshore1.readback_ch3.get(),
-        # "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),        # Air QNW
-        # "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),
-        # "/entry/sample/qnw2_temperature": qnw_env2.readback.get(),
-        # "/entry/sample/qnw2_temperature_set": qnw_env2.setpoint.get(),
-        # "/entry/sample/qnw3_temperature": qnw_env3.readback.get(),
-        # "/entry/sample/qnw3_temperature_set": qnw_env3.setpoint.get(),
-        "/entry/sample/qnw1_temperature": qnw_vac1.readback.get(),          # Vacuum QNW
-        "/entry/sample/qnw1_temperature_set": qnw_vac1.setpoint.get(),
-        "/entry/sample/qnw2_temperature": qnw_vac2.readback.get(),
-        "/entry/sample/qnw2_temperature_set": qnw_vac2.setpoint.get(),
-        "/entry/sample/qnw3_temperature": qnw_vac3.readback.get(),
-        "/entry/sample/qnw3_temperature_set": qnw_vac3.setpoint.get(),
+        "/entry/sample/qnw1_temperature": qnw_env1.readback.get(),        # Air QNW
+        "/entry/sample/qnw1_temperature_set": qnw_env1.setpoint.get(),
+        "/entry/sample/qnw2_temperature": qnw_env2.readback.get(),
+        "/entry/sample/qnw2_temperature_set": qnw_env2.setpoint.get(),
+        "/entry/sample/qnw3_temperature": qnw_env3.readback.get(),
+        "/entry/sample/qnw3_temperature_set": qnw_env3.setpoint.get(),
+        # "/entry/sample/qnw1_temperature": qnw_vac1.readback.get(),          # Vacuum QNW
+        # "/entry/sample/qnw1_temperature_set": qnw_vac1.setpoint.get(),
+        # "/entry/sample/qnw2_temperature": qnw_vac2.readback.get(),
+        # "/entry/sample/qnw2_temperature_set": qnw_vac2.setpoint.get(),
+        # "/entry/sample/qnw3_temperature": qnw_vac3.readback.get(),
+        # "/entry/sample/qnw3_temperature_set": qnw_vac3.setpoint.get(),
+        "/entry/instrument/bluesky/parent_folder": f"/gdata/dm/8IDI/{pv_registers.cycle_name.get()}/{pv_registers.experiment_name.get()}/data/",
+        "/entry/instrument/bluesky/spec_file": pv_registers.spec_file.get(),
     }
     # update the runtime metadata with the runtime updates
     runtime_metadata.update(runtime_updates)
@@ -200,6 +203,7 @@ def create_nexus_format_metadata(filename, det, additional_metadata=None):
     """
     # create a copy of schema from the template, tree-structure of the nexus file
     runtime_schema = xpcs_schema.copy()
+
     # create a dictionary of the runtime metadata
     runtime_metadata = create_runtime_metadata_dict(det, additional_metadata)
     # update the schema with the metadata

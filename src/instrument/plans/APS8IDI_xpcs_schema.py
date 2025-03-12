@@ -405,6 +405,12 @@ xpcs_schema = {
                     "required": False,
                     "description": "spec file name for this dataset",
                     "data": "/path/to/this/spec_file_name",
+                },
+                "parent_folder": {
+                    "type": "NX_CHAR",
+                    "required": False,
+                    "description": "parent folder of the data file",
+                    "data": "/path/to/this/spec_file_name",
                 }
             },
             "slits_1": {
@@ -599,10 +605,4 @@ xpcs_schema = {
             },
         },
     },
-    "PROCESS": {
-        "type": "NXprocess", 
-        "required": True,
-        "description": "Describe the computation process that produced these results",
-        "data": "standard boost-corr computation"
-    }
 }

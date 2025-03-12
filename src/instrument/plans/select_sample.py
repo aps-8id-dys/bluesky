@@ -18,8 +18,8 @@ import epics as pe
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample, rheometer
 from ..devices.registers_device import pv_registers
-# from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
+from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+# from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 
 def select_sample(env: int):
     # yield from bps.mv(eiger4M.cam.acquire_time, 0.1)
@@ -65,20 +65,20 @@ def sort_qnw():
    
     # TODO: rewrite this IF block using getattr as in 'registers_device.py'
     # For air qnw 
-    # if temp_zone == 'qnw_env1':
-    #     temp = qnw_env1.readback.get()
-    # elif temp_zone == 'qnw_env2':
-    #     temp = qnw_env2.readback.get()
-    # else:
-    #     temp = qnw_env3.readback.get()
+    if temp_zone == 'qnw_env1':
+        temp = qnw_env1.readback.get()
+    elif temp_zone == 'qnw_env2':
+        temp = qnw_env2.readback.get()
+    else:
+        temp = qnw_env3.readback.get()
 
     # For vacuum QNW
-    if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
-        temp = qnw_vac1.readback.get()
-    elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
-        temp = qnw_vac2.readback.get()
-    else:
-        temp = qnw_vac3.readback.get()
+    # if (qnw_index == 1) or (qnw_index == 2) or (qnw_index == 3):
+    #     temp = qnw_vac1.readback.get()
+    # elif (qnw_index == 4) or (qnw_index == 5) or (qnw_index == 6):
+    #     temp = qnw_vac2.readback.get()
+    # else:
+    #     temp = qnw_vac3.readback.get()
 
     header_name = f"{header}{meas_num:04d}"
 

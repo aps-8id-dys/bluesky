@@ -52,10 +52,11 @@ def setup_rigaku_ZDT_series(acq_time, acq_period, num_frames, file_name):
     os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
-def rigaku_acq_ZDT_series(acq_period=1, 
+def rigaku_acq_ZDT_fly(acq_period=1, 
                          num_frame=10, 
                          num_rep=3, 
                          att_level=0, 
+                         flyspeed=0.1,
                          sample_move=False,
                          process=False
                          ):
@@ -93,17 +94,23 @@ def rigaku_acq_ZDT_series(acq_period=1,
             if sample_move:
                 yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
 
-            filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
+            flyspeed_um = int(flyspeed*1e3)
+            filename = f"{header_name}_{sample_name}_fs{flyspeed_um:04d}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
 
             yield from setup_rigaku_ZDT_series(acq_time, acq_period, num_frame, filename)
 
-            yield from showbeam()
-            yield from bps.sleep(0.1)
-            yield from bp.count([rigaku3M])
-            yield from blockbeam()
-
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=rigaku3M)
+
+            extra_acq_time = 0.5
+            total_travel = flyspeed*(acq_period*num_frame+extra_acq_time)
+            yield from showbeam()
+            yield from bps.mv(sample.y.velocity, flyspeed)
+            yield from bps.mvr(sample.y.user_setpoint, total_travel)
+            yield from bp.count([rigaku3M])
+            yield from blockbeam()
+            yield from bps.mv(sample.y.velocity, 5)
+            yield from bps.mvr(sample.y, -total_travel)
 
             # Start DM analysis
             if process:

@@ -53,6 +53,7 @@ from .func_gen import dpKeysight
 from .huber_diffractometer import huber
 from .rheometer_wait_signal import mcr_wait_signal
 from .lakeshore import lakeshore1, lakeshore2
+from .us_motor_8idi import cam_stage_8idi
 
 
 ## Beamline Area Detectors
