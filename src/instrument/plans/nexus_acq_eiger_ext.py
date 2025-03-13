@@ -100,7 +100,7 @@ def eiger_acq_ext_trig(acq_time=1,
 
     yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
 
-    (header_name, meas_num, qnw_index, temp, sample_name, 
+    (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)

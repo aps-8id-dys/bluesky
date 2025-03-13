@@ -25,10 +25,10 @@ from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw
-from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
 from .nexus_utils import create_nexus_format_metadata
 from .move_sample import mesh_grid_move
-# from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
+from .util_8idi import get_machine_name, temp2str
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from dm.common.utility.configurationManager import ConfigurationManager
 
@@ -54,10 +54,10 @@ def setup_rigaku_ZDT_series(acq_time, acq_period, num_frames, file_name):
 
 def rigaku_acq_ZDT_series(acq_period=1, 
                          num_frame=10, 
-                         num_rep=3, 
-                         att_level=0, 
-                         sample_move=False,
-                         process=False
+                         num_rep=3,
+                         wait_time=0.0, 
+                         sample_move=True,
+                         process=True
                          ):
     
     try:
@@ -71,24 +71,27 @@ def rigaku_acq_ZDT_series(acq_period=1,
 
         acq_time = acq_period
 
-        yield from bps.mv(filter_8idi.attenuation_set, att_level)
-        yield from bps.sleep(2)
-        yield from bps.mv(filter_8idi.attenuation_set, att_level)
-        yield from bps.sleep(2)
+        # yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        # yield from bps.sleep(2)
+        # yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        # yield from bps.sleep(2)
 
-        # yield from post_align()
+        yield from post_align()
         yield from shutteroff()
 
-        (header_name, meas_num, qnw_index, temp, sample_name, 
+        (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
         x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
         ) = sort_qnw()
         yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
         yield from bps.mv(pv_registers.sample_name, sample_name)
         sample_name = pv_registers.sample_name.get()
 
-        temp_name = int(temp * 10)
+        temp_name = temp2str(temp)
+        att_level = int(filter_8idi.attenuation_readback.get())
 
         for ii in range(num_rep):
+
+            yield from bps.sleep(wait_time)
 
             if sample_move:
                 yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
@@ -110,12 +113,13 @@ def rigaku_acq_ZDT_series(acq_period=1,
                 exp_name = pv_registers.experiment_name.get()
                 qmap_file = pv_registers.qmap_file.get()
                 workflow_name = pv_registers.workflow_name.get()
-                analysis_machine = pv_registers.analysis_machine.get()
+                analysis_machine = get_machine_name()
                 argsDict = {"experimentName": exp_name, 
                             "filePath": f"{filename}.bin.000", 
                             "qmap": f"{qmap_file}",
                             "analysisMachine": f"{analysis_machine}",
-                            "gpuID": -2
+                            "gpuID": -2,
+                            "avgFrame": 1
                             }
                 job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
                 print(f"Job {job['id']} processing {filename}")

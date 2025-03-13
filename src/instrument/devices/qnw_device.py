@@ -27,6 +27,13 @@ class QnwDevice(PVPositionerSoftDoneWithStop):
     ramprate = Component(EpicsSignal, "RAMP", kind="normal", put_complete=True)
 
 
+    def qnw_register(self, temp_zone):
+        """
+        Return the indexed qnw temp zone.
+        """
+        return getattr(self, f"{temp_zone}")
+
+
 # Use readback_pv=None since readback and setpoint were defined above.
 qnw_env1 = QnwDevice("8idiSoft:QNWenv_1:", readback_pv=None, name="qnw_env1")
 qnw_env2 = QnwDevice("8idiSoft:QNWenv_2:", readback_pv=None, name="qnw_env2")

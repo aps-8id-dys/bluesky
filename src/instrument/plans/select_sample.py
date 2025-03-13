@@ -63,7 +63,6 @@ def sort_qnw():
     y_pts = loaded_dict[sample_key]["y_pts"]
     temp_zone = loaded_dict[sample_key]["temp_zone"]
    
-    # TODO: rewrite this IF block using getattr as in 'registers_device.py'
     # For air qnw 
     if temp_zone == 'qnw_env1':
         temp = qnw_env1.readback.get()
@@ -87,6 +86,7 @@ def sort_qnw():
         meas_num,
         qnw_index,
         temp,
+        temp_zone,
         sample_name,
         x_cen,
         y_cen,

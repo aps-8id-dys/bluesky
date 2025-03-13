@@ -57,6 +57,7 @@ def rigaku_acq_ZDT_fly(acq_period=1,
                          num_rep=3, 
                          att_level=0, 
                          flyspeed=0.1,
+                         wait_time=0.0,
                          sample_move=False,
                          process=False
                          ):
@@ -72,15 +73,15 @@ def rigaku_acq_ZDT_fly(acq_period=1,
 
         acq_time = acq_period
 
-        yield from bps.mv(filter_8idi.attenuation_set, att_level)
-        yield from bps.sleep(2)
-        yield from bps.mv(filter_8idi.attenuation_set, att_level)
-        yield from bps.sleep(2)
+        # yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        # yield from bps.sleep(2)
+        # yield from bps.mv(filter_8idi.attenuation_set, att_level)
+        # yield from bps.sleep(2)
 
         # yield from post_align()
         yield from shutteroff()
 
-        (header_name, meas_num, qnw_index, temp, sample_name, 
+        (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
         x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
         ) = sort_qnw()
         yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
@@ -88,8 +89,11 @@ def rigaku_acq_ZDT_fly(acq_period=1,
         sample_name = pv_registers.sample_name.get()
 
         temp_name = int(temp * 10)
+        att_level = int(filter_8idi.attenuation_readback.get())
 
         for ii in range(num_rep):
+
+            yield from bps.sleep(wait_time)
 
             if sample_move:
                 yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)

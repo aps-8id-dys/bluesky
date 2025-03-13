@@ -76,7 +76,7 @@ def eiger_acq_int_series(acq_period=1,
     yield from post_align()
     yield from shutteroff()
 
-    (header_name, meas_num, qnw_index, temp, sample_name, 
+    (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
      x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
     ) = sort_qnw()
     yield from bps.mv(pv_registers.measurement_num, meas_num + 1)

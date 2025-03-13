@@ -15,8 +15,10 @@ from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
 from ..devices.lakeshore import lakeshore1, lakeshore2
 from ..devices.tetramm_picoammeter import tetramm1
+from ..devices.micellaneous_devices import mono_8id, flight_path_8idi
 from .APS8IDI_xpcs_schema import xpcs_schema
 from .APS8IDI_default_metadata import default_metadata
+
 
 
 default_units_keymap = {
@@ -137,17 +139,17 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
     
         "/entry/instrument/detector_1/beam_center_x": pv_registers.current_db_x0.get(),
         "/entry/instrument/detector_1/beam_center_y": pv_registers.current_db_y0.get(),
-        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.current_det_x0.get(),
-        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.current_det_y0.get(),
+        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.current_db_x0.get(),
+        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.current_db_y0.get(),
         "/entry/instrument/detector_1/position_x": detector.x.position,
         "/entry/instrument/detector_1/position_y": detector.y.position,
         
         "/entry/instrument/detector_1/count_time":  det.cam.acquire_time.get(),
         "/entry/instrument/detector_1/frame_time": det.cam.acquire_period.get(),
         "/entry/instrument/detector_1/detector_name": det.name,
-        "/entry/instrument/detector_1/distance": 11.6,  # fixme later
+        "/entry/instrument/detector_1/distance": flight_path_8idi.length.position/1000.0,  # Not calibrated. Fixme later
     
-        "/entry/instrument/incident_beam/incident_energy": 12.4,    # fixme later
+        "/entry/instrument/incident_beam/incident_energy": mono_8id.energy_readback.get(),
         "/entry/instrument/incident_beam/incident_energy_spread": 0.0001,   # fixme later
         "/entry/instrument/incident_beam/incident_beam_intensity": tetramm1.current1.mean_value.get(),
 
