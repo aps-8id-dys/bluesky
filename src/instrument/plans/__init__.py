@@ -2,11 +2,11 @@
 Custom Plan Definitions & Instatiations
 """
 
-from .qnw_plans import set_qnw, te, temp_ramp
+from .qnw_plans import find_qnw_index, te, temp_ramp, te_env, temp_ramp_env
 # from .qnw_vac_plans import set_qnw_vac
 
 from .select_sample_env import select_sample_env
-from .select_sample import select_sample, sort_qnw
+from .sample_info_unpack import select_sample, sort_qnw, gen_folder_prefix
 from .select_detector import select_detector
 
 from .util_8idi import get_machine_name, temp2str
@@ -22,9 +22,8 @@ from .nexus_acq_eiger_ext import softglue_stop_pulses
 
 from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
 from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
-from .nexus_acq_rigaku_zdt_fly import rigaku_acq_ZDT_fly
 
-from .eiger_movie_mode import setup_eiger_tv_mode
+# from .eiger_movie_mode import setup_eiger_tv_mode
 
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
@@ -41,3 +40,5 @@ from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move
 
 from .spec_8IDE_eiger4M import submit_Nexus_DM
+
+from .dm_util import dm_setup, dm_run_job

@@ -2,36 +2,15 @@
 Simple, modular Bluesky plans for users.
 """
 
-import warnings
-
-import epics as pe
-import numpy as np
-import h5py 
-import datetime
-
-warnings.filterwarnings("ignore")
-
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
-from bluesky import preprocessors as bpp
-# from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample, rheometer
-from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 from ..devices.softglue import softglue_8idi
-from ..initialize_bs_tools import cat
-from .select_sample import sort_qnw
+from ..devices.registers_device import pv_registers
+from .sample_info_unpack import gen_folder_prefix, mesh_grid_move
 from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
 from .nexus_utils import create_nexus_format_metadata
-from .move_sample import mesh_grid_move
-from .util_8idi import get_machine_name, temp2str
-# from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
-from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
-from dm.common.utility.configurationManager import ConfigurationManager
-
+from .dm_util import dm_setup, dm_run_job
 
 def setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
@@ -77,69 +56,45 @@ def softglue_stop_pulses():
 
 def eiger_acq_ext_trig(acq_time=1, 
                        acq_period=2,
-                       num_frame=10, 
+                       num_frames=10, 
                        num_rep=2, 
-                       att_level=0, 
+                       wait_time=0, 
                        sample_move=True,
                        process=True
                        ):
+
+    try:
+        yield from setup_softglue_ext_trig(acq_time, acq_period, num_frames)
+        yield from post_align()
+        yield from shutteron()
+
+        workflowProcApi, dmuser = dm_setup(process)
+        folder_prefix = gen_folder_prefix()
+
+        for ii in range(num_rep):
+            yield from bps.sleep(wait_time)
+
+            if sample_move:
+                yield from mesh_grid_move()
+
+            file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
+            yield from setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name)
+
+            yield from showbeam()
+            yield from bps.sleep(0.1)
+            yield from softglue_start_pulses()
+            yield from bp.count([eiger4M])
+            yield from softglue_stop_pulses()
+            yield from blockbeam()
+
+            metadata_fname = pv_registers.metadata_full_path.get()
+            create_nexus_format_metadata(metadata_fname, det=eiger4M)
+            
+            dm_run_job('eiger', process, workflowProcApi, dmuser, file_name)
+    except Exception as e:
+        print(f"Error occurred during measurement: {e}")
+    finally:
+        pass
+
     
-    # Setup DM analysis
-    if process:
-        configManager = ConfigurationManager.getInstance()  # Object that tracks beamline-specific configuration
-        dmuser, password = configManager.parseLoginFile()
-        serviceUrl = configManager.getProcWebServiceUrl()
-        workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) # user/password/url info passed to DM API
 
-    yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    yield from bps.sleep(2)
-    yield from bps.mv(filter_8idi.attenuation_set, att_level)
-    yield from bps.sleep(2)
-    yield from post_align()
-    yield from shutteron()
-
-    yield from setup_softglue_ext_trig(acq_time, acq_period, num_frame)
-
-    (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
-     x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
-    ) = sort_qnw()
-    yield from bps.mv(pv_registers.measurement_num, meas_num + 1)
-    # yield from bps.mv(pv_registers.sample_name, sample_name)
-    sample_name = pv_registers.sample_name.get()
-
-    temp_name = temp2str(temp)
-
-    for ii in range(num_rep):
-
-        if sample_move:
-            yield from mesh_grid_move(qnw_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts)
-
-        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_t{temp_name}C_r{ii+1:05d}"
-
-        yield from setup_eiger_ext_trig(acq_time, acq_period, num_frame, filename)
-
-        yield from showbeam()
-        yield from bps.sleep(0.1)
-        yield from softglue_start_pulses()
-        yield from bp.count([eiger4M])
-        yield from softglue_stop_pulses()
-        yield from blockbeam()
-
-        metadata_fname = pv_registers.metadata_full_path.get()
-        create_nexus_format_metadata(metadata_fname, det=eiger4M)
-
-        # Start DM analysis
-        if process:
-            exp_name = pv_registers.experiment_name.get()
-            qmap_file = pv_registers.qmap_file.get()
-            workflow_name = pv_registers.workflow_name.get()
-            # analysis_machine = pv_registers.analysis_machine.get()
-            analysis_machine = get_machine_name()
-            argsDict = {"experimentName": exp_name, 
-                        "filePath": f"{filename}.h5", 
-                        "qmap": f"{qmap_file}",
-                        "analysisMachine": f"{analysis_machine}",
-                        "gpuID": -2
-                        }
-            job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
-            print(f"Job {job['id']} processing {filename}")

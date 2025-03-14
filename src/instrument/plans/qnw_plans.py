@@ -20,60 +20,59 @@ import logging
 
 from bluesky import plan_stubs as bps
 
-from ..devices import qnw_env1
-from ..devices import qnw_env2
-from ..devices import qnw_env3
-from .select_sample import sort_qnw
+from ..devices import qnw_env1, qnw_env2, qnw_env3
+# from ..devices import qnw_vac1, qnw_vac2, qnw_vac3
+from .sample_info_unpack import sort_qnw
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
+# def set_qnw(qnw_number: int, setpoint: float, wait: bool = True, ramprate: float = 0.3):
+#     """
+#     Change temperature on a QNW controller from a bluesky plan.
+#     """
+#     if qnw_number < 1 or qnw_number > len(qnw_controllers):
+#         raise ValueError(
+#             f"qnw_number must be between 1 .. {len(qnw_controllers)},"
+#             f" received {qnw_number}."
+#         )
+#     qnw = qnw_controllers[qnw_number - 1]
+#     if qnw.ramprate.get() != ramprate:
+#         yield from bps.mv(qnw.ramprate, ramprate)
+#     yield from bps.sleep(1)
+
+#     if wait:
+#         yield from bps.mv(qnw, setpoint)
+#     else:
+#         yield from bps.mv(qnw.setpoint, setpoint)
+
+
 # Reference these controllers in a list by an index number with 1 offset.
+
+# For air qnw
 qnw_controllers = [qnw_env1, qnw_env2, qnw_env3]
 
-
-def set_qnw(qnw_number: int, setpoint: float, wait: bool = True, ramprate: float = 0.3):
-    """
-    Change temperature on a QNW controller from a bluesky plan.
-    """
-    if qnw_number < 1 or qnw_number > len(qnw_controllers):
-        raise ValueError(
-            f"qnw_number must be between 1 .. {len(qnw_controllers)},"
-            f" received {qnw_number}."
-        )
-    qnw = qnw_controllers[qnw_number - 1]
-    if qnw.ramprate.get() != ramprate:
-        yield from bps.mv(qnw.ramprate, ramprate)
-    yield from bps.sleep(1)
-
-    if wait:
-        yield from bps.mv(qnw, setpoint)
-    else:
-        yield from bps.mv(qnw.setpoint, setpoint)
+# For vac qnw
+# qnw_controllers = [qnw_vac1, qnw_vac2, qnw_vac3]
 
 
-def te(setpoint: float, wait: bool = False):
-    """
-    Change temperature on a QNW controller based on select_sample
-    """
-
-    (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
-    x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
-    ) = sort_qnw()
-
-    # For air qnw 
-    if temp_zone == 'qnw_env1':
+def find_qnw_index():
+    sam_dict = sort_qnw()
+    if sam_dict["temp_zone"] == 'qnw_env1':
         qnw_number = 1
-    elif temp_zone == 'qnw_env2':
+    elif sam_dict["temp_zone"] == 'qnw_env2':
         qnw_number = 2
-    elif temp_zone == 'qnw_env3':
+    elif sam_dict["temp_zone"] == 'qnw_env3':
         qnw_number = 3
     else:
         raise ValueError('No QNW environment selected')
+    return qnw_number
 
-    qnw = qnw_controllers[qnw_number - 1]
 
+def te(setpoint: float, wait: bool = False):
+    qnw_number = find_qnw_index()
+    qnw = qnw_controllers[qnw_number-1]
     if wait:
         yield from bps.mv(qnw, setpoint)
     else:
@@ -81,26 +80,19 @@ def te(setpoint: float, wait: bool = False):
 
 
 def temp_ramp(ramprate: float = 0.3):
-    """
-    Change temperature on a QNW controller based on select_sample
-    """
+    qnw_number = find_qnw_index()
+    qnw = qnw_controllers[qnw_number-1]
+    yield from bps.mv(qnw.ramprate, ramprate)
 
-    (header_name, meas_num, qnw_index, temp, temp_zone, sample_name, 
-    x_cen, y_cen, x_radius, y_radius, x_pts, y_pts,
-    ) = sort_qnw()
 
-    # For air qnw 
-    if temp_zone == 'qnw_env1':
-        qnw_number = 1
-    elif temp_zone == 'qnw_env2':
-        qnw_number = 2
-    elif temp_zone == 'qnw_env3':
-        qnw_number = 3
+def te_env(qnw_number: int, setpoint: float, wait: bool = False):
+    qnw = qnw_controllers[qnw_number-1]
+    if wait:
+        yield from bps.mv(qnw, setpoint)
     else:
-        raise ValueError('No QNW environment selected')
-    
-    qnw = qnw_controllers[qnw_number - 1]
+        yield from bps.mv(qnw.setpoint, setpoint)
 
-    if qnw.ramprate.get() != ramprate:
-        yield from bps.mv(qnw.ramprate, ramprate)
-    yield from bps.sleep(1)
+
+def temp_ramp_env(qnw_number: int, ramprate: float = 0.3):
+    qnw = qnw_controllers[qnw_number-1]
+    yield from bps.mv(qnw.ramprate, ramprate)

@@ -24,7 +24,7 @@ from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
-from .select_sample import sort_qnw
+from .sample_info_unpack import sort_qnw
 from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
 from .nexus_utils import create_nexus_format_metadata
 from .move_sample import mesh_grid_move

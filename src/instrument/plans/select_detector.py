@@ -7,7 +7,7 @@ from ..devices.registers_device import pv_registers
 
 def select_detector(det: str):
 
-    if det == "eiger4M":
+    if det == "eiger":
         yield from bps.mv(pv_registers.workflow_name, 'xpcs8-boost-corr-bin')
         yield from bps.mv(pv_registers.qmap_file, 'eiger4m_qmap_default.h5')
 
@@ -23,7 +23,7 @@ def select_detector(det: str):
         yield from bps.mv(detector.x, det_x_position)
         yield from bps.mv(detector.y, det_y_position)
 
-    elif det == "rigaku3M":
+    elif det == "rigaku":
         yield from bps.mv(pv_registers.workflow_name, 'xpcs8-boost-corr-bin-Rigaku-ZDT')
         yield from bps.mv(pv_registers.qmap_file, 'rigaku_qmap_default.h5')
 
