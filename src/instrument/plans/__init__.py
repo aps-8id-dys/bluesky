@@ -23,6 +23,8 @@ from .nexus_acq_eiger_ext import softglue_stop_pulses
 from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
 from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 
+from .nexus_acq_rigaku_zdt_fly import setup_rigaku_ZDT_fly, rigaku_acq_ZDT_fly
+
 # from .eiger_movie_mode import setup_eiger_tv_mode
 
 from .shutter_logic import pre_align
