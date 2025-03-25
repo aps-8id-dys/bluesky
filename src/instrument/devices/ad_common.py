@@ -130,8 +130,11 @@ class Rigaku3MCam(CamBase_V34):
     """Support for the RigakuSi3M camera controls."""
 
     _html_docs = ["Rigaku3MCam.html"]
+    wait_for_plugins = ADComponent(
+        EpicsSignal, "WaitForPlugins", string=True, kind="config"
+    )
 
-    sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
+    # sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
     fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
     fast_file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True)
     image_mode = ADComponent(EpicsSignalWithRBV, "ImageMode", string=True)
@@ -140,16 +143,29 @@ class Rigaku3MCam(CamBase_V34):
     upper_threshold = ADComponent(EpicsSignalWithRBV, "UpperThreshold")
     lower_threshold = ADComponent(EpicsSignalWithRBV, "LowerThreshold")
 
+    output_control = ADComponent(EpicsSignalWithRBV, "OutputControl", string=True)
+    trigger_edge = ADComponent(EpicsSignalWithRBV, "TriggerEdge", string=True)
+    # trigger_mode replaces same (SignalWithRBV) in CamBase
+    trigger_mode = ADComponent(EpicsSignalWithRBV, "TriggerMode", string=True)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.sparse_enable.kind = "config"
-        self.fast_file_name.kind = "config"
-        self.fast_file_path.kind = "config"
-        self.image_mode.kind = "config"
-        self.output_resolution.kind = "config"
-        self.dual_threshold.kind = "config"
-        self.upper_threshold.kind = "config"
-        self.lower_threshold.kind = "config"
+
+        # kind attribute must be set after Components are initialized
+        attrs = """
+            dual_threshold
+            fast_file_name
+            fast_file_path
+            image_mode
+            lower_threshold
+            output_control
+            output_resolution
+            trigger_edge
+            trigger_mode
+            upper_threshold
+        """.split()
+        for attr in attrs:
+            getattr(self, attr).kind = "config"
 
 
 class SimDetectorCam_V34(CamMixin_V34, SimDetectorCam):

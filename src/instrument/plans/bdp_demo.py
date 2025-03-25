@@ -162,7 +162,7 @@ def _pick_area_detector(detector_name):
 
 
 def _header_index():
-    return f"{xpcs_header.get()}_{xpcs_index.get():03d}"
+    return f"{xpcs_header.get()}_{xpcs_index.get():05d}"
 
 
 def _xpcsDataDir(title: str, nframes: int = 0):
