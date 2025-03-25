@@ -22,7 +22,8 @@ dependencies = [
     "ophyd",
     "ophyd-registry",
     "pysumreg",
-    "qtpy"
+    "qtpy",
+    "apsbits",
 ]
 
 [project.optional-dependencies]
@@ -48,7 +49,7 @@ requires = ["setuptools >= 62.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"aps_8id_bs_instrument" = "src/instrument"}
+package-dir = {"" = "/src"}
 
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.yml"]
