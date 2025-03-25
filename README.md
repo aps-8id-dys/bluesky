@@ -119,7 +119,7 @@ that might be installed into a read-only directory.
 
 ## OLD README (review)
 
-## Sanity check test script
+### Sanity check test script
 The below script will allow you to check if you are on the private subnet as
 well as check if APS Data Management tools are installed properly.
 ```bash
