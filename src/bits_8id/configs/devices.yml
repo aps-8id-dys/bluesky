@@ -1,19 +1,19 @@
-ophyd.AD_Eiger:
+8id.devices.AD_Eiger:
   - name: eiger4M
     prefix: "8id:Eiger4M:"
     labels: ["detector", "area_detector"]
 
-ophyd.AD_Lambda:
+8id.devices.AD_Lambda:
   - name: lambda2M
     prefix: "8id:Lambda2M:"
     labels: ["detector", "area_detector"]
 
-ophyd.AD_Rigaku:
+8id.devices.AD_Rigaku:
   - name: rigaku3M
     prefix: "8id:Rigaku3M:"
     labels: ["detector", "area_detector"]
 
-ophyd.AerotechMotor:
+8id.devices.AerotechMotor:
   - name: aerotech_stage_x
     prefix: "8id:aeroX:"
     labels: ["motor", "stage"]
@@ -21,7 +21,7 @@ ophyd.AerotechMotor:
     prefix: "8id:aeroY:"
     labels: ["motor", "stage"]
 
-ophyd.EpicsMotor:
+8id.devices.EpicsMotor:
   - name: huber_theta
     prefix: "8id:Huber:theta"
     labels: ["motor", "diffractometer"]
@@ -29,22 +29,22 @@ ophyd.EpicsMotor:
     prefix: "8id:Slit:top"
     labels: ["motor", "slits"]
 
-ophyd.FastShutter:
+8id.devices.FastShutter:
   - name: fast_shutter
     prefix: "8id:FastShutter:"
     labels: ["shutter"]
 
-ophyd.XBPM:
+8id.devices.XBPM:
   - name: xbpm2
     prefix: "8id:XBPM2:"
     labels: ["diagnostics", "xbpm"]
 
-ophyd.TetrammPico:
+8id.devices.TetrammPico:
   - name: tetramm
     prefix: "8id:Tetramm:"
     labels: ["diagnostics", "picoammeter"]
 
-ophyd.Transfocator:
+8id.devices.Transfocator:
   - name: transfocator8idd
     prefix: "8idd:Transfocator:"
     labels: ["optics", "transfocator"]
