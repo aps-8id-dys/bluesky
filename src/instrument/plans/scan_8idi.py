@@ -12,6 +12,14 @@ from .shutter_logic import pre_align
 from .shutter_logic import showbeam
 
 
+def att(att_ratio=None):
+    yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
+    yield from bps.sleep(2)
+    yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
+    yield from bps.sleep(2)
+    yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
+    yield from bps.sleep(2)
+
 
 def x_lup(
     rel_begin=-3,

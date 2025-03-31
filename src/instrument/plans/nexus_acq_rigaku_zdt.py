@@ -48,7 +48,6 @@ def rigaku_acq_ZDT_series(acq_time=2e-5,
         folder_prefix = gen_folder_prefix()
 
         for ii in range(num_rep):
-            yield from bps.sleep(wait_time)
 
             if sample_move:
                 yield from mesh_grid_move()
@@ -65,6 +64,8 @@ def rigaku_acq_ZDT_series(acq_time=2e-5,
             create_nexus_format_metadata(metadata_fname, det=rigaku3M)
             
             dm_run_job('rigaku', process, workflowProcApi, dmuser, file_name)
+
+            yield from bps.sleep(wait_time)
 
     except Exception as e:
         print(f"Error occurred during measurement: {e}")

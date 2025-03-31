@@ -23,7 +23,8 @@ from .nexus_acq_eiger_ext import softglue_stop_pulses
 from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
 from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
 
-from .nexus_acq_rigaku_zdt_fly import setup_rigaku_ZDT_fly, rigaku_acq_ZDT_fly
+from .nexus_acq_rigaku_zdt_fly import setup_rigaku_ZDT_fly
+from .nexus_acq_rigaku_zdt_fly import rigaku_acq_ZDT_fly
 
 # from .eiger_movie_mode import setup_eiger_tv_mode
 
@@ -37,6 +38,7 @@ from .shutter_logic import shutteroff
 from .scan_8idi import x_lup
 from .scan_8idi import y_lup
 from .scan_8idi import rheo_x_lup, rheo_y_lup, rheo_set_x_lup
+from .scan_8idi import att
 
 from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move

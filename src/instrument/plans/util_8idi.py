@@ -17,5 +17,3 @@ def temp2str(temp):
     temp_name = f"{padded_integer_part}p{decimal_part_cropped}"
     return(temp_name)
 
-
-

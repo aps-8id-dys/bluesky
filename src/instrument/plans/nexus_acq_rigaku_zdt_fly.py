@@ -35,13 +35,13 @@ def setup_rigaku_ZDT_fly(acq_time, num_frames, file_name):
     os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
-def rigaku_acq_ZDT_fly(acq_time=1, 
-                         num_frame=10, 
+def rigaku_acq_ZDT_fly(acq_time=2e-5, 
+                         num_frame=100000, 
                          num_rep=3, 
-                         flyspeed=0.1,
+                         flyspeed=0.5,
                          wait_time=0.0,
                          sample_move=False,
-                         process=False
+                         process=True
                          ):
     
     try:
@@ -56,14 +56,14 @@ def rigaku_acq_ZDT_fly(acq_time=1,
             if sample_move:
                 yield from mesh_grid_move()
 
-            file_name = f"{folder_prefix}_f{num_frame:06d}_r{ii+1:05d}"
-            yield from setup_rigaku_ZDT_series(acq_time, num_frame, file_name)
+            file_name = f"{folder_prefix}_f{num_frame:06d}_s{flyspeed*1000:04d}_r{ii+1:05d}"
+            yield from setup_rigaku_ZDT_fly(acq_time, num_frame, file_name)
 
-            extra_acq_time = 0.5
+            extra_acq_time = 1.0
             total_travel = flyspeed*(acq_time*num_frame+extra_acq_time)
-            yield from showbeam()
             yield from bps.mv(sample.y.velocity, flyspeed)
             yield from bps.mvr(sample.y.user_setpoint, total_travel)
+            yield from showbeam()
             yield from bp.count([rigaku3M])
             yield from blockbeam()
             yield from bps.mv(sample.y.velocity, 5)

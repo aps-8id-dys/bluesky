@@ -77,12 +77,57 @@ def te(setpoint: float, wait: bool = False):
         yield from bps.mv(qnw, setpoint)
     else:
         yield from bps.mv(qnw.setpoint, setpoint)
+    yield from bps.sleep(2)
 
 
 def temp_ramp(ramprate: float = 0.3):
     qnw_number = find_qnw_index()
     qnw = qnw_controllers[qnw_number-1]
     yield from bps.mv(qnw.ramprate, ramprate)
+    yield from bps.sleep(2)
+    yield from bps.mv(qnw.ramprate, ramprate)
+    yield from bps.sleep(2)
+
+def te(setpoint: float, wait: bool = False):
+    qnw_number = find_qnw_index()
+    qnw = qnw_controllers[qnw_number-1]
+    if wait:
+        yield from bps.mv(qnw, setpoint)
+    else:
+        yield from bps.mv(qnw.setpoint, setpoint)
+    yield from bps.sleep(2)
+
+
+def te_ramp(setpoint: float, ramprate: float, wait: bool):
+    qnw_number = find_qnw_index()
+    qnw = qnw_controllers[qnw_number-1]
+    # Run this thrice just to make sure all settings go through
+    yield from bps.mv(qnw.ramprate, ramprate)
+    yield from bps.sleep(2)
+    if wait:
+        yield from bps.mv(qnw, setpoint)
+    else:
+        yield from bps.mv(qnw.setpoint, setpoint)
+    yield from bps.sleep(2)
+
+    yield from bps.mv(qnw.ramprate, ramprate)
+    yield from bps.sleep(2)
+    if wait:
+        yield from bps.mv(qnw, setpoint)
+    else:
+        yield from bps.mv(qnw.setpoint, setpoint)
+    yield from bps.sleep(2)
+
+    yield from bps.mv(qnw.ramprate, ramprate)
+    yield from bps.sleep(2)
+    if wait:
+        yield from bps.mv(qnw, setpoint)
+    else:
+        yield from bps.mv(qnw.setpoint, setpoint)
+    yield from bps.sleep(2)
+
+
+
 
 
 def te_env(qnw_number: int, setpoint: float, wait: bool = False):
