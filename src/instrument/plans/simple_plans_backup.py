@@ -146,9 +146,10 @@ def simple_acquire_int_series(det, md):
 
 def simple_acquire_int_series_nexus(det):
     """Just run the acquisition and save the file, nothing else."""
-    metadata_fname = pv_registers.metadata_full_path.get()
-    print(f'{metadata_fname=}')
-    create_nexus_format_metadata(metadata_fname, det)
+    file_path = det.hdf1.file_path.get()
+    base_file_name = det.hdf1.file_name.get()
+    metadata_fname = f"{file_path}/{base_file_name}_metadata.hdf"
+    create_nexus_format_metadata(metadata_fname)
     yield from bp.count([det])
 
 
@@ -157,7 +158,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
     
-    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
+    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -172,7 +173,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
+    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}{file_name}.hdf")
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
@@ -332,7 +333,7 @@ def eiger_acq_int_series(det=eiger4M,
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         yield from showbeam()
         yield from bps.sleep(0.1)
-        yield from simple_acquire_int_series_nexus(det)
+        yield from simple_acquire_int_series(det, md)
         yield from blockbeam()
 
         try:
