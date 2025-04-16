@@ -22,6 +22,7 @@ class EpicsPvStorageRegisters(Device):
     spec_file = Component(EpicsSignal, "StrReg10", string=True)
     analysis_type = Component(EpicsSignal, "StrReg11", string=True)
     start_bluesky = Component(EpicsSignal, "StrReg12", string=True)
+    det_name = Component(EpicsSignal, "StrReg13", string=True)
 
     measurement_num = Component(EpicsSignal, "Reg1")
     qnw_index = Component(EpicsSignal, "Reg2")

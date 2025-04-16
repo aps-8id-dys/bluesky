@@ -139,8 +139,8 @@ def create_runtime_metadata_dict(det=None, additional_metadata=None):
     
         "/entry/instrument/detector_1/beam_center_x": pv_registers.current_db_x0.get(),
         "/entry/instrument/detector_1/beam_center_y": pv_registers.current_db_y0.get(),
-        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.current_db_x0.get(),
-        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.current_db_y0.get(),
+        "/entry/instrument/detector_1/beam_center_position_x": detector.x.position,
+        "/entry/instrument/detector_1/beam_center_position_y": detector.y.position,
         "/entry/instrument/detector_1/position_x": detector.x.position,
         "/entry/instrument/detector_1/position_y": detector.y.position,
         

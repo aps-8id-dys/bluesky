@@ -43,7 +43,8 @@ def submit_Nexus_DM():
                         "filePath": f"{filename}.h5", 
                         "qmap": f"{qmap_file}",
                         "analysisMachine": f"{analysis_machine}",
-                        "gpuID": -2
+                        "gpuID": -2,
+                        "analysis_type": 'Both'
                         }
             job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
             print(f"Job {job['id']} processing {filename}")
