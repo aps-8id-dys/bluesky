@@ -260,6 +260,7 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
         "FLAG4": BasicCam_V34,
         "LAMBDA_2M": Lambda2MCam,
         "RIGAKU_3M": Rigaku3MCam,
+        "RIGAKU_500K": Rigaku3MCam,  # TODO: Is the 500k's cam different?
     }[det_key]
 
     return XpcsAD_factory(

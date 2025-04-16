@@ -89,6 +89,11 @@ AREA_DETECTOR:
     IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
     NAME: rigaku3M
     PV_PREFIX: "8idRigaku3m:"
+  RIGAKU_500K:
+    # IOC host: rigaku500k (10.54.116.101)
+    IOC_FILES_ROOT: *BLUESKY_DATA_ROOT
+    NAME: rigaku500k
+    PV_PREFIX: "8idRigaku:"
 
 # ----------------------------------
 
