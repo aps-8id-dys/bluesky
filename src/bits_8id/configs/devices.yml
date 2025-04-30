@@ -3,7 +3,7 @@
 #     prefix: "8id:Eiger4M:"
 #     labels: ["detector", "area_detector"]
 
-apstools.devices.ad_creator:
+apstools.devices.area_detector_factory.ad_creator:
 
 - name: eiger4M
   prefix: "8idEiger4M:"
@@ -19,7 +19,7 @@ apstools.devices.ad_creator:
       class: 8id.devices.ad_common.EigerDetectorCam_V34
   - image
   - hdf1:
-      class: apstools.devices.AD_EpicsFileNameHDF5Plugin
+      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
       # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
       read_path_template: /home/8ididata/2023-2/pvaccess_test/
       # same filesystem for IOC & Bluesky
