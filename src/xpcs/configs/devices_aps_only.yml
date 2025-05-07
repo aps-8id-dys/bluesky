@@ -4,3 +4,7 @@
 
 apstools.devices.ApsMachineParametersDevice:
   - name: aps
+
+xpcs.devices.sydor_tp4u.SydorTP4U: # Does not connect off beamline; Aps only
+- name: xbpm2
+  prefix: "8idiSoft:T4U_BPM:"

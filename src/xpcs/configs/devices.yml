@@ -9,12 +9,6 @@ ophyd.EpicsMotor:
 - {name: fl3, prefix: 8idiSoft:CR8-I2:m7, labels: ["motor"]}
 - {name: flag4, prefix: 8iddSoft:CR8-D1:m1, labels: ["motor"]}
 
-xpcs.devices.bd_5a.BD5A:
-- name: bd5a
-  prefix: "8iddSoft:CR8-D1:US"
-  h_base_motor: m9
-  v_base_motor: m10
-
 xpcs.devices.damm.Damm:
 - name: damm
   prefix: "8iddSoft:CR8-D1:US"
@@ -71,6 +65,16 @@ xpcs.devices.hhl_slits.HHLSlits:
   hcen_motor: "hCenter"
   vgap_motor: "vSize"
   vcen_motor: "vCenter"
+
+xpcs.devices.hv_motors.HV_Motors:
+- name: bd6a
+  prefix: "8iddSoft:CR8-E2:"
+  pv_h: m9
+  pv_v: m10
+- name: bd5a
+  prefix: "8iddSoft:CR8-D1:US"
+  pv_h: m9
+  pv_v: m10
 
 xpcs.devices.idt_mono.IDTMono:
 - name: "idt_mono"
