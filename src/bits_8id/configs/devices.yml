@@ -1,8 +1,3 @@
-# 8id.devices.AD_Eiger:
-#   - name: eiger4M
-#     prefix: "8id:Eiger4M:"
-#     labels: ["detector", "area_detector"]
-
 apstools.devices.area_detector_factory.ad_creator:
 
 - name: eiger4M
@@ -29,10 +24,28 @@ apstools.devices.area_detector_factory.ad_creator:
   - roi1
   - stats1
 
-8id.devices.AD_Lambda:
 - name: lambda2M
-  prefix: "8id:Lambda2M:"
-  labels: [ "detector", "area_detector" ]
+  prefix: "8idLambda2m:"
+  # IOC host: lambda2m
+  labels:
+  - area_detector
+  - detector
+  - detectors
+  plugins:
+  # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
+  - cam:
+      class: 8id.devices.ad_common.Lambda2MCam
+  - image
+  - hdf1:
+      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
+      # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
+      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      # same filesystem for IOC & Bluesky
+      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+  - overlay1
+  - pva
+  - roi1
+  - stats1
 
 8id.devices.AD_Rigaku:
 - name: rigaku3M
