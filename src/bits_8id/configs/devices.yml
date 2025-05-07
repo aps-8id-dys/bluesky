@@ -87,6 +87,14 @@ apstools.devices.area_detector_factory.ad_creator:
   - roi1
   - stats1
 
+# TODO: #116
+# flag1
+# flag2
+# flag3
+# flag4
+# adsim4M
+# adsim16M
+
 8id.devices.AerotechMotor:
 - name: aerotech_stage_x
   prefix: "8id:aeroX:"
