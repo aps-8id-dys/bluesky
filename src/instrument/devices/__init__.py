@@ -45,7 +45,7 @@ from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
 # from .xbpm2_in_8ide import bd6a
 # from .xbpm2_in_8ide import xbpm2
 from ...xpcs.devices.win import win_e, win_i
-from .func_gen import dpKeysight
+from ...xpcs.devices.func_gen import dpKeysight
 from .huber_diffractometer import huber
 from .rheometer_wait_signal import mcr_wait_signal
 

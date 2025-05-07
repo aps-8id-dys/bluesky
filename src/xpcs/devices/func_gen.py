@@ -20,4 +20,4 @@ class Function_Generator(Device):
     amp = Component(EpicsSignal, "1:AMP")
     send_trigger = Component(EpicsSignal, "TRIG.PROC")
 
-dpKeysight = Function_Generator("dpKeysight:KEY1:", name="dpKeysight")
+# dpKeysight = Function_Generator("dpKeysight:KEY1:", name="dpKeysight")

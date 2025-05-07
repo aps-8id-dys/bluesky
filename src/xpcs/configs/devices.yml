@@ -207,6 +207,10 @@ xpcs.devices.transfocator.Transfocator:
   pv_lens9: "m23"
   pv_lens10: "m24"
 
+xpcs.devices.func_gen.Function_Generator:
+- name: dpKeysight
+  prefix: "dpKeysight:KEY1:"
+  
 # apstools.devices.area_detector_factory.ad_creator:
 
 # - name: eiger4M
