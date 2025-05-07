@@ -4,9 +4,6 @@ Custom Device Definitions & Instatiation
 
 # flake8: noqa
 
-## Simulated detector/motor
-from .simulated_1d_detector import sim_1d, sim_motor
-
 ## Beamline specific devices (with rules)
 try:
     from .aerotech_stages import sample, detector, rheometer
