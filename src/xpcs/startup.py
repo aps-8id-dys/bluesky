@@ -10,32 +10,45 @@ Includes:
 """
 
 import logging
+from pathlib import Path
 
 from apsbits.core.best_effort_init import init_bec_peaks
 from apsbits.core.catalog_init import init_catalog
+from apsbits.core.instrument_init import make_devices
+from apsbits.core.instrument_init import oregistry
 from apsbits.core.run_engine_init import init_RE
 from apsbits.utils.aps_functions import aps_dm_setup
+from apsbits.utils.aps_functions import host_on_aps_subnet
 from apsbits.utils.config_loaders import get_config
-from apsbits.utils.controls_setup import oregistry
+from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
-from apsbits.utils.make_devices import make_devices
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
 
-oregistry.clear()  # Discard oregistry items loaded above.
+# Get the path to the instrument package
+instrument_path = Path(__file__).parent
+
+# Load configuration to be used by the instrument.
+iconfig_path = instrument_path / "configs" / "iconfig.yml"
+load_config(iconfig_path)
 
 # Get the configuration
 iconfig = get_config()
 
+logger.info("Starting Instrument with iconfig: %s", iconfig_path)
+
+# Discard oregistry items loaded above.
+oregistry.clear()
+
 # Configure the session with callbacks, devices, and plans.
 aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
 
-if iconfig.get("USE_BLUESKY_MAGICS", False):
-    register_bluesky_magics()
+# Command-line tools, such as %wa, %ct, ...
+register_bluesky_magics()
 
-# Initialize core components
+# Initialize core bluesky components
 bec, peaks = init_bec_peaks(iconfig)
 cat = init_catalog(iconfig)
 RE, sd = init_RE(iconfig, bec_instance=bec, cat_instance=cat)
@@ -54,9 +67,6 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
 
     init_specwriter_with_RE(RE)
 
-# Import all plans
-from .plans import *  # noqa
-
 # These imports must come after the above setup.
 if running_in_queueserver():
     ### To make all the standard plans available in QS, import by '*', otherwise import
@@ -72,5 +82,7 @@ else:
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 
+RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
-RE(make_devices(clear=False))
+if host_on_aps_subnet():
+    RE(make_devices(clear=False, file="device_aps_only.yml"))
