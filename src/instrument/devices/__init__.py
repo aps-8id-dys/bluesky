@@ -30,12 +30,12 @@ from ...xpcs.devices.hhl_mirrors import mr1, mr2
 from ...xpcs.devices.hhl_slits import wb_slit, mono_slit
 from ...xpcs.devices.idt_mono import idt_mono
 from ...xpcs.devices.labjack_support import labjack
-from .fast_shutter import shutter_8ide
+from ...xpcs.devices.fast_shutter import shutter_8ide
 from .meascomp_usb_ctr import mcs
-from .qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from .qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
-from .filters_8id import filter_8ide, filter_8idi
-from .registers_device import pv_registers
+from ...xpcs.devices.filters_8id import filter_8ide, filter_8idi
+from ...xpcs.devices.registers_device import pv_registers
 from .slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from .slit import sl4, sl5, sl7, sl8, sl9
 from .individual_slits import sl5_motors, sl9_motors

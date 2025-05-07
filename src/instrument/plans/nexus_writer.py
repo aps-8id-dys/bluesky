@@ -4,13 +4,13 @@ import warnings
 import numpy as np
 import h5py 
 
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
+from ...xpcs.devices.registers_device import pv_registers
+from ...xpcs.devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample, detector
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 
 
 def create_run_metadata_dict(det=eiger4M):

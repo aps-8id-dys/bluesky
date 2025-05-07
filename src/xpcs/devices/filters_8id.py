@@ -17,5 +17,5 @@ class Filter2Device(Device):
     transmission_readback = Component(EpicsSignal, "transmission_RBV")
 
 
-filter_8ide = Filter2Device("8idPyFilter:FL2:", name="filter_8ide")
-filter_8idi = Filter2Device("8idPyFilter:FL3:", name="filter_8idi")
+# filter_8ide = Filter2Device("8idPyFilter:FL2:", name="filter_8ide")
+# filter_8idi = Filter2Device("8idPyFilter:FL3:", name="filter_8idi")

@@ -63,7 +63,7 @@ class EpicsPvStorageRegisters(Device):
         #     return getattr(self, f"sample{qnw_index}_pos")
         # else:
         #     return getattr(self, f"sample9_pos")
-        
+
         return getattr(self, f"sample{qnw_index}_pos")
 
-pv_registers = EpicsPvStorageRegisters("8idiSoft:", name="pv_registers")
+# pv_registers = EpicsPvStorageRegisters("8idiSoft:", name="pv_registers")

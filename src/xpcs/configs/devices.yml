@@ -4,6 +4,11 @@ apsbits.utils.sim_creator.predefined_device:
 - {creator: ophyd.sim.motor, name: sim_motor}
 - {creator: ophyd.sim.noisy_det, name: sim_det}
 
+ophyd.EpicsMotor:
+- {name: fl2, prefix: 8ideSoft:CR8-E2:m7, labels: ["motor"]}
+- {name: fl3, prefix: 8idiSoft:CR8-I2:m7, labels: ["motor"]}
+- {name: flag4, prefix: 8iddSoft:CR8-D1:m1, labels: ["motor"]}
+
 xpcs.devices.bd_5a.BD5A:
 - name: bd5a
   prefix: "8iddSoft:CR8-D1:US"
@@ -15,6 +20,16 @@ xpcs.devices.damm.Damm:
   prefix: "8iddSoft:CR8-D1:US"
   x_motor: m2
   y_motor: m3
+
+xpcs.devices.fast_shutter.FastShutter:
+- name: shutter_8ide
+  prefix: "8ideSoft:fastshutter:"
+
+xpcs.devices.filters_8id.Filter2Device:
+- name: filter_8ide
+  prefix: "8idPyFilter:FL2:"
+- name: filter_8idi
+  prefix: "8idPyFilter:FL3:"
 
 xpcs.devices.granite.granite_device:
 - name: granite
@@ -72,10 +87,21 @@ xpcs.devices.labjack_support.LabJack:
 - name: "labjack"
   prefix: "8idiSoft:LJT705:"
 
-ophyd.EpicsMotor:
-- {name: fl2, prefix: 8ideSoft:CR8-E2:m7, labels: ["motor"]}
-- {name: fl3, prefix: 8idiSoft:CR8-I2:m7, labels: ["motor"]}
-- {name: flag4, prefix: 8iddSoft:CR8-D1:m1, labels: ["motor"]}
+xpcs.devices.qnw_device.QnwDevice:
+- name: qnw_env1
+  prefix: "8idiSoft:QNWenv_1:"
+  readback_pv: null
+- name: qnw_env2
+  prefix: "8idiSoft:QNWenv_2:"
+  readback_pv: null
+- name: qnw_env3
+  prefix: "8idiSoft:QNWenv_3:"
+  readback_pv: null
+
+xpcs.devices.registers_device.EpicsPvStorageRegisters:
+- name: pv_registers
+  prefix: "8idiSoft:"
+
 
 # apstools.devices.area_detector_factory.ad_creator:
 

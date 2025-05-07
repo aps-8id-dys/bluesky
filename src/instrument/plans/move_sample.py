@@ -1,7 +1,7 @@
 
 
 from ..devices.aerotech_stages import sample, rheometer
-from ..devices.registers_device import pv_registers
+from ...xpcs.devices.registers_device import pv_registers
 from bluesky import plan_stubs as bps
 
 import numpy as np

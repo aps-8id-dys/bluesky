@@ -14,4 +14,4 @@ class LabJack(Device):
     logic = Component(EpicsSignal, "Bo1")
 
 
-labjack = LabJack("8idiSoft:LJT705:", name="labjack")
+# labjack = LabJack("8idiSoft:LJT705:", name="labjack")

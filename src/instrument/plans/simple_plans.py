@@ -17,13 +17,13 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
+from ...xpcs.devices.registers_device import pv_registers
+from ...xpcs.devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample, rheometer
 from ..devices.softglue import softglue_8idi
 from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
 from .select_sample import sort_qnw

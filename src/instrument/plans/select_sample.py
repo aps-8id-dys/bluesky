@@ -17,8 +17,8 @@ import epics as pe
 
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
-from ..devices.registers_device import pv_registers
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ...xpcs.devices.registers_device import pv_registers
+from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from ..devices.qnw_vac_device import qnw_vac1
 # from ..devices.qnw_vac_device import qnw_vac2
 # from ..devices.qnw_vac_device import qnw_vac3
