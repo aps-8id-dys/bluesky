@@ -2,38 +2,31 @@
 Custom Plan Definitions & Instatiations
 """
 
-# flake8: noqa
-
-# beamline specific plans
-# from .bdp_demo import mc_test
-# from .bdp_demo import xpcs_bdp_demo_plan
-# from .bdp_demo import xpcs_reset_index
-# from .bdp_demo import xpcs_setup_user
-
-# sanity check plans
-from .demo_hello_world import hello_world
-from .demo_sim_1d import demo_sim_1d
-from .mesh_plans import xpcs_mesh
-from .qnw_plans import set_qnw
+from .qnw_plans import find_qnw_index, te, temp_ramp, te_env, temp_ramp_env
 # from .qnw_vac_plans import set_qnw_vac
 
 from .select_sample_env import select_sample_env
-from .select_sample import select_sample, sort_qnw
+from .sample_info_unpack import select_sample, sort_qnw, gen_folder_prefix
+from .select_detector import select_detector
 
-from .simple_plans import create_run_metadata_dict
-from .simple_plans import eiger_acq_ext_trig
-from .simple_plans import eiger_acq_int_series
-from .simple_plans import eiger_acq_flyscan
-from .simple_plans import kickoff_dm_workflow
-from .simple_plans import setup_det_ext_trig
-from .simple_plans import setup_det_int_series
-from .simple_plans import setup_softglue_ext_trig
-from .simple_plans import simple_acquire_ext_trig
-from .simple_plans import simple_acquire_int_series
-from .simple_plans import softglue_start_pulses
-from .nexus_writer import create_run_metadata_dict
+from .util_8idi import get_machine_name, temp2str
 
-from .nexus_writer import write_nexus_file
+from .nexus_acq_eiger_int import setup_eiger_int_series
+from .nexus_acq_eiger_int import eiger_acq_int_series
+
+from .nexus_acq_eiger_ext import setup_eiger_ext_trig
+from .nexus_acq_eiger_ext import eiger_acq_ext_trig
+from .nexus_acq_eiger_ext import setup_softglue_ext_trig
+from .nexus_acq_eiger_ext import softglue_start_pulses
+from .nexus_acq_eiger_ext import softglue_stop_pulses
+
+from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
+from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
+
+from .nexus_acq_rigaku_zdt_fly import setup_rigaku_ZDT_fly
+from .nexus_acq_rigaku_zdt_fly import rigaku_acq_ZDT_fly
+
+# from .eiger_movie_mode import setup_eiger_tv_mode
 
 from .shutter_logic import pre_align
 from .shutter_logic import post_align
@@ -44,8 +37,12 @@ from .shutter_logic import shutteroff
 
 from .scan_8idi import x_lup
 from .scan_8idi import y_lup
-from .scan_8idi import rheo_x_lup
-from .scan_8idi import rheo_set_x_lup
+from .scan_8idi import rheo_x_lup, rheo_y_lup, rheo_set_x_lup
+from .scan_8idi import att
 
 from .rheometer_wait import wait_for_mcr
 from .move_sample import mesh_grid_move
+
+from .spec_8IDE_eiger4M import submit_Nexus_DM
+
+from .dm_util import dm_setup, dm_run_job

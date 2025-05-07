@@ -17,3 +17,12 @@ def shutteron():
 
 def shutteroff():
     yield from bps.mv(shutter_8ide.logic, 1)
+
+
+def post_align():
+    yield from blockbeam()
+
+
+def pre_align():
+    yield from shutteroff()
+

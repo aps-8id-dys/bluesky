@@ -16,7 +16,7 @@ def select_sample_env(env: str):
     choices = {
         "qnw": 923.0,
         "rheometer": 65,
-        "robot_granite": 62,
+        "robot": 62,
     }
     target = choices.get(env)
     if target is None:
