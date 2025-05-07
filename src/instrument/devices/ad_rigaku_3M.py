@@ -4,6 +4,7 @@ EPICS area_detectors
 
 __all__ = """
     rigaku3M
+    rigaku500k
 """.split()
 
 
@@ -14,8 +15,8 @@ logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-# rigaku3M = None  # TODO: IOC is still in development
-rigaku3M = XpcsAreaDetectorFactory("RIGAKU_3M", use_image=False)
+rigaku3M = XpcsAreaDetectorFactory("RIGAKU_3M", use_hdf=False, use_image=False)
+rigaku500k = XpcsAreaDetectorFactory("RIGAKU_500K", use_hdf=False, use_image=False)
 
 # # Remove any stage_sigs here
 # rigaku3M.cam.stage_sigs.pop("wait_for_plugins", None)
