@@ -1,10 +1,6 @@
 """
-granite 1 DOF Motor
+Damm (dynamic aperture) in station 8-ID-D
 """
-
-__all__ = """
-    granite
-""".split()
 
 import logging
 
@@ -13,14 +9,15 @@ from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 
 logger = logging.getLogger(__name__)
-logger.info(__file__)
+logger.bsdev(__file__)
 
 
-class granite_device(Device):
+class Damm(Device):
     def __init__(
         self,
         prefix: str,
         x_motor: str,
+        y_motor: str,
         *args,
         **kwargs,
     ):
@@ -28,15 +25,14 @@ class granite_device(Device):
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])
 
-        self._x_neg_motor = x_motor
+        self._x_motor = x_motor
+        self._y_motor = y_motor
 
         super().__init__(prefix, *args, **kwargs)
 
-    x = FCpt(EpicsMotor, "{motor_prefix}:{_x_neg_motor}", labels={"motors"})
+    # Real motors that directly control the slits
+    x = FCpt(EpicsMotor, "{motor_prefix}:{_x_motor}", labels={"motors"})
+    y = FCpt(EpicsMotor, "{motor_prefix}:{_y_motor}", labels={"motors"})
 
 
-granite = granite_device(
-    name="granite",
-    prefix="8idiSoft:CR8-I2:US",
-    x_motor="m8",
-)
+# damm = Damm(name="damm", prefix="8iddSoft:CR8-D1:US", x_motor="m2", y_motor="m3")

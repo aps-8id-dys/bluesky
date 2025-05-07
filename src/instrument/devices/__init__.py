@@ -20,16 +20,16 @@ except Exception as excuse:
 
 
 ## Beamline specific devices
-from .bd_5a import bd5a
-from .damm import damm
-from .fl import fl2, fl3
-from .flag_4 import flag4
-from .granite import granite
-from .granite_enable import granite_8idi_valve
-from .hhl_mirrors import mr1, mr2
-from .hhl_slits import wb_slit, mono_slit
-from .idt_mono import idt_mono
-from .labjack_support import labjack
+from ...xpcs.devices.bd_5a import bd5a
+from ...xpcs.devices.damm import damm
+from ...xpcs.devices.fl import fl2, fl3
+from ...xpcs.devices.flag_4 import flag4
+from ...xpcs.devices.granite import granite
+from ...xpcs.devices.granite_enable import granite_8idi_valve
+from ...xpcs.devices.hhl_mirrors import mr1, mr2
+from ...xpcs.devices.hhl_slits import wb_slit, mono_slit
+from ...xpcs.devices.idt_mono import idt_mono
+from ...xpcs.devices.labjack_support import labjack
 from .fast_shutter import shutter_8ide
 from .meascomp_usb_ctr import mcs
 from .qnw_device import qnw_env1, qnw_env2, qnw_env3

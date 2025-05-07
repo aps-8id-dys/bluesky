@@ -2,12 +2,6 @@
 High-heat load mirrors in station 8-ID-A.
 """
 
-__all__ = """
-    mr1
-    mr2
-""".split()
-
-
 import logging
 
 from ophyd import Component
@@ -15,7 +9,7 @@ from ophyd import Device
 from ophyd import EpicsMotor
 
 logger = logging.getLogger(__name__)
-logger.info(__file__)
+logger.bsdev(__file__)
 
 
 class HHL_Mirror1(Device):
@@ -50,5 +44,5 @@ class HHL_Mirror2(Device):
     bender2 = Component(EpicsMotor, "FMBO:m8")
 
 
-mr1 = HHL_Mirror1("8idaSoft:", name="mr1")
-mr2 = HHL_Mirror2("8idaSoft:", name="mr2")
+# mr1 = HHL_Mirror1("8idaSoft:", name="mr1")
+# mr2 = HHL_Mirror2("8idaSoft:", name="mr2")

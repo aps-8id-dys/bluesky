@@ -2,11 +2,6 @@
 IDT Mono in station 8-ID-A
 """
 
-__all__ = """
-    idt_mono
-""".split()
-
-
 import logging
 
 from ophyd import Device
@@ -14,7 +9,7 @@ from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 
 logger = logging.getLogger(__name__)
-logger.info(__file__)
+logger.bsdev(__file__)
 
 
 class IDTMono(Device):
@@ -58,14 +53,14 @@ class IDTMono(Device):
     y_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_y_pitch_motor}", labels={"motors"})
 
 
-idt_mono = IDTMono(
-    name="idt_mono",
-    prefix="8idaSoft:MONO:US",
-    bragg_motor="m1",
-    xtal_gap_motor="m2",
-    flag_motor="m3",
-    coarse_pitch_motor="m5",
-    coarse_roll_motor="m6",
-    x_pitch_motor="m7",
-    y_pitch_motor="m8",
-)
+# idt_mono = IDTMono(
+#     name="idt_mono",
+#     prefix="8idaSoft:MONO:US",
+#     bragg_motor="m1",
+#     xtal_gap_motor="m2",
+#     flag_motor="m3",
+#     coarse_pitch_motor="m5",
+#     coarse_roll_motor="m6",
+#     x_pitch_motor="m7",
+#     y_pitch_motor="m8",
+# )
