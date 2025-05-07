@@ -86,3 +86,4 @@ RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
 if host_on_aps_subnet():
     RE(make_devices(clear=False, file="device_aps_only.yml"))
+    RE(make_devices(clear=False, file="ad_device.yml"))
