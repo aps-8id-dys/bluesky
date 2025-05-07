@@ -3,14 +3,10 @@ HHL Slits in station 8-ID-A
 """
 
 # from apstools.devices.hhl_slits import HHLSlits
-import logging
 
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
-
-logger = logging.getLogger(__name__)
-logger.bsdev(__file__)
 
 
 class HHLSlits(Device):
@@ -87,32 +83,3 @@ class HHLSlits(Device):
     hcen = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_hcen_motor}", labels={"motors"})
     vgap = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_vgap_motor}", labels={"motors"})
     vcen = FCpt(EpicsMotor, "{secondary_motor_prefix}:{_vcen_motor}", labels={"motors"})
-
-
-# wb_slit = HHLSlits(
-#     name="wb_slit",
-#     prefix="8idaSoft:CR8-A1:US",
-#     secondary_prefix="8idaSoft:SL-1:US",
-#     pitch_motor="m3",
-#     yaw_motor="m4",
-#     horizontal_motor="m1",
-#     diagonal_motor="m2",
-#     hgap_motor="hSize",
-#     hcen_motor="hCenter",
-#     vgap_motor="vSize",
-#     vcen_motor="vCenter",
-# )
-
-# mono_slit = HHLSlits(
-#     name="mono_slit",
-#     prefix="8idaSoft:CR8-A1:US",
-#     secondary_prefix="8idaSoft:SL-2:US",
-#     pitch_motor="m11",
-#     yaw_motor="m12",
-#     horizontal_motor="m9",
-#     diagonal_motor="m10",
-#     hgap_motor="hSize",
-#     hcen_motor="hCenter",
-#     vgap_motor="vSize",
-#     vcen_motor="vCenter",
-# )

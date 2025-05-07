@@ -51,16 +51,3 @@ class IDTMono(Device):
     )
     x_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_x_pitch_motor}", labels={"motors"})
     y_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_y_pitch_motor}", labels={"motors"})
-
-
-# idt_mono = IDTMono(
-#     name="idt_mono",
-#     prefix="8idaSoft:MONO:US",
-#     bragg_motor="m1",
-#     xtal_gap_motor="m2",
-#     flag_motor="m3",
-#     coarse_pitch_motor="m5",
-#     coarse_roll_motor="m6",
-#     x_pitch_motor="m7",
-#     y_pitch_motor="m8",
-# )

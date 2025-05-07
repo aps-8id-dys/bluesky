@@ -59,13 +59,3 @@ class SoftGlue(Device):
         string=True,
     )
 
-
-# softglue_8idi = SoftGlue(
-#     "",
-#     name="softglue_8idi",
-#     pv_acq_period="8idi:SGControl1.A",
-#     pv_acq_time="8idi:SGControl1.C",
-#     pv_num_triggers="8idi:SGControl1.J",
-#     pv_start_pulses="8idi:softGlueA:MUX2-1_IN0_Signal",
-#     pv_stop_pulses="8idi:softGlueA:OR-1_IN2_Signal",
-# )

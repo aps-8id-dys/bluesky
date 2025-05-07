@@ -2,7 +2,6 @@
 EPICS PVs as Storage registers.
 """
 
-from bluesky import plan_stubs as bps
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
@@ -21,6 +20,8 @@ class EpicsPvStorageRegisters(Device):
     sample_name = Component(EpicsSignal, "StrReg9", string=True)
     spec_file = Component(EpicsSignal, "StrReg10", string=True)
     analysis_type = Component(EpicsSignal, "StrReg11", string=True)
+    start_bluesky = Component(EpicsSignal, "StrReg12", string=True)
+    det_name = Component(EpicsSignal, "StrReg13", string=True)
 
     measurement_num = Component(EpicsSignal, "Reg1")
     qnw_index = Component(EpicsSignal, "Reg2")
@@ -54,6 +55,19 @@ class EpicsPvStorageRegisters(Device):
     sample26_pos = Component(EpicsSignal, "Reg29")
     sample27_pos = Component(EpicsSignal, "Reg30")
 
+    eiger_det_x0 = Component(EpicsSignal, "Reg31")
+    eiger_det_y0 = Component(EpicsSignal, "Reg32")
+    eiger_db_x0 = Component(EpicsSignal, "Reg33")
+    eiger_db_y0 = Component(EpicsSignal, "Reg34")
+    rigaku_det_x0 = Component(EpicsSignal, "Reg35")
+    rigaku_det_y0 = Component(EpicsSignal, "Reg36")
+    rigaku_db_x0 = Component(EpicsSignal, "Reg37")
+    rigaku_db_y0 = Component(EpicsSignal, "Reg38")
+    current_det_x0 = Component(EpicsSignal, "Reg39")
+    current_det_y0 = Component(EpicsSignal, "Reg40")
+    current_db_x0 = Component(EpicsSignal, "Reg41")
+    current_db_y0 = Component(EpicsSignal, "Reg42")
+
     def sample_position_register(self, qnw_index):
         """
         Return the indexed sample position register signal.
@@ -65,5 +79,3 @@ class EpicsPvStorageRegisters(Device):
         #     return getattr(self, f"sample9_pos")
 
         return getattr(self, f"sample{qnw_index}_pos")
-
-# pv_registers = EpicsPvStorageRegisters("8idiSoft:", name="pv_registers")
