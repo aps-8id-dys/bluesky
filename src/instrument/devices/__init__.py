@@ -20,33 +20,33 @@ except Exception as excuse:
 
 
 ## Beamline specific devices
-from ...xpcs.devices.xy_motors import damm
-from ...xpcs.devices.fl import fl2, fl3
-from ...xpcs.devices.flag_4 import flag4
-from ...xpcs.devices.granite import granite
-from ...xpcs.devices.granite_enable import granite_8idi_valve
-from ...xpcs.devices.hhl_mirrors import mr1, mr2
-from ...xpcs.devices.hhl_slits import wb_slit, mono_slit
-from ...xpcs.devices.idt_mono import idt_mono
-from ...xpcs.devices.labjack_support import labjack
-from ...xpcs.devices.fast_shutter import shutter_8ide
+from ...id8_i.devices.xy_motors import damm
+from ...id8_i.devices.fl import fl2, fl3
+from ...id8_i.devices.flag_4 import flag4
+from ...id8_i.devices.granite import granite
+from ...id8_i.devices.granite_enable import granite_8idi_valve
+from ...id8_i.devices.hhl_mirrors import mr1, mr2
+from ...id8_i.devices.hhl_slits import wb_slit, mono_slit
+from ...id8_i.devices.idt_mono import idt_mono
+from ...id8_i.devices.labjack_support import labjack
+from ...id8_i.devices.fast_shutter import shutter_8ide
 from .meascomp_usb_ctr import mcs
-from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+from ...id8_i.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from .qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
-from ...xpcs.devices.filters_8id import filter_8ide, filter_8idi
-from ...xpcs.devices.registers_device import pv_registers
-from ...xpcs.devices.slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
-from ...xpcs.devices.slit import sl4, sl5, sl7, sl8, sl9
-from ...xpcs.devices.individual_slits import sl5_motors, sl9_motors
-from ...xpcs.devices.softglue import softglue_8idi
+from ...id8_i.devices.filters_8id import filter_8ide, filter_8idi
+from ...id8_i.devices.registers_device import pv_registers
+from ...id8_i.devices.slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
+from ...id8_i.devices.slit import sl4, sl5, sl7, sl8, sl9
+from ...id8_i.devices.individual_slits import sl5_motors, sl9_motors
+from ...id8_i.devices.softglue import softglue_8idi
 from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
 # from .transfocator_8idd import rl1
 # from .transfocator_8ide import rl2
 # from .xbpm2_in_8ide import bd6a
 # from .xbpm2_in_8ide import xbpm2
 # from ...xpcs.devices.win import win_e, win_i
-from ...xpcs.devices.func_gen import dpKeysight
-from ...xpcs.devices.huber_diffractometer import huber
+from ...id8_i.devices.func_gen import dpKeysight
+from ...id8_i.devices.huber_diffractometer import huber
 from .rheometer_wait_signal import mcr_wait_signal
 from .lakeshore import lakeshore1, lakeshore2
 from .micellaneous_devices import cam_stage_8idi, mono_8id, flight_path_8idi

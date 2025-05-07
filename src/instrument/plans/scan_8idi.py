@@ -6,7 +6,7 @@ from ..devices.aerotech_stages import sample
 from ..devices.tetramm_picoammeter import tetramm1
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import rheometer
-from ...xpcs.devices.filters_8id import filter_8idi
+from ...id8_i.devices.filters_8id import filter_8idi
 from .shutter_logic import blockbeam
 from .shutter_logic import pre_align
 from .shutter_logic import showbeam
