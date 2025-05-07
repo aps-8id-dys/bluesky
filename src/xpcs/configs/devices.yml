@@ -124,6 +124,17 @@ xpcs.devices.slit_base.SlitBase:
   h_motor: m15
   v_motor: m16
 
+xpcs.devices.slit.ID8Optics2Slit2D_HV:
+- name: sl4
+  prefix: "8iddSoft:Slit1"
+- name: sl5
+  prefix: "8ideSoft:Slit1"
+- name: sl7
+  prefix: "8ideSoft:Slit2"
+- name: sl8
+  prefix: "8idiSoft:Slit1"
+- name: sl9
+  prefix: "8idiSoft:Slit2"
 
 # apstools.devices.area_detector_factory.ad_creator:
 
