@@ -66,6 +66,27 @@ apstools.devices.area_detector_factory.ad_creator:
   - roi1
   - stats1
 
+- name: rigaku500k
+  prefix: "8idRigaku:"
+  # IOC host: rigaku500k (10.54.116.101)
+  labels:
+  - area_detector
+  - detector
+  - detectors
+  plugins:
+  # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
+  - cam:
+      class: 8id.devices.ad_common.Rigaku3MCam # assumed
+  - image
+  - hdf1:
+      class: *HDF5Plugin
+      read_path_template: *AD_FILE_PATH
+      write_path_template: *AD_FILE_PATH
+  - overlay1
+  - pva
+  - roi1
+  - stats1
+
 8id.devices.AerotechMotor:
 - name: aerotech_stage_x
   prefix: "8id:aeroX:"
