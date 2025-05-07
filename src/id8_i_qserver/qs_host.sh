@@ -5,7 +5,7 @@
 
 SHELL_SCRIPT_NAME=${BASH_SOURCE:-${0}}
 SCRIPT_DIR="$(dirname $(readlink -f  "${SHELL_SCRIPT_NAME}"))"
-CONFIGS_DIR=$(readlink -f "${SCRIPT_DIR}/../xpcs/configs")
+CONFIGS_DIR=$(readlink -f "${SCRIPT_DIR}/../id8_i/configs")
 
 ###-----------------------------
 ### Change program defaults here

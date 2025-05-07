@@ -41,7 +41,7 @@ run_engine:
 
 startup:
     keep_re: true
-    startup_module: xpcs.startup
+    startup_module: id8_i.startup
     existing_plans_and_devices_path: ./
     user_group_permissions_path: ./
 
