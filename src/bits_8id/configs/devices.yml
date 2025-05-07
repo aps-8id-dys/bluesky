@@ -14,11 +14,11 @@ apstools.devices.area_detector_factory.ad_creator:
       class: 8id.devices.ad_common.EigerDetectorCam_V34
   - image
   - hdf1:
-      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
+      class: &HDF5Plugin apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
       # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: &AD_FILE_PATH /home/8ididata/2023-2/pvaccess_test/
       # same filesystem for IOC & Bluesky
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      write_path_template: *AD_FILE_PATH
   - overlay1
   - pva
   - roi1
@@ -37,20 +37,34 @@ apstools.devices.area_detector_factory.ad_creator:
       class: 8id.devices.ad_common.Lambda2MCam
   - image
   - hdf1:
-      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
-      # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      # same filesystem for IOC & Bluesky
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      class: *HDF5Plugin
+      read_path_template: *AD_FILE_PATH
+      write_path_template: *AD_FILE_PATH
   - overlay1
   - pva
   - roi1
   - stats1
 
-8id.devices.AD_Rigaku:
 - name: rigaku3M
-  prefix: "8id:Rigaku3M:"
-  labels: [ "detector", "area_detector" ]
+  prefix: "8idRigaku3m:"
+  # IOC host: rigakusi3m (10.54.116.29)
+  labels:
+  - area_detector
+  - detector
+  - detectors
+  plugins:
+  # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
+  - cam:
+      class: 8id.devices.ad_common.Rigaku3MCam
+  - image
+  - hdf1:
+      class: *HDF5Plugin
+      read_path_template: *AD_FILE_PATH
+      write_path_template: *AD_FILE_PATH
+  - overlay1
+  - pva
+  - roi1
+  - stats1
 
 8id.devices.AerotechMotor:
 - name: aerotech_stage_x
