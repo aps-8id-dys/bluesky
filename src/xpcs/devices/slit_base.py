@@ -2,23 +2,9 @@
 Slit Base Devices at 8-ID
 """
 
-__all__ = """
-    sl4_base
-    sl5_base
-    sl7_base
-    sl8_base
-    sl9_base
-""".split()
-
-
-import logging
-
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
 
 
 class SlitBase(Device):
@@ -44,18 +30,18 @@ class SlitBase(Device):
     v = FCpt(EpicsMotor, "{motor_prefix}:{_v_motor}", labels={"motors"})
 
 
-sl4_base = SlitBase(
-    name="sl4_base", prefix="8iddSoft:CR8-D1:US", h_motor="m15", v_motor="m16"
-)
-sl5_base = SlitBase(
-    name="sl5_base", prefix="8ideSoft:CR8-E2:US", h_motor="m5", v_motor="m6"
-)
-sl7_base = SlitBase(
-    name="sl7_base", prefix="8ideSoft:CR8-E2:US", h_motor="m15", v_motor="m16"
-)
-sl8_base = SlitBase(
-    name="sl8_base", prefix="8idiSoft:CR8-I2:US", h_motor="m5", v_motor="m6"
-)
-sl9_base = SlitBase(
-    name="sl9_base", prefix="8idiSoft:CR8-I2:US", h_motor="m15", v_motor="m16"
-)
+# sl4_base = SlitBase(
+#     name="sl4_base", prefix="8iddSoft:CR8-D1:US", h_motor="m15", v_motor="m16"
+# )
+# sl5_base = SlitBase(
+#     name="sl5_base", prefix="8ideSoft:CR8-E2:US", h_motor="m5", v_motor="m6"
+# )
+# sl7_base = SlitBase(
+#     name="sl7_base", prefix="8ideSoft:CR8-E2:US", h_motor="m15", v_motor="m16"
+# )
+# sl8_base = SlitBase(
+#     name="sl8_base", prefix="8idiSoft:CR8-I2:US", h_motor="m5", v_motor="m6"
+# )
+# sl9_base = SlitBase(
+#     name="sl9_base", prefix="8idiSoft:CR8-I2:US", h_motor="m15", v_motor="m16"
+# )

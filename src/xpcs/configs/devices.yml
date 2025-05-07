@@ -102,6 +102,28 @@ xpcs.devices.registers_device.EpicsPvStorageRegisters:
 - name: pv_registers
   prefix: "8idiSoft:"
 
+xpcs.devices.slit_base.SlitBase:
+- name: sl4_base
+  prefix: "8iddSoft:CR8-D1:US"
+  h_motor: m15
+  v_motor: m16
+- name: sl5_base
+  prefix: 8ideSoft:CR8-E2:US
+  h_motor: m5
+  v_motor: m6
+- name: sl7_base
+  prefix: "8ideSoft:CR8-E2:US"
+  h_motor: m15
+  v_motor: m16
+- name: sl8_base
+  prefix: "8idiSoft:CR8-I2:US"
+  h_motor: m5
+  v_motor: m6
+- name: sl9_base
+  prefix: "8idiSoft:CR8-I2:US"
+  h_motor: m15
+  v_motor: m16
+
 
 # apstools.devices.area_detector_factory.ad_creator:
 
