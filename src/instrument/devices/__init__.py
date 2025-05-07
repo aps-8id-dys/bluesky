@@ -39,7 +39,7 @@ from ...xpcs.devices.registers_device import pv_registers
 from ...xpcs.devices.slit_base import sl4_base, sl5_base, sl7_base, sl8_base, sl9_base
 from ...xpcs.devices.slit import sl4, sl5, sl7, sl8, sl9
 from ...xpcs.devices.individual_slits import sl5_motors, sl9_motors
-from .softglue import softglue_8idi
+from ...xpcs.devices.softglue import softglue_8idi
 from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
 from .transfocator_8idd import rl1
 from .transfocator_8ide import rl2

@@ -151,6 +151,15 @@ xpcs.devices.individual_slits.IndividualSlits:
   v_positive_motor: m2
   v_negative_motor: m1
 
+xpcs.devices.softglue.SoftGlue: # This is has to be reviewed
+- name: "softglue_8idi"
+  prefix: ""
+  pv_acq_period: "8idi:SGControl1.A"
+  pv_acq_time: "8idi:SGControl1.C"
+  pv_num_triggers: "8idi:SGControl1.J"
+  pv_start_pulses: "8idi:softGlueA:MUX2-1_IN0_Signal"
+  pv_stop_pulses: "8idi:softGlueA:OR-1_IN2_Signal"
+
 # apstools.devices.area_detector_factory.ad_creator:
 
 # - name: eiger4M

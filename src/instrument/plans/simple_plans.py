@@ -21,7 +21,7 @@ from ...xpcs.devices.registers_device import pv_registers
 from ...xpcs.devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample, rheometer
-from ..devices.softglue import softglue_8idi
+from ...xpcs.devices.softglue import softglue_8idi
 from ...xpcs.devices.slit import sl4
 from ...xpcs.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
