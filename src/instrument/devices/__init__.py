@@ -20,7 +20,7 @@ except Exception as excuse:
 
 
 ## Beamline specific devices
-from ...xpcs.devices.damm import damm
+from ...xpcs.devices.xy_motors import damm
 from ...xpcs.devices.fl import fl2, fl3
 from ...xpcs.devices.flag_4 import flag4
 from ...xpcs.devices.granite import granite

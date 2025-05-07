@@ -9,11 +9,19 @@ ophyd.EpicsMotor:
 - {name: fl3, prefix: 8idiSoft:CR8-I2:m7, labels: ["motor"]}
 - {name: flag4, prefix: 8iddSoft:CR8-D1:m1, labels: ["motor"]}
 
-xpcs.devices.damm.Damm:
+xpcs.devices.xy_motors.XY_Motors:
 - name: damm
   prefix: "8iddSoft:CR8-D1:US"
   x_motor: m2
   y_motor: m3
+- name: win_e
+  prefix: 8ide:US
+  x_motor: m13
+  y_motor: m12
+- name: win_i
+  prefix: 8ide:US
+  x_motor: m23
+  y_motor: m24
 
 xpcs.devices.fast_shutter.FastShutter:
 - name: shutter_8ide

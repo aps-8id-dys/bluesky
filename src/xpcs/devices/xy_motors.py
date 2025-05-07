@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
 
 
-class Damm(Device):
+class XY_Motors(Device):
     def __init__(
         self,
         prefix: str,
