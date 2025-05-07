@@ -1,5 +1,5 @@
 # Written by StoredDict.
-# Dictionary contents written: 2025-05-07 14:36:13.584801
+# Dictionary contents written: 2025-05-07 14:43:02.710652
 
 beamline_id: demo_instrument
 conda_prefix: /opt/homebrew/Caskroom/miniforge/base/envs/xpcs_bits
@@ -39,7 +39,7 @@ iconfig:
   XMODE_DEBUG_LEVEL: Plain
 instrument_name: Most Glorious Scientific Instrument
 login_id: ecodrea@jinx
-pid: 32479
+pid: 33213
 proposal_id: commissioning
 versions:
   apsbits: 1.0.3

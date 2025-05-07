@@ -2,14 +2,9 @@
 Individual slits of JJ slit
 """
 
-import logging
-
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
 
 
 class IndividualSlits(Device):
@@ -48,20 +43,20 @@ class IndividualSlits(Device):
     vn = FCpt(EpicsMotor, "{motor_prefix}:{_v_negative_motor}", labels={"motors"})
 
 
-sl9_motors = IndividualSlits(
-    prefix="8idiSoft:CR8-I2:US",
-    h_positive_motor="m12",
-    h_negative_motor="m11",
-    v_positive_motor="m10",
-    v_negative_motor="m9",
-    name="sl9_motors",
-)
+# sl9_motors = IndividualSlits(
+#     prefix="8idiSoft:CR8-I2:US",
+#     h_positive_motor="m12",
+#     h_negative_motor="m11",
+#     v_positive_motor="m10",
+#     v_negative_motor="m9",
+#     name="sl9_motors",
+# )
 
-sl5_motors = IndividualSlits(
-    prefix="8ideSoft:CR8-E2:US",
-    h_positive_motor="m4",
-    h_negative_motor="m3",
-    v_positive_motor="m2",
-    v_negative_motor="m1",
-    name="sl5_motors",
-)
+# sl5_motors = IndividualSlits(
+#     prefix="8ideSoft:CR8-E2:US",
+#     h_positive_motor="m4",
+#     h_negative_motor="m3",
+#     v_positive_motor="m2",
+#     v_negative_motor="m1",
+#     name="sl5_motors",
+# )
