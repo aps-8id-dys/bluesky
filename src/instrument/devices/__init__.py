@@ -41,8 +41,8 @@ from ...xpcs.devices.slit import sl4, sl5, sl7, sl8, sl9
 from ...xpcs.devices.individual_slits import sl5_motors, sl9_motors
 from ...xpcs.devices.softglue import softglue_8idi
 from .tetramm_picoammeter import tetramm1, tetramm2, tetramm3, tetramm4
-from .transfocator_8idd import rl1
-from .transfocator_8ide import rl2
+# from .transfocator_8idd import rl1
+# from .transfocator_8ide import rl2
 from .xbpm2_in_8ide import bd6a
 from .xbpm2_in_8ide import xbpm2
 from .win import win_e, win_i

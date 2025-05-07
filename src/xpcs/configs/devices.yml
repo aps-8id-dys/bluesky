@@ -160,6 +160,41 @@ xpcs.devices.softglue.SoftGlue: # This is has to be reviewed
   pv_start_pulses: "8idi:softGlueA:MUX2-1_IN0_Signal"
   pv_stop_pulses: "8idi:softGlueA:OR-1_IN2_Signal"
 
+xpcs.devices.transfocator.Transfocator:
+- name: rl1
+  prefix: "8iddSoft:TRANS:"
+  pv_y: "m1"
+  pv_x: "m2"
+  pv_yaw: "m3"
+  pv_pitch: "m4"
+  pv_lens1: "m5"
+  pv_lens2: "m6"
+  pv_lens3: "m7"
+  pv_lens4: "m8"
+  pv_lens5: "m9"
+  pv_lens6: "m10"
+  pv_lens7: "m11"
+  pv_lens8: "m12"
+  pv_lens9: "m13"
+  pv_lens10: "m14"
+
+- name: rl2
+  prefix: "8iddSoft:TRANS:"
+  pv_y: "m25"
+  pv_x: "m26"
+  pv_yaw: "m27"
+  pv_pitch: "m28"
+  pv_lens1: "m15"
+  pv_lens2: "m16"
+  pv_lens3: "m17"
+  pv_lens4: "m18"
+  pv_lens5: "m19"
+  pv_lens6: "m20"
+  pv_lens7: "m21"
+  pv_lens8: "m22"
+  pv_lens9: "m23"
+  pv_lens10: "m24"
+
 # apstools.devices.area_detector_factory.ad_creator:
 
 # - name: eiger4M
