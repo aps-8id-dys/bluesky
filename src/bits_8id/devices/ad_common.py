@@ -251,13 +251,10 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
     cam_class = {
         "ADSIM_4M": SimDetectorCam_V34,
         "ADSIM_16M": SimDetectorCam_V34,
-        "EIGER_4M": EigerDetectorCam_V34,
         "FLAG1": BasicCam_V34,
         "FLAG2": BasicCam_V34,
         "FLAG3": BasicCam_V34,
         "FLAG4": BasicCam_V34,
-        "LAMBDA_2M": Lambda2MCam,
-        "RIGAKU_3M": Rigaku3MCam,
     }[det_key]
 
     return XpcsAD_factory(
