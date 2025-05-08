@@ -77,10 +77,14 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.setuptools.package-dir]
-"" = "src"
+"id8_common" = "src/id8_common"
+"id8_i" = "src/id8_i"
+"aps_8id_bs_instrument" = "src/instrument"
+#"" = "src"
 
 [tool.setuptools.package-data]
-"*" = [ "*.yml",]
+"*" = ["*.txt", "*.yml"]
+
 
 [tool.ruff.lint.per-file-ignores]
 "*.ipynb" = [ "F405",]
