@@ -245,9 +245,6 @@ id8_i.devices.mono.Mono:
 - name: mono_8id
   prefix: "8idaSoft:"
 
-# id8_i.devices.cam_stage.CamStage:
-# - name: cam_stage_8idi
-#   prefix: 8ide:"
 
 ############################### THESE ARE EXAMPLES OF OTHER DEVICES THAT YOU CAN USE
 # ophyd.Signal:
