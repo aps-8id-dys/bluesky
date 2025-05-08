@@ -6,7 +6,6 @@ apstools.devices.area_detector_factory.ad_creator:
   # IOC top: /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idEiger4m/iocBoot/ioc8idEiger4m/softioc/8idEiger4m.pl
   labels:
   - area_detector
-  - detector
   - detectors
   plugins:
   - badpix1 # apstools 1.7.3+
@@ -29,7 +28,6 @@ apstools.devices.area_detector_factory.ad_creator:
   # IOC host: lambda2m
   labels:
   - area_detector
-  - detector
   - detectors
   plugins:
   # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
@@ -50,7 +48,6 @@ apstools.devices.area_detector_factory.ad_creator:
   # IOC host: rigakusi3m (10.54.116.29)
   labels:
   - area_detector
-  - detector
   - detectors
   plugins:
   # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
@@ -71,7 +68,6 @@ apstools.devices.area_detector_factory.ad_creator:
   # IOC host: rigaku500k (10.54.116.101)
   labels:
   - area_detector
-  - detector
   - detectors
   plugins:
   # - badpix1 # apstools 1.7.3+  TODO: Does this IOC have this new plugin?
