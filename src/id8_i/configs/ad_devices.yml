@@ -1,0 +1,71 @@
+apstools.devices.area_detector_factory.ad_creator:
+
+- name: eiger4M
+  prefix: "8idEiger4M:"
+  # IOC host: beryl
+  # IOC top: /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idEiger4m/iocBoot/ioc8idEiger4m/softioc/8idEiger4m.pl
+  labels:
+  - area_detector
+  - detector
+  - detectors
+  plugins:
+  - badpix1 # apstools 1.7.3+
+  - cam:
+      class: 8id.devices.ad_common.EigerDetectorCam_V34
+  - image
+  - hdf1:
+      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
+      # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
+      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      # same filesystem for IOC & Bluesky
+      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+  - overlay1
+  - pva
+  - roi1
+  - stats1
+
+8id.devices.AD_Lambda:
+- name: lambda2M
+  prefix: "8id:Lambda2M:"
+  labels: [ "detector", "area_detector" ]
+
+8id.devices.AD_Rigaku:
+- name: rigaku3M
+  prefix: "8id:Rigaku3M:"
+  labels: [ "detector", "area_detector" ]
+
+8id.devices.AerotechMotor:
+- name: aerotech_stage_x
+  prefix: "8id:aeroX:"
+  labels: [ "motor", "stage" ]
+- name: aerotech_stage_y
+  prefix: "8id:aeroY:"
+  labels: [ "motor", "stage" ]
+
+8id.devices.EpicsMotor:
+- name: huber_theta
+  prefix: "8id:Huber:theta"
+  labels: [ "motor", "diffractometer" ]
+- name: slit_top
+  prefix: "8id:Slit:top"
+  labels: [ "motor", "slits" ]
+
+8id.devices.FastShutter:
+- name: fast_shutter
+  prefix: "8id:FastShutter:"
+  labels: [ "shutter" ]
+
+8id.devices.XBPM:
+- name: xbpm2
+  prefix: "8id:XBPM2:"
+  labels: [ "diagnostics", "xbpm" ]
+
+8id.devices.TetrammPico:
+- name: tetramm
+  prefix: "8id:Tetramm:"
+  labels: [ "diagnostics", "picoammeter" ]
+
+8id.devices.Transfocator:
+- name: transfocator8idd
+  prefix: "8idd:Transfocator:"
+  labels: [ "optics", "transfocator" ]

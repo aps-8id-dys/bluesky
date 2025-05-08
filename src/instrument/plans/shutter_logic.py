@@ -1,7 +1,7 @@
 import epics as pe
 from bluesky import plan_stubs as bps
 
-from ..devices.labjack_support import labjack
+from ...id8_i.devices.labjack_support import labjack
 
 
 def showbeam():

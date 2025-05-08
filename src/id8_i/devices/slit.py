@@ -1,0 +1,46 @@
+"""
+Slit Devices at 8-ID
+"""
+
+from apstools.devices.positioner_soft_done import PVPositionerSoftDone
+from apstools.synApps.db_2slit import Optics2Slit1D
+from apstools.synApps.db_2slit import Optics2Slit2D_HV
+from ophyd import Component as cpt
+from ophyd import EpicsSignal
+
+
+class ID8Optics2Slit1D(Optics2Slit1D):
+    xn = cpt(
+        PVPositionerSoftDone,
+        "xn",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=8e-4,
+    )
+    xp = cpt(
+        PVPositionerSoftDone,
+        "xp",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=8e-4,
+    )
+    size = cpt(
+        PVPositionerSoftDone,
+        "size",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=2e-3,
+    )
+    center = cpt(
+        PVPositionerSoftDone,
+        "center",
+        setpoint_pv=".VAL",
+        readback_pv=".RBV",
+        tolerance=8e-4,
+    )
+    sync = cpt(EpicsSignal, "doSync", put_complete=True, kind="omitted")
+
+
+class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
+    h = cpt(ID8Optics2Slit1D, "H")
+    v = cpt(ID8Optics2Slit1D, "V")

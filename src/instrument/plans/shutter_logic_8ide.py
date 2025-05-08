@@ -1,6 +1,6 @@
-import epics as pe
 from bluesky import plan_stubs as bps
-from ..devices.fast_shutter import shutter_8ide
+
+from ...id8_i.devices.fast_shutter import shutter_8ide
 
 
 def showbeam():
@@ -25,4 +25,3 @@ def post_align():
 
 def pre_align():
     yield from shutteroff()
-

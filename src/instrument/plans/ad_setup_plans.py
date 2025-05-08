@@ -123,8 +123,7 @@ def setup_eiger4M():
     # eiger4M.stats1.mean_value = "hinted"
 
     yield from bps.mv(
-        eiger4M.cam.data_source, "Stream",
-        eiger4M.cam.stream_decompress, "Disable"
+        eiger4M.cam.data_source, "Stream", eiger4M.cam.stream_decompress, "Disable"
     )
 
 
