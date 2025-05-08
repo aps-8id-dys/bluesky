@@ -6,25 +6,18 @@ import os
 
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
-
 from ..devices.ad_rigaku_3M import rigaku3M
 from ..devices.registers_device import pv_registers
-from .dm_util import dm_run_job
-from .dm_util import dm_setup
+from .sample_info_unpack import gen_folder_prefix, mesh_grid_move
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff, post_align
 from .nexus_utils import create_nexus_format_metadata
-from .sample_info_unpack import gen_folder_prefix
-from .sample_info_unpack import mesh_grid_move
-from .shutter_logic import blockbeam
-from .shutter_logic import post_align
-from .shutter_logic import showbeam
-from .shutter_logic import shutteroff
-
+from .dm_util import dm_setup, dm_run_job
 
 def setup_rigaku_ZDT_series(acq_time, num_frames, file_name):
     """Setup the rigaku3M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
-
+    
     file_path = f"{exp_name}/data/{file_name}"
     acq_period = acq_time
 
@@ -35,25 +28,19 @@ def setup_rigaku_ZDT_series(acq_time, num_frames, file_name):
     yield from bps.mv(rigaku3M.cam.num_images, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
-    yield from bps.mv(
-        pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}"
-    )
-    yield from bps.mv(
-        pv_registers.metadata_full_path,
-        f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf",
-    )
+    yield from bps.mv(pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}")
+    yield from bps.mv(pv_registers.metadata_full_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf")
 
     os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
-def rigaku_acq_ZDT_series(
-    acq_time=2e-5,
-    num_frame=100000,
-    num_rep=2,
-    wait_time=0,
-    process=True,
-    sample_move=False,
-):
+def rigaku_acq_ZDT_series(acq_time=2e-5, 
+                          num_frame=100000, 
+                          num_rep=2, 
+                          wait_time=0, 
+                          process=True, 
+                          sample_move=False):
+    
     try:
         yield from post_align()
         yield from shutteroff()
@@ -61,6 +48,7 @@ def rigaku_acq_ZDT_series(
         folder_prefix = gen_folder_prefix()
 
         for ii in range(num_rep):
+
             if sample_move:
                 yield from mesh_grid_move()
 
@@ -74,8 +62,8 @@ def rigaku_acq_ZDT_series(
 
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=rigaku3M)
-
-            dm_run_job("rigaku", process, workflowProcApi, dmuser, file_name)
+            
+            dm_run_job('rigaku', process, workflowProcApi, dmuser, file_name)
 
             yield from bps.sleep(wait_time)
 

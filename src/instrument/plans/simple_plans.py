@@ -4,7 +4,10 @@ Simple, modular Bluesky plans for users.
 
 import warnings
 
+import epics as pe
 import numpy as np
+import h5py 
+import datetime
 
 warnings.filterwarnings("ignore")
 
@@ -13,36 +16,25 @@ from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-
-from ...id8_i.devices.filters_8id import filter_8ide
-from ...id8_i.devices.filters_8id import filter_8idi
-from ...id8_i.devices.qnw_device import qnw_env1
-from ...id8_i.devices.qnw_device import qnw_env2
-from ...id8_i.devices.qnw_device import qnw_env3
-from ...id8_i.devices.registers_device import pv_registers
-from ...id8_i.devices.slit import sl4
-from ...id8_i.devices.softglue import softglue_8idi
 from ..callbacks.nexus_data_file_writer import nxwriter
+from ..devices.registers_device import pv_registers
+from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import rheometer
-from ..devices.aerotech_stages import sample
-
+from ..devices.aerotech_stages import sample, rheometer
+from ..devices.softglue import softglue_8idi
+from ..devices.slit import sl4
+from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 # from aps_8id_bs_instrument.devices import *
 from ..initialize_bs_tools import cat
-from .nexus_utils import create_nexus_format_metadata
 from .sample_info_unpack import sort_qnw
-from .shutter_logic import blockbeam
-from .shutter_logic import showbeam
-from .shutter_logic import shutteroff
-from .shutter_logic import shutteron
-
+from .shutter_logic import showbeam, blockbeam, shutteron, shutteroff
+from .nexus_utils import create_nexus_format_metadata
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 
-def create_run_metadata_dict(
-    det=None,
-    sample=sample,
-):
+def create_run_metadata_dict(det=None,
+                             sample = sample,
+                             ):
     md = {}
     md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
@@ -155,7 +147,7 @@ def simple_acquire_int_series(det, md):
 def simple_acquire_int_series_nexus(det):
     """Just run the acquisition and save the file, nothing else."""
     metadata_fname = pv_registers.metadata_full_path.get()
-    print(f"{metadata_fname=}")
+    print(f'{metadata_fname=}')
     create_nexus_format_metadata(metadata_fname, det)
     yield from bp.count([det])
 
@@ -164,7 +156,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
-
+    
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
@@ -180,16 +172,14 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(
-        pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
-    )
+    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
-
+    
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
     yield from bps.mv(det.cam.trigger_mode, "External Enable")  # 3
@@ -218,7 +208,12 @@ def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
 
 
 def kickoff_dm_workflow(
-    experiment_name, file_name, qmap_file, run, analysisMachine, analysis_type
+    experiment_name,
+    file_name,
+    qmap_file,
+    run,
+    analysisMachine,
+    analysis_type
 ):
     """Start a DM workflow for this bluesky run."""
     # oregistry.auto_register = False  # Ignore re-creations of this device.
@@ -269,14 +264,13 @@ def kickoff_dm_workflow(
     print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
-def eiger_acq_int_series(
-    det=eiger4M,
-    acq_period=1,
-    num_frame=10,
-    num_rep=3,
-    att_level=0,
-    sample_move=False,
-):
+def eiger_acq_int_series(det=eiger4M, 
+                         acq_period=1, 
+                         num_frame=10, 
+                         num_rep=3, 
+                         att_level=0, 
+                         sample_move=False,
+                         ):
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -313,7 +307,8 @@ def eiger_acq_int_series(
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
     for ii in range(num_rep):
-        pos_index = np.mod(sam_pos + ii, x_pts * y_pts)
+
+        pos_index = np.mod(sam_pos+ii, x_pts * y_pts)
 
         try:
             if sample_move:
@@ -329,9 +324,7 @@ def eiger_acq_int_series(
             pass
 
         # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
-        filename = (
-            f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
-        )
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
 
@@ -354,7 +347,7 @@ def eiger_acq_int_series(
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
-                analysis_type=analysis_type_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")
@@ -371,6 +364,7 @@ def eiger_acq_ext_trig(
     att_level=0,
     sample_move=False,
 ):
+
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -408,7 +402,7 @@ def eiger_acq_ext_trig(
     samy_list = np.linspace(y_cen - y_radius, y_cen + y_radius, num=y_pts)
 
     for ii in range(num_rep):
-        pos_index = np.mod(sam_pos + ii, x_pts * y_pts)
+        pos_index = np.mod(sam_pos+ii, x_pts * y_pts)
 
         try:
             if sample_move:
@@ -427,9 +421,7 @@ def eiger_acq_ext_trig(
             pass
 
         # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
-        filename = (
-            f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
-        )
+        filename = f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
 
@@ -449,7 +441,7 @@ def eiger_acq_ext_trig(
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
-                analysis_type=analysis_type_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")
@@ -457,15 +449,14 @@ def eiger_acq_ext_trig(
             pass
 
 
-def eiger_acq_flyscan(
-    det=eiger4M,
-    acq_period=1,
-    num_frame=10,
-    num_rep=3,
-    att_level=0,
-    sample_move=False,
-    flyspeed=0.1,
-):
+def eiger_acq_flyscan(det=eiger4M, 
+                         acq_period=1, 
+                         num_frame=10, 
+                         num_rep=3, 
+                         att_level=0, 
+                         sample_move=False,
+                         flyspeed=0.1
+                         ):
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -517,7 +508,7 @@ def eiger_acq_flyscan(
         finally:
             pass
 
-        flyspeed_um = int(flyspeed * 1e3)
+        flyspeed_um = int(flyspeed*1e3)
         filename = f"{header_name}_{sample_name}_fs{flyspeed_um:04d}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
 
         yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
@@ -525,7 +516,7 @@ def eiger_acq_flyscan(
         md = create_run_metadata_dict(det)
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         extra_acq_time = 1.0
-        total_travel = flyspeed * (acq_period * num_frame + extra_acq_time)
+        total_travel = flyspeed*(acq_period*num_frame+extra_acq_time)
         yield from showbeam()
         yield from bps.sleep(0.1)
         yield from bps.mv(sample.y.velocity, flyspeed)
@@ -548,7 +539,7 @@ def eiger_acq_flyscan(
                 qmap_file=qmap_file_run,
                 run=cat[-1],
                 analysisMachine=analysisMachine_run,
-                analysis_type=analysis_type_run,
+                analysis_type=analysis_type_run
             )
         except Exception as e:
             print(f"Error occurred in DM Workflow: {e}")

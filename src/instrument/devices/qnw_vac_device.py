@@ -32,3 +32,5 @@ class QnwDevice(PVPositionerSoftDoneWithStop):
 qnw_vac1 = QnwDevice("8idiSoft:QNWvac_1:", readback_pv=None, name="qnw_vac1")
 qnw_vac2 = QnwDevice("8idiSoft:QNWvac_2:", readback_pv=None, name="qnw_vac2")
 qnw_vac3 = QnwDevice("8idiSoft:QNWvac_3:", readback_pv=None, name="qnw_vac3")
+
+

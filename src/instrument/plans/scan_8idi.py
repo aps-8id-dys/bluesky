@@ -1,10 +1,12 @@
-from bluesky import plan_stubs as bps
+import epics as pe
 from bluesky import plans as bp
+from bluesky import plan_stubs as bps
 
-from ...id8_i.devices.filters_8id import filter_8idi
-from ..devices.aerotech_stages import rheometer
 from ..devices.aerotech_stages import sample
 from ..devices.tetramm_picoammeter import tetramm1
+from ..devices.ad_eiger_4M import eiger4M
+from ..devices.aerotech_stages import rheometer
+from ..devices.filters_8id import filter_8idi
 from .shutter_logic import blockbeam
 from .shutter_logic import pre_align
 from .shutter_logic import showbeam
@@ -80,6 +82,7 @@ def rheo_y_lup(
 
 
 def rheo_set_x_lup(att_level=10, det=tetramm1):
+
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -97,3 +100,6 @@ def rheo_set_x_lup(att_level=10, det=tetramm1):
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
     yield from blockbeam()
+
+
+

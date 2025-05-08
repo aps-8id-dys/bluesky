@@ -14,7 +14,6 @@ __all__ = """
 import logging
 import pathlib
 
-from apsbits.utils.controls_setup import oregistry
 from apstools.devices import AD_EpicsFileNameHDF5Plugin
 from bluesky import plan_stubs as bps
 from ophyd import Kind
@@ -111,20 +110,6 @@ def eiger4M_acquire_setup(
             raise DetectorStateError(
                 f"{det.name} PV {getattr(cam, k).pvname!r} not in {v!r}"
             )
-
-
-def setup_eiger4M():
-    """Bluesky plan.  Setup the Eiger4M."""
-    from bluesky import plan_stubs as bps
-
-    eiger4M = oregistry["eiger4M"]
-
-    # eiger4M.stats1.kind = "hinted"
-    # eiger4M.stats1.mean_value = "hinted"
-
-    yield from bps.mv(
-        eiger4M.cam.data_source, "Stream", eiger4M.cam.stream_decompress, "Disable"
-    )
 
 
 def setup_hdf5_plugin(

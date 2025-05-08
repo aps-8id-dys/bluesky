@@ -1,6 +1,5 @@
 import random
 
-
 def get_machine_name():
     """Returns the name of a randomly selected machine (A or B)."""
     machines = ["adamite", "amazonite"]
@@ -16,4 +15,5 @@ def temp2str(temp):
     decimal_part_cropped = decimal_part[0]
 
     temp_name = f"{padded_integer_part}p{decimal_part_cropped}"
-    return temp_name
+    return(temp_name)
+

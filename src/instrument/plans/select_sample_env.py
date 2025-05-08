@@ -8,8 +8,7 @@ __all__ = """
 
 import bluesky.plan_stubs as bps
 
-from ..devices import granite
-from ..devices import granite_8idi_valve
+from ..devices import granite, granite_8idi_valve
 from ..devices import sample
 
 
@@ -27,11 +26,11 @@ def select_sample_env(env: str):
     yield from bps.sleep(2)
 
     if env == "qnw":
-        yield from bps.mv(granite.x, choices["qnw"])
+        yield from bps.mv(granite.x, choices['qnw'])
     if env == "rheometer":
-        yield from bps.mv(granite.x, choices["rheometer"])
+        yield from bps.mv(granite.x, choices['rheometer'])
     elif env == "robot":
-        yield from bps.mv(granite.x, choices["robot"])
+        yield from bps.mv(granite.x, choices['robot'])
         yield from bps.mv(sample.x, 298)
 
     yield from bps.mv(granite_8idi_valve.enable, 0)
