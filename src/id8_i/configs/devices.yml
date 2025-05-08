@@ -30,6 +30,10 @@ id8_i.devices.xy_motors.XY_Motors:
   prefix: 8ide:US
   x_motor: m23
   y_motor: m24
+- name: cam_stage_8idi
+  prefix: "8ide:"
+  x_motor: m13
+  y_motor: m12
 
 id8_i.devices.fast_shutter.FastShutter:
 - name: shutter_8ide
@@ -223,6 +227,27 @@ id8_i.devices.huber_diffractometer.Huber_Diffractometer:
 - name: huber
   prefix: "8ideSoft:CR8-E1:"
 
+id8_i.devices.lakeshore.Lakeshore:
+- name: lakeshore1
+  prefix: "8ideSoft:LS336:1:"
+- name: lakeshore2
+  prefix: "8ideSoft:LS336:2:"
+
+id8_i.devices.rheometer_wait_signal.Rheometer_Wait:
+- name: mcr_wait_signal
+  prefix: "8idMZ4:SG:"
+
+id8_i.devices.flight_path.FlightPath:
+- name: flight_path_8idi
+  prefix: "8idiSoft:FLIGHT:"
+
+id8_i.devices.mono.Mono:
+- name: mono_8id
+  prefix: "8idaSoft:"
+
+# id8_i.devices.cam_stage.CamStage:
+# - name: cam_stage_8idi
+#   prefix: 8ide:"
 
 ############################### THESE ARE EXAMPLES OF OTHER DEVICES THAT YOU CAN USE
 # ophyd.Signal:
