@@ -13,6 +13,13 @@ logger.bsdev(__file__)
 
 
 class IDTMono(Device):
+    """A device class for controlling the IDT monochromator in the beamline.
+
+    This class provides control over the IDT monochromator used for X-ray
+    beam conditioning. It includes functionality for controlling Bragg angles,
+    crystal gaps, flags, and various alignment motors.
+    """
+
     def __init__(
         self,
         prefix: str,
@@ -26,6 +33,19 @@ class IDTMono(Device):
         *args,
         **kwargs,
     ):
+        """Initialize the IDT monochromator device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            bragg_motor: The name of the Bragg angle motor PV
+            xtal_gap_motor: The name of the crystal gap motor PV
+            flag_motor: The name of the flag motor PV
+            coarse_pitch_motor: The name of the coarse pitch motor PV
+            coarse_roll_motor: The name of the coarse roll motor PV
+            x_pitch_motor: The name of the X pitch motor PV
+            y_pitch_motor: The name of the Y pitch motor PV
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         # Determine the prefix for the motors
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])

@@ -1,3 +1,10 @@
+"""Module for controlling horizontal and vertical motors in the beamline.
+
+This module provides classes and utilities for controlling pairs of motors
+that operate in horizontal and vertical directions. These motors are used
+for precise positioning of beamline components.
+"""
+
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 from ophyd import MotorBundle
@@ -38,6 +45,14 @@ class HV_Motors(MotorBundle):
         pv_v: str = "",
         **kwargs,
     ):
+        """Initialize the HV motors device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            pv_h: The name of the horizontal motor PV
+            pv_v: The name of the vertical motor PV
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         self._pv_h = pv_h
         self._pv_v = pv_v
         super().__init__(prefix, *args, **kwargs)

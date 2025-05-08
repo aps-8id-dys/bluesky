@@ -8,6 +8,13 @@ from ophyd import FormattedComponent as FCpt
 
 
 class granite_device(Device):
+    """A device class for controlling Granite stages in the beamline.
+
+    This class provides control over Granite stages used for precise positioning
+    and motion control. It includes functionality for controlling position,
+    velocity, and acceleration parameters.
+    """
+
     def __init__(
         self,
         prefix: str,
@@ -15,6 +22,13 @@ class granite_device(Device):
         *args,
         **kwargs,
     ):
+        """Initialize the Granite stage device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            x_motor: The name of the x-axis motor PV
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         # Determine the prefix for the motors
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])

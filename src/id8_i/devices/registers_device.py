@@ -8,6 +8,13 @@ from ophyd import EpicsSignal
 
 
 class EpicsPvStorageRegisters(Device):
+    """A device class for managing EPICS PV storage registers.
+
+    This class provides functionality for storing and retrieving values
+    in EPICS PV registers. It is used for temporary storage of values
+    and parameters during beamline operation.
+    """
+
     file_name = Component(EpicsSignal, "StrReg1", string=True)
     file_path = Component(EpicsSignal, "StrReg2", string=True)
     metadata_full_path = Component(EpicsSignal, "StrReg3", string=True)

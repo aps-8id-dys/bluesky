@@ -1,3 +1,10 @@
+"""Module for controlling transfocator devices in the beamline.
+
+This module provides classes and utilities for controlling transfocator
+devices, which are used for X-ray beam focusing. It includes functionality
+for lens control, positioning, and alignment.
+"""
+
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 from ophyd import MotorBundle
@@ -75,6 +82,26 @@ class Transfocator(MotorBundle):
         pv_lens10: str = "",
         **kwargs,
     ):
+        """Initialize the Transfocator device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            pv_y: The PV name for Y position motor
+            pv_x: The PV name for X position motor
+            pv_yaw: The PV name for yaw motor
+            pv_pitch: The PV name for pitch motor
+            pv_lens1: The PV name for lens 1 motor
+            pv_lens2: The PV name for lens 2 motor
+            pv_lens3: The PV name for lens 3 motor
+            pv_lens4: The PV name for lens 4 motor
+            pv_lens5: The PV name for lens 5 motor
+            pv_lens6: The PV name for lens 6 motor
+            pv_lens7: The PV name for lens 7 motor
+            pv_lens8: The PV name for lens 8 motor
+            pv_lens9: The PV name for lens 9 motor
+            pv_lens10: The PV name for lens 10 motor
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         self._pv_x = pv_x
         self._pv_y = pv_y
         self._pv_pitch = pv_pitch

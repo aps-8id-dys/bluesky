@@ -1,3 +1,10 @@
+"""Module for controlling Sydor TP4U detectors in the beamline.
+
+This module provides classes and utilities for interfacing with Sydor TP4U
+detectors, including configuration, data acquisition, and monitoring
+capabilities.
+"""
+
 from ophyd import Component
 from ophyd import EpicsSignalRO
 from ophyd import QuadEM

@@ -36,6 +36,17 @@ class SoftGlue(Device):
         pv_stop_pulses: str = "",
         **kwargs,
     ):
+        """Initialize the SoftGlue device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            pv_acq_period: The PV name for acquisition period
+            pv_acq_time: The PV name for acquisition time
+            pv_num_triggers: The PV name for number of triggers
+            pv_start_pulses: The PV name for start pulses
+            pv_stop_pulses: The PV name for stop pulses
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         self._pv_acq_period = pv_acq_period
         self._pv_acq_time = pv_acq_time
         self._pv_num_triggers = pv_num_triggers

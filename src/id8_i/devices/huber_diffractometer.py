@@ -8,6 +8,13 @@ from ophyd import EpicsMotor
 
 
 class Huber_Diffractometer(Device):
+    """A device class for controlling Huber diffractometers in the beamline.
+
+    This class provides control over Huber diffractometers used for X-ray
+    diffraction experiments. It includes functionality for controlling angles,
+    positions, and other diffractometer parameters.
+    """
+
     nu = Component(EpicsMotor, "m4", name="nu")
     delta = Component(EpicsMotor, "m5", name="delta")
     mu = Component(EpicsMotor, "m6", name="mu")

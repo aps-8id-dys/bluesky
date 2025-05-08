@@ -14,6 +14,13 @@ from ophyd import EpicsSignal
 
 
 class Function_Generator(Device):
+    """A device class for controlling function generators in the beamline.
+
+    This class provides control over function generators used for signal generation
+    and control. It includes functionality for setting frequency, amplitude, and
+    waveform parameters.
+    """
+
     func = Component(EpicsSignal, "1:FUNC")
     ncycle = Component(EpicsSignal, "1:BURST:NCYCLES")
     freq = Component(EpicsSignal, "1:FREQ")

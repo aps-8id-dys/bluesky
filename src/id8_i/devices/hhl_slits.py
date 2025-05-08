@@ -52,6 +52,21 @@ class HHLSlits(Device):
         *args,
         **kwargs,
     ):
+        """Initialize the HHL slits device.
+
+        Args:
+            prefix: The EPICS PV prefix for the device
+            secondary_prefix: The secondary EPICS PV prefix for additional controls
+            pitch_motor: The name of the pitch motor PV
+            yaw_motor: The name of the yaw motor PV
+            horizontal_motor: The name of the horizontal motor PV
+            diagonal_motor: The name of the diagonal motor PV
+            hgap_motor: The name of the horizontal gap motor PV
+            hcen_motor: The name of the horizontal center motor PV
+            vgap_motor: The name of the vertical gap motor PV
+            vcen_motor: The name of the vertical center motor PV
+            **kwargs: Additional keyword arguments passed to the Device constructor
+        """
         # Determine the prefix for the motors
         pieces = prefix.strip(":").split(":")
         self.motor_prefix = ":".join(pieces[:-1])
