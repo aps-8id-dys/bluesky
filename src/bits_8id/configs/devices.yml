@@ -37,7 +37,7 @@ apstools.devices.area_detector_factory.ad_creator:
   - hdf1:
       class: *HDF5Plugin
       read_path_template: *AD_FILE_PATH
-      write_path_template: *AD_FILE_PATH
+      write_path_template: "/extdisk/" # TODO: Confirm
   - overlay1
   - pva
   - roi1
@@ -90,6 +90,9 @@ apstools.devices.area_detector_factory.ad_creator:
 # flag4
 # adsim4M
 # adsim16M
+
+# TODO: Verify that all the PV prefixes below match EPICS
+# The area detector prefixes above had to be corrected.
 
 8id.devices.AerotechMotor:
 - name: aerotech_stage_x
