@@ -1,4 +1,3 @@
-
 from ophyd import Component
 from ophyd import EpicsSignalRO
 from ophyd import QuadEM

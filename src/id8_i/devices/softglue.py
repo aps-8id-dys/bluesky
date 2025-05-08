@@ -24,6 +24,7 @@ class SoftGlue(Device):
 
     The value to write to start & stop is the same text: 1!
     """
+
     def __init__(
         self,
         prefix: str,
@@ -42,7 +43,6 @@ class SoftGlue(Device):
         self._pv_stop_pulses = pv_stop_pulses
         super().__init__(prefix, *args, **kwargs)
 
-
     acq_period = FCpt(EpicsSignal, "{prefix}{_pv_acq_period}", kind="config")
     acq_time = FCpt(EpicsSignal, "{prefix}{_pv_acq_time}", kind="config")
     num_triggers = FCpt(EpicsSignal, "{prefix}{_pv_num_triggers}", kind="config")
@@ -58,4 +58,3 @@ class SoftGlue(Device):
         kind="omitted",
         string=True,
     )
-

@@ -15,7 +15,6 @@ class QnwDevice(PVPositionerSoftDoneWithStop):
     tolerance = Component(Signal, value=0.1, kind="config")
     ramprate = Component(EpicsSignal, "RAMP", kind="normal", put_complete=True)
 
-
     def qnw_register(self, temp_zone):
         """
         Return the indexed qnw temp zone.

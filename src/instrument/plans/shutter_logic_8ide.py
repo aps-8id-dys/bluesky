@@ -1,5 +1,5 @@
-import epics as pe
 from bluesky import plan_stubs as bps
+
 from ...id8_i.devices.fast_shutter import shutter_8ide
 
 
@@ -25,4 +25,3 @@ def post_align():
 
 def pre_align():
     yield from shutteroff()
-

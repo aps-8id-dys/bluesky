@@ -8,4 +8,3 @@ from ophyd import EpicsSignal
 class FastShutter(Device):
     operation = Component(EpicsSignal, "State")
     logic = Component(EpicsSignal, "Lock")
-

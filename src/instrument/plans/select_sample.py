@@ -13,12 +13,14 @@ __all__ = """
 import json
 
 import bluesky.plan_stubs as bps
-import epics as pe
 
+from ...id8_i.devices.qnw_device import qnw_env1
+from ...id8_i.devices.qnw_device import qnw_env2
+from ...id8_i.devices.qnw_device import qnw_env3
+from ...id8_i.devices.registers_device import pv_registers
 from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import sample
-from ...id8_i.devices.registers_device import pv_registers
-from ...id8_i.devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
+
 # from ..devices.qnw_vac_device import qnw_vac1
 # from ..devices.qnw_vac_device import qnw_vac2
 # from ..devices.qnw_vac_device import qnw_vac3
@@ -69,10 +71,10 @@ def sort_qnw():
     # else:
     #     temp = qnw_env3.readback.get()
 
-    # TODO: rewrite this IF block using getattr as in 'registers_device.py' 
-    if temp_zone == 'qnw_env1':
+    # TODO: rewrite this IF block using getattr as in 'registers_device.py'
+    if temp_zone == "qnw_env1":
         temp = qnw_env1.readback.get()
-    elif temp_zone == 'qnw_env2':
+    elif temp_zone == "qnw_env2":
         temp = qnw_env2.readback.get()
     else:
         temp = qnw_env3.readback.get()

@@ -1,4 +1,3 @@
-
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
 from ophyd import MotorBundle

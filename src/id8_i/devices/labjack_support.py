@@ -8,4 +8,3 @@ from ophyd import EpicsSignal
 class LabJack(Device):
     operation = Component(EpicsSignal, "Bo0")
     logic = Component(EpicsSignal, "Bo1")
-

@@ -41,4 +41,3 @@ class IndividualSlits(Device):
     hn = FCpt(EpicsMotor, "{motor_prefix}:{_h_negative_motor}", labels={"motors"})
     vp = FCpt(EpicsMotor, "{motor_prefix}:{_v_positive_motor}", labels={"motors"})
     vn = FCpt(EpicsMotor, "{motor_prefix}:{_v_negative_motor}", labels={"motors"})
-

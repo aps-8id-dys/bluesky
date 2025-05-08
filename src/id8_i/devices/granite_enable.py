@@ -9,4 +9,5 @@ from ophyd import EpicsSignal
 
 class Valve_Enable(Device):
     """For 8-ID-E and I station"""
+
     enable = Component(EpicsSignal, "bo3:9.VAL")

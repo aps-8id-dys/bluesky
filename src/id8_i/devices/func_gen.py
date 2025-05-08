@@ -12,11 +12,10 @@ from ophyd import EpicsSignal
 # epics_put("dpKeysight:KEY1:1:AMP", amp) #peak to peak amplitude in Volts
 # epics_put("dpKeysight:KEY1:TRIG.PROC",send_trigger) #send the waves
 
-class Function_Generator(Device):
 
+class Function_Generator(Device):
     func = Component(EpicsSignal, "1:FUNC")
     ncycle = Component(EpicsSignal, "1:BURST:NCYCLES")
     freq = Component(EpicsSignal, "1:FREQ")
     amp = Component(EpicsSignal, "1:AMP")
     send_trigger = Component(EpicsSignal, "TRIG.PROC")
-

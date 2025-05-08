@@ -44,5 +44,3 @@ class ID8Optics2Slit1D(Optics2Slit1D):
 class ID8Optics2Slit2D_HV(Optics2Slit2D_HV):
     h = cpt(ID8Optics2Slit1D, "H")
     v = cpt(ID8Optics2Slit1D, "V")
-
-
