@@ -2,25 +2,12 @@
 Bluesky plans to setup various Area Detectors for acquisition.
 """
 
-__all__ = """
-    ad_acquire_setup
-    eiger4M_acquire_setup
-    setup_hdf5_plugin
-    write_if_new
-    DetectorStateError
-    HDF5PluginError
-""".split()
-
-import logging
 import pathlib
 
 from apsbits.core.instrument_init import oregistry
 from apstools.devices import AD_EpicsFileNameHDF5Plugin
 from bluesky import plan_stubs as bps
 from ophyd import Kind
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
 
 eiger4M = oregistry["eiger4M"]
 

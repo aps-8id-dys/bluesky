@@ -12,10 +12,6 @@ To watch the EPICS PVs in a simple GUI:
         &
 """
 
-__all__ = [
-    "set_qnw",
-]
-
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 

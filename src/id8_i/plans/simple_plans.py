@@ -14,7 +14,7 @@ from bluesky import preprocessors as bpp
 
 from ..startup import cat
 from ..startup import nxwriter
-from .nexus_utils import create_nexus_format_metadata
+from ..utils.nexus_utils import create_nexus_format_metadata
 from .sample_info_unpack import sort_qnw
 from .shutter_logic import blockbeam
 from .shutter_logic import showbeam

@@ -2,10 +2,6 @@
 Plan that allows for moving to pre-programmed positions seen as strings
 """
 
-__all__ = """
-    select_sample_env
-""".split()
-
 import bluesky.plan_stubs as bps
 from apsbits.core.instrument_init import oregistry
 

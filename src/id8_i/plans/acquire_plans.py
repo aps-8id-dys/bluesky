@@ -2,11 +2,6 @@
 Bluesky plans to acquire images.
 """
 
-__all__ = """
-    bdp_acquire
-""".split()
-
-
 from apsbits.core.instrument_init import oregistry
 from apsbits.utils.config_loaders import get_config
 from bluesky import plan_stubs as bps
