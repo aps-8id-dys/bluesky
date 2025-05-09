@@ -55,7 +55,9 @@ versions = dict(
 # Connect with our mongodb database
 catalog_name = iconfig.get("DATABROKER_CATALOG", "training")
 try:
-    # We don't actually run this part because it is unable to find a yaml corresponding to the catalog name. For this to execute the yaml has to be store in:
+    # We don't actually run this part because it is unable to find a yaml
+    # corresponding to the catalog name. For this to execute the yaml has to be
+    # store in:
     # import databroker; print(databroker.catalog_search_path())
     # https://blueskyproject.io/databroker/reference/configuration.html?highlight=search%20path
     cat = load_catalog(catalog_name)
