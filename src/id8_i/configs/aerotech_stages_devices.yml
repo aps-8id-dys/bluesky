@@ -11,4 +11,3 @@ id8_i.devices.aerotech_stages.AerotechRheometerStage:
 - name: rheometer
   prefix: "8idiAerotech:"
   labels: ["rheometer", "stage"]
-

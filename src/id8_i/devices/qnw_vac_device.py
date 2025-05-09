@@ -25,4 +25,3 @@ class QnwDevice(PVPositionerSoftDoneWithStop):
     setpoint = Component(EpicsSignal, "TARG", kind="normal", put_complete=True)
     tolerance = Component(Signal, value=0.1, kind="config")
     ramprate = Component(EpicsSignal, "RAMP", kind="normal", put_complete=True)
-

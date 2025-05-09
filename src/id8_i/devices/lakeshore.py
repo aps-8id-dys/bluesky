@@ -12,4 +12,3 @@ class Lakeshore(Device):
     readback_ch2 = Component(EpicsSignalRO, "IN2")
     readback_ch3 = Component(EpicsSignalRO, "IN3")
     readback_ch4 = Component(EpicsSignalRO, "IN4")
-
