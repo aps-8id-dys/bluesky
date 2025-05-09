@@ -184,4 +184,3 @@ class MeasCompCtr(Device):
     counter_6 = Component(MeasCompCtrDeviceCounterChannel, "Counter6")
     counter_7 = Component(MeasCompCtrDeviceCounterChannel, "Counter7")
     counter_8 = Component(MeasCompCtrDeviceCounterChannel, "Counter8")
-
