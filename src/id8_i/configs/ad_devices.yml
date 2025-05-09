@@ -10,7 +10,6 @@ apstools.devices.area_detector_factory.ad_creator:
 #     use_stats=True,
 #     use_transform=True,
 
-# flag1ad BasicCam_V34 !proc1 roi1 stats1
 # flag2ad BasicCam_V34 !proc1 roi1 stats1
 # flag3ad BasicCam_V34 !proc1 roi1 stats1
 # flag4ad BasicCam_V34 !image !proc1 roi1 stats1
@@ -82,6 +81,29 @@ apstools.devices.area_detector_factory.ad_creator:
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
+- name: flag1ad
+  prefix: "8idSimDetector4m:"
+  # IOC host: s8idioc02
+  # IOC status: /net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idAlviumG1/iocBoot/ioc8idAlviumG1_A1/softioc/8idAlviumG1_A1.pl status
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
   - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
   - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
