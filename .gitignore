@@ -44,5 +44,5 @@ old_code/
 # user-defined plans
 user_plans/
 
-# dictionary md file
+# RE metadata dictionary for session persistence
 .re_md_dict.yml

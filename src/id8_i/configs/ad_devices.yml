@@ -1,71 +1,232 @@
 apstools.devices.area_detector_factory.ad_creator:
 
+- name: adsim4M
+  prefix: "8idSimDetector4m:"
+  # IOC host: beryl
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
+- name: adsim16M
+  prefix: "8idSimDetector16m:"
+  # IOC host: beryl
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
 - name: eiger4M
   prefix: "8idEiger4M:"
   # IOC host: beryl
   # IOC top: /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idEiger4m/iocBoot/ioc8idEiger4m/softioc/8idEiger4m.pl
-  labels:
-  - area_detector
-  - detector
-  - detectors
+  labels: [ "area_detector", "detectors" ]
   plugins:
-  - badpix1 # apstools 1.7.3+
-  - cam:
-      class: 8id.devices.ad_common.EigerDetectorCam_V34
-  - image
+  - badpix1 # apstools 1.7.3+, no extra customization needed
+  - cam: { class: id8_common.devices.area_detector.EigerDetectorCam_V34 }
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
-      class: apstools.devices.area_detector_support.AD_EpicsFileNameHDF5Plugin
-      # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
       # same filesystem for IOC & Bluesky
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
-  - overlay1
-  - pva
-  - roi1
-  - stats1
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
 
-8id.devices.AD_Lambda:
+- name: flag1ad
+  prefix: "8idaSoft:flag1:"
+  # IOC host: s8idioc02
+  # IOC status: /net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idAlviumG1/iocBoot/ioc8idAlviumG1_A1/softioc/8idAlviumG1_A1.pl status
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
+- name: flag2ad
+  prefix: "8idaSoft:flag2:"
+  # IOC host: Alvium
+  # IOC status: s8idioc03:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idAlviumG1/iocBoot/ioc8idAlviumG1_A1/softioc/8idAlviumG1_A1.pl status
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
+- name: flag3ad
+  prefix: "8idaSoft:flag3:"
+  # IOC host: Alvium
+  # IOC status: s8idioc04:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idSpinnaker/iocBoot/ioc8idSpinnaker/softioc/8idSpinnaker.pl status
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
+- name: flag4ad
+  prefix: "8iddSoft:" # Note: different style name than flag1ad..flag3ad
+  # IOC host: Alvium
+  # IOC status: s8idnx01:/net/s8iddserv/xorApps/epics/synApps_6_3/ioc/8idAlviumG1/iocBoot/ioc8idAlviumG1_D1/softioc/8idAlviumG1_D1.pl status
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.SimDetectorCam_V34
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
+
 - name: lambda2M
-  prefix: "8id:Lambda2M:"
-  labels: [ "detector", "area_detector" ]
+  prefix: "8idLambda2m:"
+  # IOC host: lambda2m
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.Lambda2MCam
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
 
-8id.devices.AD_Rigaku:
 - name: rigaku3M
-  prefix: "8id:Rigaku3M:"
-  labels: [ "detector", "area_detector" ]
+  prefix: "8idRigaku3m:"
+  # IOC host: rigakusi3m (10.54.116.29)
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.Rigaku3MCam
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
 
-8id.devices.AerotechMotor:
-- name: aerotech_stage_x
-  prefix: "8id:aeroX:"
-  labels: [ "motor", "stage" ]
-- name: aerotech_stage_y
-  prefix: "8id:aeroY:"
-  labels: [ "motor", "stage" ]
-
-8id.devices.EpicsMotor:
-- name: huber_theta
-  prefix: "8id:Huber:theta"
-  labels: [ "motor", "diffractometer" ]
-- name: slit_top
-  prefix: "8id:Slit:top"
-  labels: [ "motor", "slits" ]
-
-8id.devices.FastShutter:
-- name: fast_shutter
-  prefix: "8id:FastShutter:"
-  labels: [ "shutter" ]
-
-8id.devices.XBPM:
-- name: xbpm2
-  prefix: "8id:XBPM2:"
-  labels: [ "diagnostics", "xbpm" ]
-
-8id.devices.TetrammPico:
-- name: tetramm
-  prefix: "8id:Tetramm:"
-  labels: [ "diagnostics", "picoammeter" ]
-
-8id.devices.Transfocator:
-- name: transfocator8idd
-  prefix: "8idd:Transfocator:"
-  labels: [ "optics", "transfocator" ]
+- name: rigaku500k
+  prefix: "8idRigaku:"
+  # IOC host: rigaku500k (10.54.116.101)
+  labels: [ "area_detector", "detectors" ]
+  plugins:
+  - cam:
+      class: id8_common.devices.area_detector.Rigaku3MCam # assumed
+  - codec1:
+      # needed by PVA and HDF
+      class: id8_common.devices.area_detector.ID8_CodecPlugin
+  - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
+  - hdf1:
+      class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
+      kind: normal
+  - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
+  - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
+  - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
+  - roi1: { class: id8_common.devices.area_detector.ID8_ROIPlugin }
+  - stats1: { class: id8_common.devices.area_detector.ID8_StatsPlugin }
+  - trans1: { class: id8_common.devices.area_detector.ID8_TransformPlugin }
