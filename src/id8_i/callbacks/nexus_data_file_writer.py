@@ -29,11 +29,21 @@ class MyNXWriter(NXWriter):
     """
 
     def write_root(self, filename):
+        """Write the root group of the NeXus file.
+
+        Args:
+            filename: The name of the file to write to.
+        """
         super().write_root(filename)
         self.root.attrs["NeXus_version"] = NEXUS_RELEASE
         self.root.attrs["xpcs_layout_version"] = XPCS_LAYOUT_VERSION
 
     def write_entry(self):
+        """Write the entry group of the NeXus file.
+
+        Returns:
+            The created entry group.
+        """
         nxentry = super().write_entry()
         ds = nxentry.create_dataset("xpcs_layout_version", data=XPCS_LAYOUT_VERSION)
         ds.attrs["target"] = ds.name
@@ -47,6 +57,11 @@ class MyNXWriter(NXWriter):
         # NOTE:NXnote (optional, replace "NOTE" as appropriate)
 
     def write_instrument(self, parent):
+        """Write the instrument group of the NeXus file.
+
+        Args:
+            parent: The parent group to write to.
+        """
         super().write_instrument(parent)
         nxinstrument = parent["instrument"]
         self.write_attenuator(nxinstrument, "attenuator")
@@ -70,13 +85,33 @@ class MyNXWriter(NXWriter):
         # masks:NXnote (optional, not appropriate for raw data file)
 
     def write_attenuator(self, parent, name="attenuator"):
+        """Write the attenuator group of the NeXus file.
+
+        Args:
+            parent: The parent group to write to.
+            name: The name of the attenuator group.
+        """
         self.create_NX_group(parent, f"{name}:NXattenuator")
 
     def write_beam(self, parent, name="incident_beam"):
+        """Write the beam group of the NeXus file.
+
+        Args:
+            parent: The parent group to write to.
+            name: The name of the beam group.
+
+        Returns:
+            The created beam group.
+        """
         nxbeam = self.create_NX_group(parent, f"{name}:NXbeam")
         return nxbeam
 
     def write_detector(self, parent):
+        """Write the detector group of the NeXus file.
+
+        Args:
+            parent: The parent group to write to.
+        """
         super().write_detector(parent)
 
         nxdet = self.create_NX_group(parent, "lambda2M:NXdetector")
@@ -100,6 +135,14 @@ class MyNXWriter(NXWriter):
         nxdet["acquire_period"] = mdgroup["t0"]  # AD's acquire_period
 
     def write_sample(self, parent):
+        """Write the sample group of the NeXus file.
+
+        Args:
+            parent: The parent group to write to.
+
+        Returns:
+            The created sample group.
+        """
         nxsample = super().write_sample(parent)
         # nxsample = parent.get("sample")
         if nxsample is None:
@@ -180,6 +223,11 @@ class MyNXWriter(NXWriter):
         ds.attrs["target"] = ds.name
 
     def get_ioc_file_path(self):
+        """Get the IOC file path from metadata or use default.
+
+        Returns:
+            The path to the IOC file.
+        """
         import pathlib
 
         from ..devices.ad_lambda2M import LAMBDA2M_FILES_ROOT
@@ -192,6 +240,14 @@ class MyNXWriter(NXWriter):
         return pathlib.Path(dir)
 
     def get_unique_resource(self, datum_id_list):
+        """Get the unique resource ID from a list of datum IDs.
+
+        Args:
+            datum_id_list: List of datum IDs to process.
+
+        Returns:
+            The unique resource ID.
+        """
         # count number of unique resources (expect only 1)
         resource_id_list = []
         for datum_id in datum_id_list:

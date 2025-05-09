@@ -13,19 +13,55 @@ glass% ./8idDAQ1.sh start
 Starting 8idDAQ1
 
 /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idDAQ1/iocBoot/ioc8idDAQ1/digital-IO.iocsh
-dbLoadTemplate("$(MEASCOMP)/db/USBCTR.substitutions", "P=$(PREFIX), PORT=MCCTR08")
-dbLoadRecords("$(SCALER)/db/scaler.db", "P=$(PREFIX), S=scaler1, DTYP=Asyn Scaler, OUT=@asyn(MCCTR08), FREQ=10000000")
-dbLoadRecords("$(MEASCOMP)/db/measCompMCS.template", "P=$(PREFIX)MCS01:, PORT=MCCTR08, MAX_POINTS=2048")
+dbLoadTemplate(
+    "$(MEASCOMP)/db/USBCTR.substitutions",
+    "P=$(PREFIX), PORT=MCCTR08"
+)
+dbLoadRecords(
+    "$(SCALER)/db/scaler.db",
+    "P=$(PREFIX), S=scaler1, DTYP=Asyn Scaler, OUT=@asyn(MCCTR08), FREQ=10000000"
+)
+dbLoadRecords(
+    "$(MEASCOMP)/db/measCompMCS.template",
+    "P=$(PREFIX)MCS01:, PORT=MCCTR08, MAX_POINTS=2048"
+)
 
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca1,  INP=@asyn(MCCTR08 0),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca2,  INP=@asyn(MCCTR08 1),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca3,  INP=@asyn(MCCTR08 2),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca4,  INP=@asyn(MCCTR08 3),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca5,  INP=@asyn(MCCTR08 4),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca6,  INP=@asyn(MCCTR08 5),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca7,  INP=@asyn(MCCTR08 6),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca8,  INP=@asyn(MCCTR08 7),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca9,  INP=@asyn(MCCTR08 8),  CHANS=2048")
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca1,  INP=@asyn(MCCTR08 0),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca2,  INP=@asyn(MCCTR08 1),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca3,  INP=@asyn(MCCTR08 2),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca4,  INP=@asyn(MCCTR08 3),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca5,  INP=@asyn(MCCTR08 4),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca6,  INP=@asyn(MCCTR08 5),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca7,  INP=@asyn(MCCTR08 6),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca8,  INP=@asyn(MCCTR08 7),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca9,  INP=@asyn(MCCTR08 8),  CHANS=2048"
+)
 
 """
 
