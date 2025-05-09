@@ -1,9 +1,9 @@
 
 import bluesky.plan_stubs as bps
+from apsbits.core.instrument_init import oregistry
 
-from ..devices.aerotech_stages import detector
-from ..devices.registers_device import pv_registers
-
+pv_registers = oregistry["pv_registers"]
+detector = oregistry["detector"]
 
 def select_detector(det: str):
 

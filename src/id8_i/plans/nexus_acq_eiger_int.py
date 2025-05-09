@@ -8,8 +8,8 @@ from bluesky import plans as bp
 from ..plans_old.dm_util import dm_run_job
 from ..plans_old.dm_util import dm_setup
 from .nexus_utils import create_nexus_format_metadata
-from ..plans_old.sample_info_unpack import gen_folder_prefix
-from ..plans_old.sample_info_unpack import mesh_grid_move
+from .sample_info_unpack import gen_folder_prefix
+from .sample_info_unpack import mesh_grid_move
 from .shutter_logic import blockbeam
 from .shutter_logic import post_align
 from .shutter_logic import showbeam

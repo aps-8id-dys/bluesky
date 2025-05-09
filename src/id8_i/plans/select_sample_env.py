@@ -7,10 +7,11 @@ __all__ = """
 """.split()
 
 import bluesky.plan_stubs as bps
+from apsbits.core.instrument_init import oregistry
 
-from ..devices import granite, granite_8idi_valve
-from ..devices import sample
-
+sample = oregistry["sample"]
+granite = oregistry["granite"]
+granite_8idi_valve = oregistry["granite_8idi_valve"]
 
 def select_sample_env(env: str):
     choices = {

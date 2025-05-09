@@ -4,33 +4,36 @@ Simple, modular Bluesky plans for users.
 
 import warnings
 
-import epics as pe
 import numpy as np
-import h5py 
-import datetime
-
-warnings.filterwarnings("ignore")
-
+from apsbits.core.instrument_init import oregistry
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
-from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample, rheometer
-from ..devices.softglue import softglue_8idi
-from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-# from aps_8id_bs_instrument.devices import *
-from ..initialize_bs_tools import cat
-from .sample_info_unpack import sort_qnw
-from ..plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff
-from ..plans.nexus_utils import create_nexus_format_metadata
-# from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..initialize_bs_tools import cat
+from ..plans.nexus_utils import create_nexus_format_metadata
+from ..plans.sample_info_unpack import sort_qnw
+from ..plans.shutter_logic import blockbeam
+from ..plans.shutter_logic import showbeam
+from ..plans.shutter_logic import shutteroff
+from ..plans.shutter_logic import shutteron
+
+warnings.filterwarnings("ignore")
+
+eiger4M = oregistry["eiger4M"]
+rheometer = oregistry["rheometer"]
+sample = oregistry["sample"]
+filter_8ide = oregistry["filter_8ide"]
+filter_8idi = oregistry["filter_8idi"]
+qnw_env1 = oregistry["qnw_env1"]
+qnw_env2 = oregistry["qnw_env2"]
+qnw_env3 = oregistry["qnw_env3"]
+pv_registers = oregistry["pv_registers"]
+sl4 = oregistry["sl4"]
+softglue_8idi = oregistry["softglue_8idi"]
 
 def create_run_metadata_dict(det=None,
                              sample = sample,

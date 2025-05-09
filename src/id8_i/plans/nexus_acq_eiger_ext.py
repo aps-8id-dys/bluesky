@@ -12,8 +12,8 @@ from .shutter_logic import shutteron
 from ..plans_old.dm_util import dm_run_job
 from ..plans_old.dm_util import dm_setup
 from .nexus_utils import create_nexus_format_metadata
-from ..plans_old.sample_info_unpack import gen_folder_prefix
-from ..plans_old.sample_info_unpack import mesh_grid_move
+from .sample_info_unpack import gen_folder_prefix
+from .sample_info_unpack import mesh_grid_move
 
 eiger4M = oregistry["eiger4M"]
 softglue_8idi = oregistry["softglue_8idi"]

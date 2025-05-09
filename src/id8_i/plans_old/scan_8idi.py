@@ -1,15 +1,15 @@
-import epics as pe
+from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-from ..devices.aerotech_stages import rheometer
-from ..devices.aerotech_stages import sample
-from ..devices.filters_8id import filter_8idi
-from ..devices.tetramm_picoammeter import tetramm1
 from ..plans.shutter_logic import blockbeam
 from ..plans.shutter_logic import pre_align
 from ..plans.shutter_logic import showbeam
 
+rheometer = oregistry["rheometer"]
+sample = oregistry["sample"]
+filter_8idi = oregistry["filter_8idi"]
+# tettram = oregistry["tettram"] # is tettram the new tettram 1?
 
 def att(att_ratio=None):
     yield from bps.mv(filter_8idi.attenuation_set, att_ratio)

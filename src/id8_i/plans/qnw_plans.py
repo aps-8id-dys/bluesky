@@ -19,7 +19,7 @@ __all__ = [
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 
-from ..plans_old.sample_info_unpack import sort_qnw
+from .sample_info_unpack import sort_qnw
 
 qnw_env1 = oregistry["qnw_env1"]
 qnw_env2 = oregistry["qnw_env2"]

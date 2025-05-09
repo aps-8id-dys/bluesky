@@ -5,9 +5,9 @@ Custom Plan Definitions & Instatiations
 from ..plans.qnw_plans import find_qnw_index, te, temp_ramp, te_env, temp_ramp_env
 # from .qnw_vac_plans import set_qnw_vac
 
-from .select_sample_env import select_sample_env
+from ..plans.select_sample_env import select_sample_env
 from ..plans.sample_info_unpack import select_sample, sort_qnw, gen_folder_prefix
-from .select_detector import select_detector
+from ..plans.select_detector import select_detector
 
 from .util_8idi import get_machine_name, temp2str
 
