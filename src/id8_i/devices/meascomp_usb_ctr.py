@@ -29,13 +29,6 @@ dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, 
 
 """
 
-__all__ = """
-    daq1
-    mcs
-    scaler1
-""".split()
-
-
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
