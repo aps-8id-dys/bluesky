@@ -36,8 +36,8 @@ from ..plans.shutter_logic import showbeam
 from ..plans.shutter_logic import shutteroff
 from ..plans.shutter_logic import shutteron
 from ..plans.spec_8IDE_eiger4M import submit_Nexus_DM
-from .dm_util import dm_run_job
-from .dm_util import dm_setup
+from ..utils.dm_util import dm_run_job
+from ..utils.dm_util import dm_setup
 from .scan_8idi import att
 from .scan_8idi import rheo_set_x_lup
 from .scan_8idi import rheo_x_lup
