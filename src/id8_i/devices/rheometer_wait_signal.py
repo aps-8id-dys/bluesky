@@ -1,4 +1,3 @@
-
 """
 Softglue counter. Increments when the MCR rheometer finishes current program.
 """
@@ -9,6 +8,10 @@ from ophyd import EpicsSignalRO
 
 
 class Rheometer_Wait(Device):
-    pulse_count = Component(EpicsSignalRO, "UpCntr-1_COUNTS")
+    """Device representing the rheometer wait signal.
 
-mcr_wait_signal = Rheometer_Wait("8idMZ4:SG:", name="mcr_wait_signal")
+    This device monitors a softglue counter that increments when the MCR rheometer
+    finishes its current program. It provides read-only access to the pulse count.
+    """
+
+    pulse_count = Component(EpicsSignalRO, "UpCntr-1_COUNTS")

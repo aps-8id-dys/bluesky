@@ -2,14 +2,9 @@
 IDT Mono in station 8-ID-A
 """
 
-import logging
-
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import FormattedComponent as FCpt
-
-logger = logging.getLogger(__name__)
-logger.bsdev(__file__)
 
 
 class IDTMono(Device):

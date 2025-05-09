@@ -14,29 +14,18 @@ Motivation: Move sample during measurement to avoid beam damage.
 1. fly scan Eiger4M v. sample.x and run DM workflow
 """
 
-__all__ = """
-    sample
-    detector
-    rheometer
-""".split()
-
-import logging
-
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
 
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
-
-IOC = "8idiAerotech:"
-
-# TODO: refactor from labels to ophydregistry?
-
 
 class AerotechSampleStage(Device):
+    """Device representing the sample stage with Aerotech motors.
+
+    This device controls the position of the sample stage using Aerotech motors,
+    including x, y, z translations and roll, pitch, yaw rotations.
+    """
+
     x = Component(EpicsMotor, "m1", labels=("sample", "motor"))
     y = Component(EpicsMotor, "m3", labels=("sample", "motor"))
     z = Component(EpicsMotor, "m2", labels=("sample", "motor"))
@@ -47,6 +36,12 @@ class AerotechSampleStage(Device):
 
 
 class AerotechDetectorStage(Device):
+    """Device representing the detector stage with Aerotech motors.
+
+    This device controls the position of the detector stage using Aerotech motors,
+    including x and y translations. Z translation and yaw rotation are to be added.
+    """
+
     x = Component(EpicsMotor, "m4", labels=("detector", "motor"))
     y = Component(EpicsMotor, "m5", labels=("detector", "motor"))
     # TBA: z
@@ -54,6 +49,12 @@ class AerotechDetectorStage(Device):
 
 
 class AerotechRheometerStage(Device):
+    """Device representing the rheometer stage with Aerotech motors.
+
+    This device controls the position of the rheometer stage using Aerotech motors,
+    including x, y, z translations and roll, pitch, yaw rotations.
+    """
+
     x = Component(EpicsMotor, "m8", labels=("rheometer", "motor"))
     y = Component(EpicsMotor, "m9", labels=("rheometer", "motor"))
     z = Component(EpicsMotor, "m7", labels=("rheometer", "motor"))
@@ -63,14 +64,16 @@ class AerotechRheometerStage(Device):
     yaw = Component(EpicsMotor, "m12", labels=("rheometer", "motor"))
 
 
-try:
-    sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
-    detector = AerotechDetectorStage(IOC, name="detector", labels=("detector", "stage"))
-    rheometer = AerotechRheometerStage(
-        IOC, name="rheometer", labels=("rheometer", "stage")
-    )
-except Exception as exinfo:
-    logger.warning("Could not connect with Aerotech controller. %s", exinfo)
-    sample = None
-    detector = None
-    rheometer = None
+# try:
+#     sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
+#     detector = AerotechDetectorStage(
+#         IOC, name="detector", labels=("detector", "stage")
+#     )
+#     rheometer = AerotechRheometerStage(
+#         IOC, name="rheometer", labels=("rheometer", "stage")
+#     )
+# except Exception as exinfo:
+#     logger.warning("Could not connect with Aerotech controller. %s", exinfo)
+#     sample = None
+#     detector = None
+#     rheometer = None

@@ -13,43 +13,63 @@ glass% ./8idDAQ1.sh start
 Starting 8idDAQ1
 
 /net/s8iddserv/xorApps/epics/synApps_6_2_1/ioc/8idDAQ1/iocBoot/ioc8idDAQ1/digital-IO.iocsh
-dbLoadTemplate("$(MEASCOMP)/db/USBCTR.substitutions", "P=$(PREFIX), PORT=MCCTR08")
-dbLoadRecords("$(SCALER)/db/scaler.db", "P=$(PREFIX), S=scaler1, DTYP=Asyn Scaler, OUT=@asyn(MCCTR08), FREQ=10000000")
-dbLoadRecords("$(MEASCOMP)/db/measCompMCS.template", "P=$(PREFIX)MCS01:, PORT=MCCTR08, MAX_POINTS=2048")
+dbLoadTemplate(
+    "$(MEASCOMP)/db/USBCTR.substitutions",
+    "P=$(PREFIX), PORT=MCCTR08"
+)
+dbLoadRecords(
+    "$(SCALER)/db/scaler.db",
+    "P=$(PREFIX), S=scaler1, DTYP=Asyn Scaler, OUT=@asyn(MCCTR08), FREQ=10000000"
+)
+dbLoadRecords(
+    "$(MEASCOMP)/db/measCompMCS.template",
+    "P=$(PREFIX)MCS01:, PORT=MCCTR08, MAX_POINTS=2048"
+)
 
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca1,  INP=@asyn(MCCTR08 0),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca2,  INP=@asyn(MCCTR08 1),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca3,  INP=@asyn(MCCTR08 2),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca4,  INP=@asyn(MCCTR08 3),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca5,  INP=@asyn(MCCTR08 4),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca6,  INP=@asyn(MCCTR08 5),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca7,  INP=@asyn(MCCTR08 6),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca8,  INP=@asyn(MCCTR08 7),  CHANS=2048")
-dbLoadRecords("$(MCA)/mcaApp/Db/SIS38XX_waveform.template", "P=$(PREFIX)MCS01:, R=mca9,  INP=@asyn(MCCTR08 8),  CHANS=2048")
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca1,  INP=@asyn(MCCTR08 0),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca2,  INP=@asyn(MCCTR08 1),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca3,  INP=@asyn(MCCTR08 2),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca4,  INP=@asyn(MCCTR08 3),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca5,  INP=@asyn(MCCTR08 4),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca6,  INP=@asyn(MCCTR08 5),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca7,  INP=@asyn(MCCTR08 6),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca8,  INP=@asyn(MCCTR08 7),  CHANS=2048"
+)
+dbLoadRecords(
+    "$(MCA)/mcaApp/Db/SIS38XX_waveform.template",
+    "P=$(PREFIX)MCS01:, R=mca9,  INP=@asyn(MCCTR08 8),  CHANS=2048"
+)
 
 """
-
-__all__ = """
-    daq1
-    mcs
-    scaler1
-""".split()
-
-
-import logging
 
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
 from ophyd import EpicsSignalWithRBV
-from ophyd.scaler import ScalerCH
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
-IOC = "8idDAQ1:"
-# The IOC has iocStats  f"{IOC}UPTIME" for example
 
 
 class MeasCompCtrMcs(Device):
@@ -193,23 +213,3 @@ class MeasCompCtr(Device):
     counter_6 = Component(MeasCompCtrDeviceCounterChannel, "Counter6")
     counter_7 = Component(MeasCompCtrDeviceCounterChannel, "Counter7")
     counter_8 = Component(MeasCompCtrDeviceCounterChannel, "Counter8")
-
-
-# create, connect, and configure the devices
-daq1 = MeasCompCtr(IOC, name="daq1")
-mcs = MeasCompCtrMcs(f"{IOC}MCS01:", name="mcs")
-try:
-    logger.info("Waiting to connect with 'scaler1' ...")
-    scaler1 = ScalerCH(f"{IOC}scaler1", name="scaler1", labels=["scalers", "detectors"])
-    scaler1.wait_for_connection()
-    scaler1.select_channels()
-except Exception as exc:
-    logger.warning("Could not connect with MC-USB-CTR08 device.  %s", str(exc))
-    if not daq1.connected:
-        logger.warning("Could not create %s", daq1.name)
-        daq1 = None
-    if not mcs.connected:
-        logger.warning("Could not create %s", mcs.name)
-        mcs = None
-    logger.warning("Could not create scaler1")
-    scaler1 = None
