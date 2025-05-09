@@ -176,7 +176,7 @@ apstools.devices.area_detector_factory.ad_creator:
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
       read_path_template: /gdata/dm/8IDI/2025-2/
-      write_path_template: "/extdisk/" # TODO: Confirm
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
