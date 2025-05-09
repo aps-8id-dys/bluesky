@@ -1,3 +1,10 @@
+"""
+Sample movement plans for the 8ID-I beamline.
+
+This module provides plans for moving samples in a grid pattern, supporting both
+rheometer and regular sample stages.
+"""
+
 import numpy as np
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
@@ -7,7 +14,26 @@ sample = oregistry["sample"]
 pv_registers = oregistry["pv_registers"]
 
 
-def mesh_grid_move(sam_index, x_cen, x_radius, x_pts, y_cen, y_radius, y_pts):
+def mesh_grid_move(
+    sam_index: int,
+    x_cen: float,
+    x_radius: float,
+    x_pts: int,
+    y_cen: float,
+    y_radius: float,
+    y_pts: int,
+):
+    """Move sample in a grid pattern.
+
+    Args:
+        sam_index: Index of the sample (0 for rheometer, 1-27 for regular samples)
+        x_cen: Center x position
+        x_radius: Radius of x movement
+        x_pts: Number of points in x direction
+        y_cen: Center y position
+        y_radius: Radius of y movement
+        y_pts: Number of points in y direction
+    """
     sample_pos_register = pv_registers.sample_position_register(sam_index)
     sam_pos = int(sample_pos_register.get())
 

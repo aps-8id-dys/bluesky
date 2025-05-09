@@ -23,7 +23,16 @@ pv_registers = oregistry["pv_registers"]
 
 
 def setup_rigaku_ZDT_series(acq_time, num_frames, file_name):
-    """Setup the rigaku3M cam module for internal acquisition (0) mode and populate the hdf plugin"""
+    """Setup the Rigaku3M for ZDT series acquisition.
+
+    Configure the detector's cam module for internal acquisition mode and
+    set up the file paths for data storage.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        num_frames: Number of frames to acquire
+        file_name: Base name for the output files
+    """
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
@@ -56,6 +65,16 @@ def rigaku_acq_ZDT_series(
     process=True,
     sample_move=False,
 ):
+    """Run ZDT series acquisition with the Rigaku detector.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        num_frame: Number of frames to acquire
+        num_rep: Number of repetitions
+        wait_time: Time to wait between repetitions
+        process: Whether to process data after acquisition
+        sample_move: Whether to move sample between repetitions
+    """
     try:
         yield from post_align()
         yield from shutteroff()

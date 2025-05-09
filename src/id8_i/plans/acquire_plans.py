@@ -62,6 +62,11 @@ def prep_hdf_plugin(plugin, n_images, file_path, file_name):
 
 
 def restore_hdf_plugin(plugin):
+    """Restore the HDF plugin to its default state.
+
+    Args:
+        plugin: The HDF plugin to restore
+    """
     # fmt: off
     yield from bps.mv(
         plugin.file_write_mode, "Single",

@@ -1,6 +1,16 @@
+"""
+Scanning plans for the 8ID-I beamline.
+
+This module provides plans for scanning various motors and detectors at the
+8ID-I beamline, including sample and rheometer stages, with attenuation control.
+"""
+
+from typing import Optional
+
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
+from ophyd import Device
 
 from .shutter_logic import blockbeam
 from .shutter_logic import pre_align
@@ -12,7 +22,12 @@ filter_8idi = oregistry["filter_8idi"]
 tetramm1 = oregistry["tetramm1"]
 
 
-def att(att_ratio=None):
+def att(att_ratio: Optional[float] = None):
+    """Set the attenuation ratio with multiple attempts.
+
+    Args:
+        att_ratio: Attenuation ratio to set (0-15)
+    """
     yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
     yield from bps.sleep(2)
     yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
@@ -22,12 +37,21 @@ def att(att_ratio=None):
 
 
 def x_lup(
-    rel_begin=-3,
-    rel_end=3,
-    num_pts=60,
-    att_level=7,
-    det=tetramm1,
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 60,
+    att_level: int = 7,
+    det: Device = tetramm1,
 ):
+    """Perform a relative scan along the sample X axis.
+
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -37,12 +61,21 @@ def x_lup(
 
 
 def y_lup(
-    rel_begin=-3,
-    rel_end=3,
-    num_pts=60,
-    att_level=7,
-    det=tetramm1,
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 60,
+    att_level: int = 7,
+    det: Device = tetramm1,
 ):
+    """Perform a relative scan along the sample Y axis.
+
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -52,12 +85,21 @@ def y_lup(
 
 
 def rheo_x_lup(
-    rel_begin=-3,
-    rel_end=3,
-    num_pts=30,
-    att_level=10,
-    det=tetramm1,
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 30,
+    att_level: int = 10,
+    det: Device = tetramm1,
 ):
+    """Perform a relative scan along the rheometer X axis.
+
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -67,12 +109,21 @@ def rheo_x_lup(
 
 
 def rheo_y_lup(
-    rel_begin=-3,
-    rel_end=3,
-    num_pts=30,
-    att_level=10,
-    det=tetramm1,
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 30,
+    att_level: int = 10,
+    det: Device = tetramm1,
 ):
+    """Perform a relative scan along the rheometer Y axis.
+
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -81,7 +132,19 @@ def rheo_y_lup(
     yield from blockbeam()
 
 
-def rheo_set_x_lup(att_level=10, det=tetramm1):
+def rheo_set_x_lup(
+    att_level: int = 10,
+    det: Device = tetramm1,
+):
+    """Perform a series of scans at specific rheometer X positions.
+
+    This plan moves the rheometer to three specific X positions and performs
+    relative scans around each position.
+
+    Args:
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 

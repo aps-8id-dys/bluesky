@@ -24,7 +24,16 @@ sample = oregistry["sample"]
 
 
 def setup_rigaku_ZDT_fly(acq_time, num_frames, file_name):
-    """Setup the rigaku3M cam module for internal acquisition (0) mode and populate the hdf plugin"""
+    """Setup the Rigaku3M for ZDT fly scan acquisition.
+
+    Configure the detector's cam module for internal acquisition mode and
+    set up the file paths for data storage.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        num_frames: Number of frames to acquire
+        file_name: Base name for the output files
+    """
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
@@ -58,6 +67,20 @@ def rigaku_acq_ZDT_fly(
     sample_move=False,
     process=True,
 ):
+    """Run ZDT fly scan acquisition with the Rigaku detector.
+
+    This plan performs a continuous motion scan while collecting data,
+    moving the sample stage at a constant velocity during acquisition.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        num_frame: Number of frames to acquire
+        num_rep: Number of repetitions
+        flyspeed: Sample stage velocity during scan (mm/s)
+        wait_time: Time to wait between repetitions
+        sample_move: Whether to move sample between repetitions
+        process: Whether to process data after acquisition
+    """
     try:
         yield from post_align()
         yield from shutteroff()

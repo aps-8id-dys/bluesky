@@ -1,3 +1,13 @@
+"""
+Detector selection and configuration plans for the 8ID-I beamline.
+
+This module provides plans for selecting and configuring different detectors
+(Eiger4M and Rigaku3M), including setting up their positions, beam centers,
+and workflow parameters.
+"""
+
+from typing import Literal
+
 import bluesky.plan_stubs as bps
 from apsbits.core.instrument_init import oregistry
 
@@ -5,7 +15,18 @@ pv_registers = oregistry["pv_registers"]
 detector = oregistry["detector"]
 
 
-def select_detector(det: str):
+def select_detector(det: Literal["eiger", "rigaku"]):
+    """Select and configure a detector for data collection.
+
+    This plan sets up the detector-specific parameters including workflow name,
+    Q-map file, detector position, and beam center coordinates.
+
+    Args:
+        det: Detector to select ("eiger" or "rigaku")
+
+    Yields:
+        Generator: Bluesky plan messages
+    """
     if det == "eiger":
         yield from bps.mv(pv_registers.workflow_name, "xpcs8-boost-corr")
         yield from bps.mv(pv_registers.qmap_file, "eiger4m_qmap_default.h5")

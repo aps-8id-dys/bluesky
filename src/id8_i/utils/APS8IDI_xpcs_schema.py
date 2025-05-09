@@ -1,5 +1,12 @@
-# customized NeXus schema for APS 8-ID-I XPCS
+"""
+NeXus schema definition for APS 8-ID-I XPCS.
 
+This module defines the customized NeXus schema used for storing XPCS data at the
+APS 8-ID-I beamline. The schema follows the NXxpcs application definition and
+includes metadata about the experiment, instrument, and data collection.
+"""
+
+# customized NeXus schema for APS 8-ID-I XPCS
 
 xpcs_schema = {
     "entry": {
@@ -8,19 +15,23 @@ xpcs_schema = {
         "definition": {
             "type": "NX_CHAR",
             "required": True,
-            "description": "Official NeXus NXDL schema to which this file conforms",
+            "description": ("Official NeXus NXDL schema to which this file conforms"),
             "data": "NXxpcs",
         },
         "schema_version": {
             "type": "NX_CHAR",
             "required": True,
-            "description": "Version of the XPCS-Nexus schema to which this file conforms",
+            "description": (
+                "Version of the XPCS-Nexus schema to which this file conforms"
+            ),
             "data": "0.1.0",
         },
         "entry_identifier": {
             "type": "NX_CHAR",
             "required": True,
-            "description": "Locally unique identifier for the experiment (a.k.a. run or scan)",
+            "description": (
+                "Locally unique identifier for the experiment " "(a.k.a. run or scan)"
+            ),
             "data": "entry_identifier",
         },
         "entry_identifier_uuid": {
@@ -39,19 +50,26 @@ xpcs_schema = {
             "type": "NX_INT",
             "required": True,
             "deprecated": True,
-            "description": "DEPRECATED: Use the entry_identifier field. Scan number (must be an integer)",
+            "description": (
+                "DEPRECATED: Use the entry_identifier field. "
+                "Scan number (must be an integer)"
+            ),
             "data": 1,
         },
         "start_time": {
             "type": "NX_DATE_TIME",
             "required": True,
-            "description": 'Starting time of experiment, such as "2021-02-11 11:22:33.445566Z"',
+            "description": (
+                "Starting time of experiment, such as " '"2021-02-11 11:22:33.445566Z"'
+            ),
             "data": "start_time",
         },
         "end_time": {
             "type": "NX_DATE_TIME",
             "required": False,
-            "description": 'Ending time of experiment, such as "2021-02-11 11:23:45Z"',
+            "description": (
+                "Ending time of experiment, such as " '"2021-02-11 11:23:45Z"'
+            ),
             "data": "start_time",
         },
         "instrument": {
@@ -61,68 +79,89 @@ xpcs_schema = {
             "detector_1": {
                 "type": "NXdetector",
                 "required": True,
-                "description": "XPCS data is typically produced by area detector (likely EPICS AreaDetector)",
+                "description": (
+                    "XPCS data is typically produced by area detector "
+                    "(likely EPICS AreaDetector)"
+                ),
                 "beam_center_x": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of beam center, x axis, in detector's coordinates",
+                    "description": (
+                        "Position of beam center, x axis, in detector's " "coordinates"
+                    ),
                     "data": 1.0,
                 },
                 "beam_center_y": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of beam center, y axis, in detector's coordinates",
+                    "description": (
+                        "Position of beam center, y axis, in detector's " "coordinates"
+                    ),
                     "data": 1.0,
                 },
                 "beam_center_position_x": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of the detector, x axis, during data collection",
+                    "description": (
+                        "Position of the detector, x axis, during data " "collection"
+                    ),
                     "data": 1.0,
                 },
                 "beam_center_position_y": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of the detector, y axis, during data collection",
+                    "description": (
+                        "Position of the detector, y axis, during data " "collection"
+                    ),
                     "data": 1.0,
                 },
                 "position_x": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of the detector, x axis, during data collection",
+                    "description": (
+                        "Position of the detector, x axis, during data " "collection"
+                    ),
                     "data": 1.0,
                 },
                 "position_y": {
                     "type": "NX_NUMBER",
                     "units": "NX_LENGTH",
                     "required": True,
-                    "description": "Position of the detector, y axis, during data collection",
+                    "description": (
+                        "Position of the detector, y axis, during data " "collection"
+                    ),
                     "data": 1.0,
                 },
                 "rotation_x": {
                     "type": "NX_NUMBER",
                     "units": "NX_ANGLE",
                     "required": True,
-                    "description": "Rotation of the detector, x axis, during data collection",
+                    "description": (
+                        "Rotation of the detector, x axis, during data " "collection"
+                    ),
                     "data": 0.0,
                 },
                 "rotation_y": {
                     "type": "NX_NUMBER",
                     "units": "NX_ANGLE",
                     "required": True,
-                    "description": "Rotation of the detector, y axis, during data collection",
+                    "description": (
+                        "Rotation of the detector, y axis, during data " "collection"
+                    ),
                     "data": 0.0,
                 },
                 "rotation_z": {
                     "type": "NX_NUMBER",
                     "units": "NX_ANGLE",
                     "required": True,
-                    "description": "Rotation of the detector, z axis, during data collection",
+                    "description": (
+                        "Rotation of the detector, z axis, during data " "collection"
+                    ),
                     "data": 0.0,
                 },
                 "count_time": {
@@ -149,7 +188,9 @@ xpcs_schema = {
                     "type": "NX_NUMBER",
                     "units": "NX_TIME",
                     "required": True,
-                    "description": "Exposure period (time between frame starts) of frames, s",
+                    "description": (
+                        "Exposure period (time between frame starts) of frames, s"
+                    ),
                     "data": 1.0,
                 },
                 "x_pixel_size": {
@@ -195,7 +236,9 @@ xpcs_schema = {
                     "type": "NX_FLOAT",
                     "units": "NX_ENERGY",
                     "required": False,
-                    "description": "Spread of incident beam line energy (either keV or eV)",
+                    "description": (
+                        "Spread of incident beam line energy (either keV or eV)"
+                    ),
                     "data": 0.0001,
                 },
                 "incident_polarization_type": {
@@ -367,7 +410,7 @@ xpcs_schema = {
                     "type": "NX_CHAR",
                     "required": False,
                     "description": "input arguments for the data management workflow",
-                    "data": """{qmap: 'sample_name', mask: 'mask_name'}""",
+                    "data": """{"qmap": "sample_name", "mask": "mask_name"}""",
                 },
             },
             "bluesky": {

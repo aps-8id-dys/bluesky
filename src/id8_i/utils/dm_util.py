@@ -12,7 +12,16 @@ from .util_8idi import get_machine_name
 pv_registers = oregistry["pv_registers"]
 
 
-def dm_setup(process):
+def dm_setup(process: bool) -> tuple:
+    """Set up the Data Management workflow API.
+
+    Args:
+        process: Whether to initialize the workflow API
+
+    Returns:
+        Tuple containing (workflowProcApi, dmuser) if process is True,
+        otherwise (None, None)
+    """
     if process:
         # Object that tracks beamline-specific configuration
         configManager = ConfigurationManager.getInstance()
@@ -23,7 +32,22 @@ def dm_setup(process):
     return workflowProcApi, dmuser
 
 
-def dm_run_job(det_name, process, workflowProcApi, dmuser, filename):
+def dm_run_job(
+    det_name: str,
+    process: bool,
+    workflowProcApi: WorkflowProcApi,
+    dmuser: str,
+    filename: str,
+):
+    """Submit a data processing job to the Data Management system.
+
+    Args:
+        det_name: Name of the detector ("rigaku" or "eiger")
+        process: Whether to submit the job
+        workflowProcApi: Workflow API instance
+        dmuser: DM username
+        filename: Base name of the data file
+    """
     if process:
         exp_name = pv_registers.experiment_name.get()
         qmap_file = pv_registers.qmap_file.get()

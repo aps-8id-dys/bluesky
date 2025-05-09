@@ -17,6 +17,12 @@ filter_8idi = oregistry["filter_8idi"]
 
 
 def setup_eiger_tv_mode():
+    """Configure the Eiger detector for TV/movie mode.
+
+    This function sets up the Eiger detector for continuous image acquisition
+    with internal triggering. It configures the acquisition parameters and
+    sets the attenuation level for safe viewing.
+    """
     yield from bps.mv(eiger4M.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(eiger4M.cam.acquire_time, 1)
     yield from bps.mv(eiger4M.cam.acquire_period, 1)

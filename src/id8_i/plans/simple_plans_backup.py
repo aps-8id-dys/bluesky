@@ -40,6 +40,18 @@ def create_run_metadata_dict(
     det=None,
     sample=sample,
 ):
+    """Create a dictionary containing metadata for the current run.
+
+    This function collects various experimental parameters and settings
+    from different devices and combines them into a metadata dictionary.
+
+    Args:
+        det: The detector device to get timing information from
+        sample: The sample stage device to get position information from
+
+    Returns:
+        dict: A dictionary containing all the metadata for the run
+    """
     md = {}
     md["X_energy"] = 10.0  # keV, TODO get from undulator or monochromator
     # TODO
@@ -98,7 +110,6 @@ def softglue_stop_pulses():
 
 def simple_acquire_ext_trig(det, md):
     """Just run the acquisition and save the file, nothing else."""
-
     nxwriter.warn_on_missing_content = False
     nxwriter.file_path = det.hdf1.file_path.get()
     base_file_name = det.hdf1.file_name.get()
@@ -182,7 +193,8 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
-    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf plugin"""
+    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf
+    plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
@@ -324,9 +336,12 @@ def eiger_acq_int_series(
         finally:
             pass
 
-        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f
+        # {num_frame:06d}_r{ii+1:05d}"
         filename = (
-            f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
+            f"{header_name}_{sample_name}_"
+            f"a{att_level:04}_"
+            f"f{num_frame:06d}_r{ii+1:05d}"
         )
 
         yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
@@ -367,6 +382,20 @@ def eiger_acq_ext_trig(
     att_level=0,
     sample_move=False,
 ):
+    """Run external trigger acquisition with the Eiger detector.
+
+    This function configures and runs an external trigger acquisition sequence
+    with the Eiger detector, including sample movement and data processing.
+
+    Args:
+        det: Detector to use (default: eiger4M)
+        acq_time: Acquisition time per frame in seconds
+        acq_period: Time between frame starts in seconds
+        num_frame: Number of frames to acquire
+        num_rep: Number of repetitions
+        att_level: Attenuation level
+        sample_move: Whether to move sample between repetitions
+    """
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
     yield from bps.sleep(5)
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -382,7 +411,7 @@ def eiger_acq_ext_trig(
         header_name,
         meas_num,
         qnw_index,
-        temp,
+        _,
         sample_name,
         x_cen,
         y_cen,
@@ -395,7 +424,7 @@ def eiger_acq_ext_trig(
     # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
-    temp_name = int(temp * 10)
+    # temp_name = int(temp * 10)
 
     sample_pos_register = pv_registers.sample_position_register(qnw_index)
     sam_pos = sample_pos_register.get()
@@ -419,12 +448,14 @@ def eiger_acq_ext_trig(
                 pass
         except Exception as e:
             print(f"Error occurred in sample motion: {e}")
-        finally:
-            pass
 
-        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_
+        # f{num_frame:06d}_r{ii+1:05d}"
         filename = (
-            f"{header_name}_{sample_name}_a{att_level:04}_f{num_frame:06d}_r{ii+1:05d}"
+            f"{header_name}_{sample_name}_"
+            f"a{att_level:04d}_"
+            f"f{num_frame:06d}_"
+            f"r{ii+1:05d}"
         )
 
         yield from setup_det_ext_trig(det, acq_time, acq_period, num_frame, filename)
@@ -462,6 +493,20 @@ def eiger_acq_flyscan(
     sample_move=False,
     flyspeed=0.1,
 ):
+    """Run flyscan acquisition with the Eiger detector.
+
+    This function configures and runs a continuous motion (flyscan) acquisition
+    sequence with the Eiger detector, including sample movement and data processing.
+
+    Args:
+        det: Detector to use (default: eiger4M)
+        acq_period: Time between frame starts in seconds
+        num_frame: Number of frames to acquire
+        num_rep: Number of repetitions
+        att_level: Attenuation level
+        sample_move: Whether to move sample between repetitions
+        flyspeed: Speed for continuous motion in mm/s
+    """
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -476,7 +521,7 @@ def eiger_acq_flyscan(
         header_name,
         meas_num,
         qnw_index,
-        temp,
+        _,
         sample_name,
         x_cen,
         y_cen,
@@ -489,7 +534,7 @@ def eiger_acq_flyscan(
     # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
-    temp_name = int(temp * 10)
+    # temp_name = int(temp * 10)
 
     sample_pos_register = pv_registers.sample_position_register(qnw_index)
     sam_pos = int(sample_pos_register.get())
@@ -514,7 +559,11 @@ def eiger_acq_flyscan(
             pass
 
         flyspeed_um = int(flyspeed * 1e3)
-        filename = f"{header_name}_{sample_name}_fs{flyspeed_um:04d}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        filename = (
+            f"{header_name}_{sample_name}_"
+            f"fs{flyspeed_um:04d}_a{att_level:04d}_"
+            f"f{num_frame:06d}_r{ii+1:05d}"
+        )
 
         yield from setup_det_int_series(det, acq_time, acq_period, num_frame, filename)
 

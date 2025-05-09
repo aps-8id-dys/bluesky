@@ -1,5 +1,9 @@
 """
-Simple, modular Bluesky plans for users.
+External trigger acquisition plans for the Eiger4M detector.
+
+This module provides plans for controlling the Eiger4M detector in external
+trigger mode, including setup of the detector, softglue triggers, and data
+acquisition workflows.
 """
 
 from apsbits.core.instrument_init import oregistry
@@ -21,59 +25,90 @@ softglue_8idi = oregistry["softglue_8idi"]
 pv_registers = oregistry["pv_registers"]
 
 
-def setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name):
-    """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
+def setup_eiger_ext_trig(
+    acq_time: float,
+    acq_period: float,
+    num_frames: int,
+    file_name: str,
+):
+    """Setup the Eiger4M for external trigger mode.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        acq_period: Time between frames in seconds
+        num_frames: Number of frames to acquire
+        file_name: Base name for the output files
+    """
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
-    yield from bps.mv(eiger4M.cam.trigger_mode, "External Enable")  # 3
+    yield from bps.mv(eiger4M.cam.trigger_mode, "External Enable")
     yield from bps.mv(eiger4M.cam.acquire_time, acq_time)
     yield from bps.mv(eiger4M.cam.acquire_period, acq_period)
     yield from bps.mv(eiger4M.hdf1.file_name, file_name)
     yield from bps.mv(eiger4M.hdf1.file_path, file_path)
-    # In External trigger mode, then num_images is not writable.
-    # yield from bps.mv(eiger4M.cam.num_images, num_frames)
     yield from bps.mv(eiger4M.cam.num_triggers, num_frames)
     yield from bps.mv(eiger4M.hdf1.num_capture, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
     yield from bps.mv(
-        pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
+        pv_registers.metadata_full_path,
+        f"{file_path}/{file_name}_metadata.hdf",
     )
 
 
-def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
-    """Setup external triggering"""
+def setup_softglue_ext_trig(
+    acq_time: float,
+    acq_period: float,
+    num_frames: int,
+):
+    """Setup external triggering parameters.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        acq_period: Time between frames in seconds
+        num_frames: Number of frames to acquire
+    """
     yield from bps.mv(softglue_8idi.acq_time, acq_time)
     yield from bps.mv(softglue_8idi.acq_period, acq_period)
     # Generate n+1 triggers, in case softglue triggered before area detector.
-    # Because we are also sending signal to softglue to stop the pulse train,
-    # so add 10 more pulses to be on the safe side.
+    # Add 10 more pulses to be safe since we're also sending stop signal.
     yield from bps.mv(softglue_8idi.num_triggers, num_frames + 10)
 
 
 def softglue_start_pulses():
-    """Tell the FPGA to start generating pulses."""
+    """Start generating trigger pulses."""
     yield from bps.mv(softglue_8idi.start_pulses, "1!")
 
 
 def softglue_stop_pulses():
-    """Tell the FPGA to stop generating pulses."""
+    """Stop generating trigger pulses."""
     yield from bps.mv(softglue_8idi.stop_pulses, "1!")
 
 
 def eiger_acq_ext_trig(
-    acq_time=1,
-    acq_period=2,
-    num_frames=10,
-    num_rep=2,
-    wait_time=0,
-    sample_move=True,
-    process=True,
+    acq_time: float = 1,
+    acq_period: float = 2,
+    num_frames: int = 10,
+    num_rep: int = 2,
+    wait_time: float = 0,
+    sample_move: bool = True,
+    process: bool = True,
 ):
+    """Run an external trigger acquisition sequence.
+
+    Args:
+        acq_time: Acquisition time per frame in seconds
+        acq_period: Time between frames in seconds
+        num_frames: Number of frames to acquire
+        num_rep: Number of repetitions
+        wait_time: Time to wait between repetitions
+        sample_move: Whether to move sample between repetitions
+        process: Whether to process data after acquisition
+    """
     try:
         yield from setup_softglue_ext_trig(acq_time, acq_period, num_frames)
         yield from post_align()

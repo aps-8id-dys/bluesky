@@ -1,3 +1,12 @@
+"""
+Default metadata configuration for APS 8-ID-I beamline.
+
+This module defines the default metadata values used in NeXus files for
+experiments at the APS 8-ID-I beamline. These values serve as templates
+for various instrument parameters, sample information, and experimental
+conditions.
+"""
+
 # populated list for the defaults used at 8IDI
 default_metadata = {
     "/entry/beamline": "APS-8-ID-I",
