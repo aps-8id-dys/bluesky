@@ -1,6 +1,6 @@
 """
-Module for selecting samples and reading sample information from a JSON configuration file.
-Supports both rheometer and regular sample stages.
+Module for selecting samples and reading sample information from a JSON
+configuration file. Supports both rheometer and regular sample stages.
 """
 
 import json

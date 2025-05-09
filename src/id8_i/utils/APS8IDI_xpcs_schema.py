@@ -244,7 +244,9 @@ xpcs_schema = {
                 "incident_polarization_type": {
                     "type": "NX_CHAR",
                     "required": False,
-                    "description": "Terse description of the incident beam polarization",
+                    "description": (
+                        "Terse description of the incident beam polarization"
+                    ),
                     "data": "linear_horizontal",
                 },
                 "incident_beam_intensity": {
@@ -438,7 +440,9 @@ xpcs_schema = {
                 "bluesky_plan_kwargs": {
                     "type": "NX_CHAR",
                     "required": False,
-                    "description": "Configration for the Bluesky Plan for this dataset",
+                    "description": (
+                        "Configration for the Bluesky Plan for this dataset"
+                    ),
                     "data": "mesh_scan_sample_kwargs",
                 },
                 "spec_file": {
@@ -635,7 +639,9 @@ xpcs_schema = {
             "cycle": {
                 "type": "NX_CHAR",
                 "required": True,
-                "description": "Cycle during which the experiment was performed, e.g., 2025-2",
+                "description": (
+                    "Cycle during which the experiment was performed, e.g., 2025-2"
+                ),
                 "data": "cycle",
             },
             "proposal_id": {

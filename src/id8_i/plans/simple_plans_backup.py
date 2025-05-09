@@ -170,7 +170,8 @@ def simple_acquire_int_series_nexus(det):
 
 
 def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
-    """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
+    """Setup the Eiger4M cam module for internal acquisition (0) mode and populate
+    the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
@@ -193,8 +194,8 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
-    """Setup the Eiger4M cam module for external trigger (3) mode and populate the hdf
-    plugin"""
+    """Setup the Eiger4M cam module for external trigger (3) mode and populate
+    the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
@@ -285,6 +286,19 @@ def eiger_acq_int_series(
     att_level=0,
     sample_move=False,
 ):
+    """Run internal series acquisition with the Eiger detector.
+
+    This function configures and runs an internal series acquisition sequence
+    with the Eiger detector, including sample movement and data processing.
+
+    Args:
+        det: Detector to use (default: eiger4M)
+        acq_period: Time between frame starts in seconds
+        num_frame: Number of frames to acquire
+        num_rep: Number of repetitions
+        att_level: Attenuation level
+        sample_move: Whether to move sample between repetitions
+    """
     acq_time = acq_period
 
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
@@ -299,7 +313,7 @@ def eiger_acq_int_series(
         header_name,
         meas_num,
         qnw_index,
-        temp,
+        _,
         sample_name,
         x_cen,
         y_cen,
@@ -312,7 +326,7 @@ def eiger_acq_int_series(
     # yield from bps.mv(pv_registers.sample_name, sample_name)
     sample_name = pv_registers.sample_name.get()
 
-    temp_name = int(temp * 10)
+    # temp_name = int(temp * 10)
 
     sample_pos_register = pv_registers.sample_position_register(qnw_index)
     sam_pos = int(sample_pos_register.get())

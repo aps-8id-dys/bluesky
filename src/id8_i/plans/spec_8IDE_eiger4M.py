@@ -40,7 +40,7 @@ def submit_Nexus_DM():
         bluesky_start = pv_registers.start_bluesky.get()
         if bluesky_start == "Yes":
             # DM workflow setup.
-            # configManager is an object that tracks beamline-specific configuration.
+            # configManager is an object that tracks beamline-specific config.
             # In WorkflowProcApi, user/password/url info is passed to DM API
             configManager = ConfigurationManager.getInstance()
             dmuser, password = configManager.parseLoginFile()
@@ -48,9 +48,9 @@ def submit_Nexus_DM():
             workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl)
 
             # Spec will need to write these fields in StrReg.
-            # exp_name, workflow_name, analysis_machine need to be written only once per user.
-            # metadata_fname and filename needs to be written per measurement.
-            # Change qmap file when needed.
+            # exp_name, workflow_name, analysis_machine need to be written once
+            # per user. metadata_fname and filename needs to be written per
+            # measurement. Change qmap file when needed.
             exp_name = pv_registers.experiment_name.get()
             workflow_name = pv_registers.workflow_name.get()
             analysis_machine = pv_registers.analysis_machine.get()

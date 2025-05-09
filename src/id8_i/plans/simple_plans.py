@@ -480,7 +480,8 @@ def eiger_acq_ext_trig(
         except Exception as e:
             print(f"Error occurred in sample motion: {e}")
 
-        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}_f{num_frame:06d}_r{ii+1:05d}"
+        # filename = f"{header_name}_{sample_name}_a{att_level:04}_t{temp_name:04d}
+        # _f{num_frame:06d}_r{ii+1:05d}"
         filename = (
             f"{header_name}_{sample_name}_"
             f"a{att_level:04d}_"

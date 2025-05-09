@@ -29,7 +29,6 @@ from ophyd.areadetector.plugins import TransformPlugin_V34
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
@@ -110,7 +109,9 @@ class Lambda2MCam(CamBase_V34):
     operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode", kind="config")
     serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV", kind="omitted")
     temperature = ADComponent(EpicsSignalWithRBV, "Temperature", kind="config")
-    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
+    wait_for_plugins = ADComponent(
+        EpicsSignal, "WaitForPlugins", string=True, kind="config"
+    )
 
     energy_threshold = ADComponent(EpicsSignalWithRBV, "EnergyThreshold", kind="config")
     dual_mode = ADComponent(EpicsSignalWithRBV, "DualMode", string=True, kind="config")
@@ -123,7 +124,9 @@ class Rigaku3MCam(CamBase_V34):
     """Support for the RigakuSi3M camera controls."""
 
     _html_docs = ["Rigaku3MCam.html"]
-    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
+    wait_for_plugins = ADComponent(
+        EpicsSignal, "WaitForPlugins", string=True, kind="config"
+    )
 
     # sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
     fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
@@ -140,6 +143,15 @@ class Rigaku3MCam(CamBase_V34):
     trigger_mode = ADComponent(EpicsSignalWithRBV, "TriggerMode", string=True)
 
     def __init__(self, *args, **kwargs):
+        """Initialize the Rigaku3MCam.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        After initialization, sets the kind attribute for various components
+        to 'config'.
+        """
         super().__init__(*args, **kwargs)
 
         # kind attribute must be set after Components are initialized
@@ -178,13 +190,30 @@ class ID8_EpicsFileNameHDF5Plugin(ID8_PluginMixin, AD_EpicsFileNameHDF5Plugin):
 
     @property
     def _plugin_enabled(self):
+        """Check if the plugin is enabled.
+
+        Returns:
+            bool: True if the plugin is enabled, False otherwise.
+        """
         return self.stage_sigs.get("enable") in (1, "Enable")
 
     def generate_datum(self, *args, **kwargs):
+        """Generate datum if plugin is enabled.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         if self._plugin_enabled:
             super().generate_datum(*args, **kwargs)
 
     def read(self):
+        """Read data from the plugin if enabled.
+
+        Returns:
+            dict: Dictionary containing readings if plugin is enabled,
+                empty dictionary otherwise.
+        """
         if self._plugin_enabled:
             readings = super().read()
         else:
@@ -192,6 +221,12 @@ class ID8_EpicsFileNameHDF5Plugin(ID8_PluginMixin, AD_EpicsFileNameHDF5Plugin):
         return readings
 
     def stage(self):
+        """Stage the plugin if enabled.
+
+        Returns:
+            list: List of staged objects if plugin is enabled,
+                empty list otherwise.
+        """
         if self._plugin_enabled:
             staged_objects = super().stage()
         else:
@@ -199,6 +234,11 @@ class ID8_EpicsFileNameHDF5Plugin(ID8_PluginMixin, AD_EpicsFileNameHDF5Plugin):
         return staged_objects
 
     def trigger(self):
+        """Trigger the plugin if enabled.
+
+        Returns:
+            Status: Status object indicating completion.
+        """
         if self._plugin_enabled:
             trigger_status = super().trigger()
         else:

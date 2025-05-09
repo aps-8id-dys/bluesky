@@ -34,15 +34,15 @@ pv_registers = oregistry["pv_registers"]
 
 default_units_keymap = {
     "NX_COUNT": "one",  # Used for frame_sum, frame_average, delay_difference
-    "NX_DIMENSIONLESS": "dim.less",  # Used for g2, g2_derr, dynamic_roi_map, static_roi_map
-    "NX_LENGTH": "m",  # Used for beam_center_x, beam_center_y, distance, x_pixel_size, y_pixel_size
+    "NX_DIMENSIONLESS": "dim.less",  # Used for g2, g2_derr, dynamic_roi_map
+    "NX_LENGTH": "m",  # Used for beam_center_x, beam_center_y, distance
     "NX_TIME": "s",  # Used for count_time, frame_time
     "NX_ENERGY": "keV",  # Used for incident_energy, incident_energy_spread
-    "NX_PER_LENGTH": "1/Å",  # Used for dynamic_phi_list, dynamic_q_list, static_q_list
+    "NX_PER_LENGTH": "1/Å",  # Used for dynamic_phi_list, dynamic_q_list
     "NX_TEMPERATURE": "K",  # Used for temperature, temperature_set
     "NX_CURRENT": "mA",  # Used for current, milliamper
     "NX_ANY": "any",  # Used for G2_unnormalized, two_time_corr_func
-    "NX_ANGLE": "degree",  # Used for rotation_x, rotation_y, rotation_z, rotation_angle
+    "NX_ANGLE": "degree",  # Used for rotation_x, rotation_y, rotation_z
 }
 
 
