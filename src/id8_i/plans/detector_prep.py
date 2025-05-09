@@ -6,12 +6,7 @@ see: https://bcda-aps.github.io/apstools/examples/de_1_adsim_hdf5_custom_names.h
 
 __all__ = ["prepare_count"]
 
-import logging
-
 from bluesky import plan_stubs as bps
-
-logger = logging.getLogger(__name__)
-logger.info(__file__)
 
 
 def prepare_count(
