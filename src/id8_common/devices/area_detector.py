@@ -1,22 +1,6 @@
 """
-EPICS area_detector common support
+EPICS area_detector definitions for ID8.
 """
-
-__all__ = """
-    BasicCam_V34
-    CamBase_V34
-    FileBase_V34
-    SimDetectorCam_V34
-    XpcsAD_EpicsFileNameHDF5Plugin
-    XpcsAD_factory
-    XpcsAD_ImagePlugin
-    XpcsAD_OverlayPlugin
-    XpcsAD_PluginMixin
-    XpcsAD_PvaPlugin
-    XpcsAD_ROIPlugin
-    XpcsAD_StatsPlugin
-    XpcsAD_TransformPlugin
-""".split()
 
 import logging
 import time
@@ -48,14 +32,14 @@ from ophyd.areadetector.plugins import TransformPlugin_V34
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from ..utils.iconfig_loader import iconfig
+from ..utils.iconfig_loader import iconfig  # TODO: remove
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-BLUESKY_FILES_ROOT = PurePath(iconfig["AREA_DETECTOR"]["BLUESKY_FILES_ROOT"])
-IMAGE_DIR = iconfig["AREA_DETECTOR"].get("IMAGE_DIR", "%Y/%m/%d/")
+BLUESKY_FILES_ROOT = PurePath(iconfig["AREA_DETECTOR"]["BLUESKY_FILES_ROOT"])  # TODO: remove
+IMAGE_DIR = iconfig["AREA_DETECTOR"].get("IMAGE_DIR", "%Y/%m/%d/")  # TODO: remove
 
 
 class CamBase_V34(CamBase):
@@ -172,13 +156,17 @@ class SimDetectorCam_V34(CamMixin_V34, SimDetectorCam):
     """Revise SimDetectorCam for ADCore revisions."""
 
 
-class XpcsAD_PluginMixin(PluginBase_V34):
+class ID8_PluginMixin(PluginBase_V34):
     """Remove property attribute found in AD IOCs now."""
 
     _asyn_pipeline_configuration_names = None
 
 
-class XpcsAD_EpicsFileNameHDF5Plugin(XpcsAD_PluginMixin, AD_EpicsFileNameHDF5Plugin):
+class ID8_CodecPlugin(ID8_PluginMixin, CodecPlugin_V34):
+    """Remove property attribute found in AD IOCs now."""
+
+
+class ID8_EpicsFileNameHDF5Plugin(ID8_PluginMixin, AD_EpicsFileNameHDF5Plugin):
     """Remove property attribute not found in AD IOCs now."""
 
     @property
@@ -212,36 +200,36 @@ class XpcsAD_EpicsFileNameHDF5Plugin(XpcsAD_PluginMixin, AD_EpicsFileNameHDF5Plu
         return trigger_status
 
 
-class XpcsAD_ImagePlugin(XpcsAD_PluginMixin, ImagePlugin_V34):
+class ID8_ImagePlugin(ID8_PluginMixin, ImagePlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_OverlayPlugin(XpcsAD_PluginMixin, OverlayPlugin_V34):
+class ID8_OverlayPlugin(ID8_PluginMixin, OverlayPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_ProcessPlugin(XpcsAD_PluginMixin, ProcessPlugin_V34):
+class ID8_ProcessPlugin(ID8_PluginMixin, ProcessPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_PvaPlugin(XpcsAD_PluginMixin, PvaPlugin_V34):
+class ID8_PvaPlugin(ID8_PluginMixin, PvaPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_ROIPlugin(XpcsAD_PluginMixin, ROIPlugin_V34):
+class ID8_ROIPlugin(ID8_PluginMixin, ROIPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_StatsPlugin(XpcsAD_PluginMixin, StatsPlugin_V34):
+class ID8_StatsPlugin(ID8_PluginMixin, StatsPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-class XpcsAD_TransformPlugin(XpcsAD_PluginMixin, TransformPlugin_V34):
+class ID8_TransformPlugin(ID8_PluginMixin, TransformPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
 
-def XpcsAreaDetectorFactory(det_key, **kwargs):
-    """Simpler than XpcsAD_factory().  Use detector key from iconfig."""
+def XpcsAreaDetectorFactory(det_key, **kwargs):  # TODO: remove
+    """Simpler than ID8_factory().  Use detector key from iconfig."""
     ad_conf = iconfig["AREA_DETECTOR"][det_key]
     IOC_FILES_ROOT = PurePath(ad_conf["IOC_FILES_ROOT"])
 
@@ -257,7 +245,7 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
         "FLAG4": BasicCam_V34,
     }[det_key]
 
-    return XpcsAD_factory(
+    return ID8_factory(
         ad_conf["PV_PREFIX"],
         ad_conf["NAME"],
         cam_class,
@@ -268,7 +256,7 @@ def XpcsAreaDetectorFactory(det_key, **kwargs):
     )
 
 
-def XpcsAD_factory(
+def ID8_factory(  # TODO: remove
     prefix,
     name,
     cam_class,
@@ -314,35 +302,35 @@ def XpcsAD_factory(
         # In the AD IOC, cam --> codec & image
         codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
         if use_image:
-            image = ADComponent(XpcsAD_ImagePlugin, "image1:")
+            image = ADComponent(ID8_ImagePlugin, "image1:")
 
         # In the AD IOC, codec1 --> hdf1 & pva
         hdf1 = ADComponent(
-            XpcsAD_EpicsFileNameHDF5Plugin,
+            ID8_EpicsFileNameHDF5Plugin,
             "HDF1:",
             write_path_template=f"{PurePath(write_path)}/",
             read_path_template=f"{PurePath(read_path)}/",
             kind="normal",
         )
         if use_pva:
-            pva = ADComponent(XpcsAD_PvaPlugin, "Pva1:")
+            pva = ADComponent(ID8_PvaPlugin, "Pva1:")
 
         # If AD IOC sends codec1 to roi (& roi1?)
         if use_process:
-            proc1 = ADComponent(XpcsAD_ProcessPlugin, "Proc1:")
+            proc1 = ADComponent(ID8_ProcessPlugin, "Proc1:")
         if use_overlay:
-            over1 = ADComponent(XpcsAD_OverlayPlugin, "Over1:")
+            over1 = ADComponent(ID8_OverlayPlugin, "Over1:")
         if use_roi:
-            roi1 = ADComponent(XpcsAD_ROIPlugin, "ROI1:")
+            roi1 = ADComponent(ID8_ROIPlugin, "ROI1:")
         if use_stats:
-            stats1 = ADComponent(XpcsAD_StatsPlugin, "Stats1:")
+            stats1 = ADComponent(ID8_StatsPlugin, "Stats1:")
         if use_transform:
-            trans1 = ADComponent(XpcsAD_TransformPlugin, "Trans1:")
+            trans1 = ADComponent(ID8_TransformPlugin, "Trans1:")
 
     # tricky: Make it look as if we defined a custom class for this detector.
     # Use the cam class name.
     title = cam_class.__name__.rstrip("_V34").rstrip("Cam")
-    AreaDetector.__name__ = f"XpcsAD_{title}"
+    AreaDetector.__name__ = f"ID8_{title}"
     AreaDetector.__qualname__ = AreaDetector.__name__
 
     # ADSimDetector does not subclass from CamBase_V34
