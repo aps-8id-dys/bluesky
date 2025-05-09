@@ -2,6 +2,12 @@
 Custom Plan Definitions & Instatiations
 """
 
+from ..devices.scan_8idi import att
+from ..devices.scan_8idi import rheo_set_x_lup
+from ..devices.scan_8idi import rheo_x_lup
+from ..devices.scan_8idi import rheo_y_lup
+from ..devices.scan_8idi import x_lup
+from ..devices.scan_8idi import y_lup
 from ..plans.move_sample import mesh_grid_move
 from ..plans.nexus_acq_eiger_ext import eiger_acq_ext_trig
 from ..plans.nexus_acq_eiger_ext import setup_eiger_ext_trig
@@ -38,11 +44,5 @@ from ..plans.shutter_logic import shutteron
 from ..plans.spec_8IDE_eiger4M import submit_Nexus_DM
 from ..utils.dm_util import dm_run_job
 from ..utils.dm_util import dm_setup
-from .scan_8idi import att
-from .scan_8idi import rheo_set_x_lup
-from .scan_8idi import rheo_x_lup
-from .scan_8idi import rheo_y_lup
-from .scan_8idi import x_lup
-from .scan_8idi import y_lup
 from .util_8idi import get_machine_name
 from .util_8idi import temp2str

@@ -2,6 +2,7 @@
 DM code from Hannah Parraga.
 Set up DM and submit jobs
 """
+
 from apsbits.core.instrument_init import oregistry
 from dm.common.utility.configurationManager import ConfigurationManager
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
@@ -9,6 +10,7 @@ from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from .util_8idi import get_machine_name
 
 pv_registers = oregistry["pv_registers"]
+
 
 def dm_setup(process):
     if process:

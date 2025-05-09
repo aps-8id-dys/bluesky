@@ -13,6 +13,8 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from ophyd.ophydobj import Kind
 
+from ..startup import bec
+
 # from ..initialize_bs_tools import bec
 
 iconfig = get_config()

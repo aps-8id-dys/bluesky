@@ -5,37 +5,35 @@ Simple, modular Bluesky plans for users.
 import warnings
 
 import numpy as np
+from apsbits.core.instrument_init import oregistry
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
 
-# from ..callbacks.nexus_data_file_writer import nxwriter
-from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import rheometer
-from ..devices.aerotech_stages import sample
-from ..devices.filters_8id import filter_8ide
-from ..devices.filters_8id import filter_8idi
-from ..devices.qnw_device import qnw_env1
-from ..devices.qnw_device import qnw_env2
-from ..devices.qnw_device import qnw_env3
-from ..devices.registers_device import pv_registers
-from ..devices.slit import sl4
-from ..devices.softglue import softglue_8idi
-
-# from aps_8id_bs_instrument.devices import *
-# from ..initialize_bs_tools import cat
 from ..plans.nexus_utils import create_nexus_format_metadata
 from ..plans.sample_info_unpack import sort_qnw
 from ..plans.shutter_logic import blockbeam
 from ..plans.shutter_logic import showbeam
 from ..plans.shutter_logic import shutteroff
 from ..plans.shutter_logic import shutteron
-
-# from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
+from ..startup import cat
+from ..startup import nxwriter
 
 warnings.filterwarnings("ignore")
+
+eiger4M = oregistry["eiger4M"]
+rheometer = oregistry["rheometer"]
+sample = oregistry["sample"]
+filter_8ide = oregistry["filter_8ide"]
+filter_8idi = oregistry["filter_8idi"]
+qnw_env1 = oregistry["qnw_env1"]
+qnw_env2 = oregistry["qnw_env2"]
+qnw_env3 = oregistry["qnw_env3"]
+pv_registers = oregistry["pv_registers"]
+sl4 = oregistry["sl4"]
+softglue_8idi = oregistry["softglue_8idi"]
 
 
 def create_run_metadata_dict(
@@ -153,9 +151,10 @@ def simple_acquire_int_series(det, md):
 
 def simple_acquire_int_series_nexus(det):
     """Just run the acquisition and save the file, nothing else."""
-    metadata_fname = pv_registers.metadata_full_path.get()
-    print(f"{metadata_fname=}")
-    create_nexus_format_metadata(metadata_fname, det)
+    file_path = det.hdf1.file_path.get()
+    base_file_name = det.hdf1.file_name.get()
+    metadata_fname = f"{file_path}/{base_file_name}_metadata.hdf"
+    create_nexus_format_metadata(metadata_fname)
     yield from bp.count([det])
 
 
@@ -164,7 +163,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
-    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
+    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
     yield from bps.mv(det.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(det.cam.acquire_time, acq_time)
@@ -179,9 +178,7 @@ def setup_det_int_series(det, acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(
-        pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
-    )
+    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}{file_name}.hdf")
 
 
 def setup_det_ext_trig(det, acq_time, acq_period, num_frames, file_name):
@@ -338,7 +335,7 @@ def eiger_acq_int_series(
         # (uid,) = yield from simple_acquire_ext_trig(det, md)
         yield from showbeam()
         yield from bps.sleep(0.1)
-        yield from simple_acquire_int_series_nexus(det)
+        yield from simple_acquire_int_series(det, md)
         yield from blockbeam()
 
         try:
