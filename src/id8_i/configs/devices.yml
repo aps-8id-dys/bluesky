@@ -245,6 +245,16 @@ id8_i.devices.mono.Mono:
 - name: mono_8id
   prefix: "8idaSoft:"
 
+id8_i.devices.qnw_vac_device.QnwDevice:
+- name: qnw_vac1
+  prefix: "8idiSoft:QNWvac_1:"
+  readback_pv: null
+- name: qnw_vac2
+  prefix: "8idiSoft:QNWvac_2:"
+  readback_pv: null
+- name: qnw_vac3
+  prefix: "8idiSoft:QNWvac_3:"
+  readback_pv: null
 
 ############################### THESE ARE EXAMPLES OF OTHER DEVICES THAT YOU CAN USE
 # ophyd.Signal:
