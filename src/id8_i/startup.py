@@ -63,8 +63,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     from .callbacks.spec_data_file_writer import init_specwriter_with_RE
     from .callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
     from .callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from .callbacks.spec_data_file_writer import specwriter  # noqa: F401
+    from .callbacks.spec_data_file_writer import specwriter
 
+    specwriter.write_new_scan_header = False  # issue #1032
     init_specwriter_with_RE(RE)
 
 # These imports must come after the above setup.
