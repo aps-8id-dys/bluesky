@@ -15,8 +15,6 @@ from ophyd.ophydobj import Kind
 
 from ..startup import bec
 
-# from ..initialize_bs_tools import bec
-
 iconfig = get_config()
 
 HDF5_FILE_TEMPLATE = iconfig["AREA_DETECTOR"].get("HDF5_FILE_TEMPLATE", "%s%s_%6.6d.h5")

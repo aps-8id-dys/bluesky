@@ -3,8 +3,8 @@ import datetime
 import h5py
 from apsbits.core.instrument_init import oregistry
 
-from ..utils.APS8IDI_default_metadata import default_metadata
-from ..utils.APS8IDI_xpcs_schema import xpcs_schema
+from .APS8IDI_default_metadata import default_metadata
+from .APS8IDI_xpcs_schema import xpcs_schema
 
 detector = oregistry["detector"]
 rheometer = oregistry["rheometer"]
@@ -212,6 +212,6 @@ def create_nexus_format_metadata(filename, det, additional_metadata=None):
     return
 
 
-if __name__ == "__main__":
-    # create_nexus_template(filename="template_metadata.hdf")
-    create_nexus_format_metadata("test02.hdf")
+# if __name__ == "__main__":
+#     # create_nexus_template(filename="template_metadata.hdf")
+#     create_nexus_format_metadata("test02.hdf")

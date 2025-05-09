@@ -3,7 +3,7 @@ from bluesky import plan_stubs as bps
 from dm.common.utility.configurationManager import ConfigurationManager
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 
-from .nexus_utils import create_nexus_format_metadata
+from ..utils.nexus_utils import create_nexus_format_metadata
 
 rigaku3M = oregistry["rigaku3M"]
 pv_registers = oregistry["pv_registers"]
