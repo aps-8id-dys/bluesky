@@ -14,12 +14,6 @@ Motivation: Move sample during measurement to avoid beam damage.
 1. fly scan Eiger4M v. sample.x and run DM workflow
 """
 
-__all__ = """
-    sample
-    detector
-    rheometer
-""".split()
-
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
