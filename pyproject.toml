@@ -1,154 +1,93 @@
-[project]
-name = "aps_8id_bs_instrument"
-version = "0.0.1"
-description='APS 8ID Beamline Bluesky Instrument Control'
-authors = [
-    {name = "Eric Codrea", email = "ecodrea@anl.gov"},
-    {name = "Pete Jemian", email = "jemian@anl.gov"},
-]
-requires-python = ">=3.10"
-readme = "README.md"
-license = {text = "MIT"}
-dependencies = [
-    "apstools >=1.6.20",
-    "bluesky",
-    "bluesky-queueserver",
-    "bluesky-queueserver-api",
-    "bluesky-widgets",
-    "databroker ==1.2.5",
-    "hdf5plugin",
-    "ipython",
-    "jupyterlab",
-    "ophyd",
-    "ophyd-registry",
-    "pysumreg",
-    "qtpy",
-    "apsbits",
-]
-
-[project.optional-dependencies]
-dev = [
-    "build",
-    "mypy",
-    "pre-commit",
-    "pytest>=7.4.4",
-    "ruff",
-    "isort",
-]
-
-[project.urls]
-Homepage = "https://github.com/aps-8id-dys/bluesky"
-Downloads = "https://github.com/aps-8id-dys/bluesky.git"
-
-######################
-# Build Info + Tools #
-######################
-
 [build-system]
-requires = ["setuptools >= 62.0"]
+requires = [ "setuptools>=64.0", "setuptools_scm[toml]>=8.0",]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-package-dir = {"" = "/src"}
+[project]
+name = "bits_xpcs"
+version = "0.0.1"
+description = "APS 8ID Beamline Bluesky Instrument Control"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = []
+classifiers = []
+dependencies = [ "apsbits"]
+
+authors = [
+    { name = "Eric Codrea", email = "ecodrea@anl.gov" },
+    { name = "Pete Jemian", email = "prjemian+instrument@gmail.com" },
+    { name = "Rafael Vescovi", email = "rvescovi@anl.gov" },
+]
+maintainers = [
+    { name = "Eric Codrea", email = "ecodrea@anl.gov" },
+    { name = "Pete Jemian", email = "prjemian+instrument@gmail.com" },
+    { name = "Rafael Vescovi", email = "rvescovi@anl.gov" },
+]
+
+[tool.copyright]
+copyright = "2014-2025, APS"
+
+[tool.black]
+line-length = 115
+target-version = [ "py311",]
+include = "\\.pyi?$"
+exclude = "(\n  /(\n      \\.eggs         # exclude a few common directories in the\n    | \\.git          # root of the project\n    | \\.hg\n    | \\.mypy_cache\n    | \\.tox\n    | \\.venv\n    | \\.pytest_cache\n    | _build\n    | build\n    | dist\n    | docs\n  )/\n)\n"
+
+[tool.flake8]
+max-line-length = 115
+extend-ignore = [ "E203", "E402", "E501", "F401", "F405", "F722", "F811", "W503", "W504",]
+
+[tool.isort]
+force_single_line = true
+line_length = 88
+include_trailing_comma = true
+
+[tool.ruff]
+exclude = [ ".eggs", ".git", ".git-rewrite", ".mypy_cache", ".pytype", ".ruff_cache", ".tox", ".venv", "__pypackages__", "_build", "build", "dist", "venv", ".venv", "docs",]
+line-length = 88
+indent-width = 4
+target-version = "py311"
+
+[project.license]
+file = "LICENSE"
+
+[project.optional-dependencies]
+dev = [ "build", "isort", "mypy", "pre-commit", "pytest", "ruff",]
+doc = [ "babel", "ipykernel", "jinja2", "markupsafe", "myst_parser", "nbsphinx", "pydata-sphinx-theme", "pygments-ipython-console", "pygments", "sphinx-design", "sphinx-tabs", "sphinx",]
+all = [ "bits_instrument[dev,doc]",]
+
+[project.urls]
+Homepage = "https://BCDA-APS.github.io/BITS/"
+"Bug Tracker" = "https://github.com/BCDA-APS/BITS/issues"
+
+[tool.pytest.ini_options]
+addopts = [ "--import-mode=importlib", "-x",]
+junit_family = "xunit1"
+filterwarnings = [ "ignore::DeprecationWarning", "ignore::PendingDeprecationWarning",]
+
+[tool.ruff.lint]
+select = [ "E", "F", "B", "I", "W", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",]
+fixable = [ "ALL",]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.setuptools.package-dir]
+"id8_common" = "src/id8_common"
+"id8_i" = "src/id8_i"
+"aps_8id_bs_instrument" = "src/instrument"
+#"" = "src"
 
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.yml"]
 
-#####################
-# Development Tools #
-#####################
 
-[tool.ruff]
-# https://docs.astral.sh/ruff/configuration/
-
-# Exclude a variety of commonly ignored directories.
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
-    ".venv",
-    "docs",
-]
-
-# Same as Black.
-line-length = 88
-indent-width = 4
-
-# Assume Python 3.10
-target-version = "py310"
-
-[tool.ruff.lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
-select = [
-    # pycodestyle
-    "E",
-    # Pyflakes
-    "F",
-    # pyupgrade
-    # "UP",
-    # flake8-bugbear
-    "B",
-    # flake8-simplify
-    # "SIM",
-    # isort
-    "I",
-    # Warning
-    "W",
-    # pydocstyle
-    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
-    # ruff
-    # "RUF"
-]
-ignore = [
-    "E501" # Line too long
-]
-
-# Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
-unfixable = []
-
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = [ "F405",]
 
 [tool.ruff.lint.isort]
-force-single-line = true  # Enforces single-line imports
-
-[tool.ruff.format]
-# Like Black, use double quotes for strings.
-quote-style = "double"
-
-# Like Black, indent with spaces, rather than tabs.
-indent-style = "space"
-
-# Like Black, respect magic trailing commas.
-skip-magic-trailing-comma = false
-
-# Like Black, automatically detect the appropriate line ending.
-line-ending = "auto"
-
-[tool.pytest.ini_options]
-# https://docs.pytest.org/en/stable/customize.html
-addopts = "-x"
-junit_family="xunit1"
-filterwarnings = [
-    "ignore::DeprecationWarning",
-    "ignore::pottery.exceptions.InefficientAccessWarning",
-]
+force-single-line = true
