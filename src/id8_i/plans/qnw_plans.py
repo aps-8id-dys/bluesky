@@ -56,20 +56,20 @@ qnw_controllers = [qnw_env1, qnw_env2, qnw_env3]
 
 def find_qnw_index():
     sam_dict = sort_qnw()
-    if sam_dict["temp_zone"] == 'qnw_env1':
+    if sam_dict["temp_zone"] == "qnw_env1":
         qnw_number = 1
-    elif sam_dict["temp_zone"] == 'qnw_env2':
+    elif sam_dict["temp_zone"] == "qnw_env2":
         qnw_number = 2
-    elif sam_dict["temp_zone"] == 'qnw_env3':
+    elif sam_dict["temp_zone"] == "qnw_env3":
         qnw_number = 3
     else:
-        raise ValueError('No QNW environment selected')
+        raise ValueError("No QNW environment selected")
     return qnw_number
 
 
 def te(setpoint: float, wait: bool = False):
     qnw_number = find_qnw_index()
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     if wait:
         yield from bps.mv(qnw, setpoint)
     else:
@@ -79,15 +79,16 @@ def te(setpoint: float, wait: bool = False):
 
 def temp_ramp(ramprate: float = 0.3):
     qnw_number = find_qnw_index()
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     yield from bps.mv(qnw.ramprate, ramprate)
     yield from bps.sleep(2)
     yield from bps.mv(qnw.ramprate, ramprate)
     yield from bps.sleep(2)
 
+
 def te(setpoint: float, wait: bool = False):
     qnw_number = find_qnw_index()
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     if wait:
         yield from bps.mv(qnw, setpoint)
     else:
@@ -97,7 +98,7 @@ def te(setpoint: float, wait: bool = False):
 
 def te_ramp(setpoint: float, ramprate: float, wait: bool):
     qnw_number = find_qnw_index()
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     # Run this thrice just to make sure all settings go through
     yield from bps.mv(qnw.ramprate, ramprate)
     yield from bps.sleep(2)
@@ -124,11 +125,8 @@ def te_ramp(setpoint: float, ramprate: float, wait: bool):
     yield from bps.sleep(2)
 
 
-
-
-
 def te_env(qnw_number: int, setpoint: float, wait: bool = False):
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     if wait:
         yield from bps.mv(qnw, setpoint)
     else:
@@ -136,5 +134,5 @@ def te_env(qnw_number: int, setpoint: float, wait: bool = False):
 
 
 def temp_ramp_env(qnw_number: int, ramprate: float = 0.3):
-    qnw = qnw_controllers[qnw_number-1]
+    qnw = qnw_controllers[qnw_number - 1]
     yield from bps.mv(qnw.ramprate, ramprate)

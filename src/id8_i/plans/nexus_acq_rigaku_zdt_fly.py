@@ -22,6 +22,7 @@ rigaku3M = oregistry["rigaku3M"]
 pv_registers = oregistry["pv_registers"]
 sample = oregistry["sample"]
 
+
 def setup_rigaku_ZDT_fly(acq_time, num_frames, file_name):
     """Setup the rigaku3M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
@@ -37,21 +38,26 @@ def setup_rigaku_ZDT_fly(acq_time, num_frames, file_name):
     yield from bps.mv(rigaku3M.cam.num_images, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
-    yield from bps.mv(pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}")
-    yield from bps.mv(pv_registers.metadata_full_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf")
+    yield from bps.mv(
+        pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}"
+    )
+    yield from bps.mv(
+        pv_registers.metadata_full_path,
+        f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf",
+    )
 
     os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
-def rigaku_acq_ZDT_fly(acq_time=2e-5, 
-                         num_frame=100000, 
-                         num_rep=3, 
-                         flyspeed=0.5,
-                         wait_time=0.0,
-                         sample_move=False,
-                         process=True
-                         ):
-    
+def rigaku_acq_ZDT_fly(
+    acq_time=2e-5,
+    num_frame=100000,
+    num_rep=3,
+    flyspeed=0.5,
+    wait_time=0.0,
+    sample_move=False,
+    process=True,
+):
     try:
         yield from post_align()
         yield from shutteroff()
@@ -64,11 +70,13 @@ def rigaku_acq_ZDT_fly(acq_time=2e-5,
             if sample_move:
                 yield from mesh_grid_move()
 
-            file_name = f"{folder_prefix}_f{num_frame:06d}_s{flyspeed*1000:04d}_r{ii+1:05d}"
+            file_name = (
+                f"{folder_prefix}_f{num_frame:06d}_s{flyspeed*1000:04d}_r{ii+1:05d}"
+            )
             yield from setup_rigaku_ZDT_fly(acq_time, num_frame, file_name)
 
             extra_acq_time = 1.0
-            total_travel = flyspeed*(acq_time*num_frame+extra_acq_time)
+            total_travel = flyspeed * (acq_time * num_frame + extra_acq_time)
             yield from bps.mv(sample.y.velocity, flyspeed)
             yield from bps.mvr(sample.y.user_setpoint, total_travel)
             yield from showbeam()
@@ -79,8 +87,8 @@ def rigaku_acq_ZDT_fly(acq_time=2e-5,
 
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=rigaku3M)
-            
-            dm_run_job('rigaku', process, workflowProcApi, dmuser, file_name)
+
+            dm_run_job("rigaku", process, workflowProcApi, dmuser, file_name)
 
     except Exception as e:
         print(f"Error occurred during measurement: {e}")

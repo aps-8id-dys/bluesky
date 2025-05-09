@@ -24,6 +24,7 @@ logger.info(__file__)
 
 eiger4M = oregistry["eiger4M"]
 
+
 def write_if_new(signal, value):
     """Write an ophyd signal if it has a new value."""
     if value is not None and signal.get() != value:

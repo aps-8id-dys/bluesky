@@ -4,6 +4,7 @@ from bluesky import plan_stubs as bps
 
 labjack = oregistry["labjack"]
 
+
 def showbeam():
     yield from bps.mv(labjack.operation, 0)
 

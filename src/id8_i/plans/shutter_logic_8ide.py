@@ -3,6 +3,7 @@ from bluesky import plan_stubs as bps
 
 shutter_8ide = oregistry["shutter_8ide"]
 
+
 def showbeam():
     yield from bps.mv(shutter_8ide.operation, 0)
 
@@ -25,4 +26,3 @@ def post_align():
 
 def pre_align():
     yield from shutteroff()
-

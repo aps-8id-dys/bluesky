@@ -1,23 +1,25 @@
 """
 Simple, modular Bluesky plans for users.
 """
+
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-from .shutter_logic import blockbeam
-from .shutter_logic import post_align
-from .shutter_logic import showbeam
-from .shutter_logic import shutteron
 from ..plans_old.dm_util import dm_run_job
 from ..plans_old.dm_util import dm_setup
 from .nexus_utils import create_nexus_format_metadata
 from .sample_info_unpack import gen_folder_prefix
 from .sample_info_unpack import mesh_grid_move
+from .shutter_logic import blockbeam
+from .shutter_logic import post_align
+from .shutter_logic import showbeam
+from .shutter_logic import shutteron
 
 eiger4M = oregistry["eiger4M"]
 softglue_8idi = oregistry["softglue_8idi"]
 pv_registers = oregistry["pv_registers"]
+
 
 def setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
@@ -38,7 +40,9 @@ def setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name):
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
+    yield from bps.mv(
+        pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
+    )
 
 
 def setup_softglue_ext_trig(acq_time, acq_period, num_frames):
@@ -61,15 +65,15 @@ def softglue_stop_pulses():
     yield from bps.mv(softglue_8idi.stop_pulses, "1!")
 
 
-def eiger_acq_ext_trig(acq_time=1, 
-                       acq_period=2,
-                       num_frames=10, 
-                       num_rep=2, 
-                       wait_time=0, 
-                       sample_move=True,
-                       process=True
-                       ):
-
+def eiger_acq_ext_trig(
+    acq_time=1,
+    acq_period=2,
+    num_frames=10,
+    num_rep=2,
+    wait_time=0,
+    sample_move=True,
+    process=True,
+):
     try:
         yield from setup_softglue_ext_trig(acq_time, acq_period, num_frames)
         yield from post_align()
@@ -96,12 +100,9 @@ def eiger_acq_ext_trig(acq_time=1,
 
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=eiger4M)
-            
-            dm_run_job('eiger', process, workflowProcApi, dmuser, file_name)
+
+            dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
     except Exception as e:
         print(f"Error occurred during measurement: {e}")
     finally:
         pass
-
-    
-

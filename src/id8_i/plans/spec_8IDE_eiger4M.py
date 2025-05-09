@@ -1,22 +1,19 @@
-
+from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
-
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
-from ..devices.ad_rigaku_3M import rigaku3M
-from ..devices.aerotech_stages import sample, rheometer
-from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from ..plans.nexus_utils import create_nexus_format_metadata
-from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from dm.common.utility.configurationManager import ConfigurationManager
+from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
+
+from .nexus_utils import create_nexus_format_metadata
+
+rigaku3M = oregistry["rigaku3M"]
+pv_registers = oregistry["pv_registers"]
 
 def submit_Nexus_DM():
 
     while True:
         bluesky_start = pv_registers.start_bluesky.get()
         if bluesky_start == 'Yes':
-            # DM workflow setup. 
+            # DM workflow setup.
             # configManager is an object that tracks beamline-specific configuration.
             # In WorkflowProcApi, user/password/url info is passed to DM API
             configManager = ConfigurationManager.getInstance()  

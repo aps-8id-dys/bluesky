@@ -1,6 +1,7 @@
 """
 Simple, modular Bluesky plans for users.
 """
+
 from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
@@ -18,6 +19,7 @@ from .shutter_logic import shutteroff
 eiger4M = oregistry["eiger4M"]
 pv_registers = oregistry["pv_registers"]
 
+
 def setup_eiger_int_series(acq_time, num_frames, file_name):
     """Setup the Eiger4M cam module for internal acquisition (0) mode and populate the hdf plugin"""
     cycle_name = pv_registers.cycle_name.get()
@@ -25,28 +27,28 @@ def setup_eiger_int_series(acq_time, num_frames, file_name):
 
     file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
 
-    acq_period = acq_time 
+    acq_period = acq_time
     yield from bps.mv(eiger4M.cam.trigger_mode, "Internal Series")  # 0
     yield from bps.mv(eiger4M.cam.acquire_time, acq_time)
     yield from bps.mv(eiger4M.cam.acquire_period, acq_period)
     yield from bps.mv(eiger4M.hdf1.file_name, file_name)
     yield from bps.mv(eiger4M.hdf1.file_path, file_path)
     yield from bps.mv(eiger4M.cam.num_images, num_frames)
-    yield from bps.mv(eiger4M.cam.num_triggers, 1)  # Need to put num_trigger to 1 for internal mode
+    yield from bps.mv(
+        eiger4M.cam.num_triggers, 1
+    )  # Need to put num_trigger to 1 for internal mode
     yield from bps.mv(eiger4M.hdf1.num_capture, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(pv_registers.file_path, file_path)
-    yield from bps.mv(pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf")
+    yield from bps.mv(
+        pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
+    )
 
 
-def eiger_acq_int_series(acq_time=1, 
-                         num_frames=10, 
-                         num_rep=3, 
-                         wait_time=0, 
-                         process=True, 
-                         sample_move=False):
-
+def eiger_acq_int_series(
+    acq_time=1, num_frames=10, num_rep=3, wait_time=0, process=True, sample_move=False
+):
     try:
         yield from post_align()
         yield from shutteroff()
@@ -69,12 +71,9 @@ def eiger_acq_int_series(acq_time=1,
 
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=eiger4M)
-            
-            dm_run_job('eiger', process, workflowProcApi, dmuser, file_name)
+
+            dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
     except Exception as e:
         print(f"Error occurred during measurement: {e}")
     finally:
         pass
-
-    
-

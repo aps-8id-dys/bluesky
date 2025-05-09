@@ -11,6 +11,7 @@ sample = oregistry["sample"]
 filter_8idi = oregistry["filter_8idi"]
 # tettram = oregistry["tettram"] # is tettram the new tettram 1?
 
+
 def att(att_ratio=None):
     yield from bps.mv(filter_8idi.attenuation_set, att_ratio)
     yield from bps.sleep(2)
@@ -81,7 +82,6 @@ def rheo_y_lup(
 
 
 def rheo_set_x_lup(att_level=10, det=tetramm1):
-
     yield from pre_align()
     yield from bps.mv(filter_8idi.attenuation_set, att_level)
 
@@ -99,6 +99,3 @@ def rheo_set_x_lup(att_level=10, det=tetramm1):
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
     yield from blockbeam()
-
-
-

@@ -1,4 +1,3 @@
-
 """
 DM code from Hannah Parraga.
 Set up DM and submit jobs
@@ -14,11 +13,11 @@ from .util_8idi import get_machine_name
 def dm_setup(process):
     if process:
         # Object that tracks beamline-specific configuration
-        configManager = ConfigurationManager.getInstance()  
+        configManager = ConfigurationManager.getInstance()
         dmuser, password = configManager.parseLoginFile()
         serviceUrl = configManager.getProcWebServiceUrl()
         # user/password/url info passed to DM API
-        workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl) 
+        workflowProcApi = WorkflowProcApi(dmuser, password, serviceUrl)
     return workflowProcApi, dmuser
 
 
@@ -30,18 +29,20 @@ def dm_run_job(det_name, process, workflowProcApi, dmuser, filename):
         # analysis_machine = pv_registers.analysis_machine.get()
         analysis_machine = get_machine_name()
 
-        if det_name == 'rigaku':
+        if det_name == "rigaku":
             filepath = f"{filename}.bin.000"
-        elif det_name == 'eiger':
+        elif det_name == "eiger":
             filepath = f"{filename}.h5"
         else:
             pass
-        argsDict = {"experimentName": exp_name, 
-                    "filePath": filepath, 
-                    "qmap": f"{qmap_file}",
-                    "analysisMachine": f"{analysis_machine}",
-                    "gpuID": -2
-                    }
-        job = workflowProcApi.startProcessingJob(dmuser, f"{workflow_name}", argsDict=argsDict)
+        argsDict = {
+            "experimentName": exp_name,
+            "filePath": filepath,
+            "qmap": f"{qmap_file}",
+            "analysisMachine": f"{analysis_machine}",
+            "gpuID": -2,
+        }
+        job = workflowProcApi.startProcessingJob(
+            dmuser, f"{workflow_name}", argsDict=argsDict
+        )
         print(f"Job {job['id']} processing {filename}")
-
