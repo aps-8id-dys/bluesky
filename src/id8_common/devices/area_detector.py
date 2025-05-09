@@ -3,8 +3,6 @@ EPICS area_detector definitions for ID8.
 """
 
 import logging
-import time
-from pathlib import PurePath
 
 from apstools.devices import AD_EpicsFileNameHDF5Plugin
 from apstools.devices import AD_plugin_primed
@@ -14,11 +12,10 @@ from ophyd import ADComponent
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
 from ophyd import EpicsSignalWithRBV
+from ophyd.areadetector import AreaDetector
 from ophyd.areadetector import CamBase
-from ophyd.areadetector import DetectorBase
 from ophyd.areadetector import EigerDetectorCam
 from ophyd.areadetector import SimDetectorCam
-from ophyd.areadetector import SingleTrigger
 from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import FileBase
 from ophyd.areadetector.plugins import ImagePlugin_V34
@@ -32,14 +29,28 @@ from ophyd.areadetector.plugins import TransformPlugin_V34
 from ophyd.ophydobj import Kind
 from ophyd.status import Status
 
-from ..utils.iconfig_loader import iconfig  # TODO: remove
 
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
 
-BLUESKY_FILES_ROOT = PurePath(iconfig["AREA_DETECTOR"]["BLUESKY_FILES_ROOT"])  # TODO: remove
-IMAGE_DIR = iconfig["AREA_DETECTOR"].get("IMAGE_DIR", "%Y/%m/%d/")  # TODO: remove
+def ad_setup(det: AreaDetector, iconfig: dict) -> None:
+    """not a plan: Steps to prepare an area detector object."""
+    # just in case these things are not defined in the class source code
+    det.cam.stage_sigs["wait_for_plugins"] = "Yes"
+    for nm in det.component_names:
+        obj = getattr(det, nm)
+        if "blocking_callbacks" in dir(obj):  # is it a plugin?
+            obj.stage_sigs["blocking_callbacks"] = "No"
+
+    plugin = det.hdf1  # for convenience below
+    plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
+    plugin.stage_sigs.move_to_end("capture", last=True)
+
+    if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
+        if det.connected:
+            if not AD_plugin_primed(plugin):
+                AD_prime_plugin2(plugin)
 
 
 class CamBase_V34(CamBase):
@@ -99,9 +110,7 @@ class Lambda2MCam(CamBase_V34):
     operating_mode = ADComponent(EpicsSignalWithRBV, "OperatingMode", kind="config")
     serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV", kind="omitted")
     temperature = ADComponent(EpicsSignalWithRBV, "Temperature", kind="config")
-    wait_for_plugins = ADComponent(
-        EpicsSignal, "WaitForPlugins", string=True, kind="config"
-    )
+    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
 
     energy_threshold = ADComponent(EpicsSignalWithRBV, "EnergyThreshold", kind="config")
     dual_mode = ADComponent(EpicsSignalWithRBV, "DualMode", string=True, kind="config")
@@ -114,9 +123,7 @@ class Rigaku3MCam(CamBase_V34):
     """Support for the RigakuSi3M camera controls."""
 
     _html_docs = ["Rigaku3MCam.html"]
-    wait_for_plugins = ADComponent(
-        EpicsSignal, "WaitForPlugins", string=True, kind="config"
-    )
+    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
 
     # sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
     fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
@@ -226,148 +233,3 @@ class ID8_StatsPlugin(ID8_PluginMixin, StatsPlugin_V34):
 
 class ID8_TransformPlugin(ID8_PluginMixin, TransformPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
-
-
-def XpcsAreaDetectorFactory(det_key, **kwargs):  # TODO: remove
-    """Simpler than ID8_factory().  Use detector key from iconfig."""
-    ad_conf = iconfig["AREA_DETECTOR"][det_key]
-    IOC_FILES_ROOT = PurePath(ad_conf["IOC_FILES_ROOT"])
-
-    WRITE_PATH_TEMPLATE = f"{IOC_FILES_ROOT / IMAGE_DIR}/"
-    READ_PATH_TEMPLATE = f"{BLUESKY_FILES_ROOT / IMAGE_DIR}/"
-
-    cam_class = {
-        "ADSIM_4M": SimDetectorCam_V34,
-        "ADSIM_16M": SimDetectorCam_V34,
-        "FLAG1": BasicCam_V34,
-        "FLAG2": BasicCam_V34,
-        "FLAG3": BasicCam_V34,
-        "FLAG4": BasicCam_V34,
-    }[det_key]
-
-    return ID8_factory(
-        ad_conf["PV_PREFIX"],
-        ad_conf["NAME"],
-        cam_class,
-        WRITE_PATH_TEMPLATE,
-        READ_PATH_TEMPLATE,
-        labels=("area_detector",),
-        **kwargs,
-    )
-
-
-def ID8_factory(  # TODO: remove
-    prefix,
-    name,
-    cam_class,
-    write_path,
-    read_path,
-    labels=("area_detector",),
-    use_image=True,
-    use_overlay=True,
-    use_process=True,
-    use_pva=True,
-    use_roi=True,
-    use_stats=True,
-    use_transform=True,
-    **kwargs,
-):
-    """
-    Create XPCS area detector with standard configuration.
-
-    Returns a detector object or ``None`` if the detector does not connect.
-
-    PARAMETERS
-
-    prefix *str* :
-        EPICS IOC prefix for the area detector.
-    name *str* :
-        Name of the Python detector object to be created.
-    cam_class *object* :
-        Custom subclass of CamBase_V34 for this detector.
-    write_path *str* :
-        Directory root for image files *as seen by the IOC.*
-        MUST end with a "/".
-    read_path *str* :
-        Directory root for image files *as seen by the bluesky databroker.*
-        MUST end with a "/".
-    labels *object* :
-        List or tuple of text labels for this detector.  Used by ``%wa``.
-    kwargs :
-        Anything else the caller wants to add, as ``keyword=value`` pairs.
-    """
-
-    class AreaDetector(SingleTrigger, DetectorBase):
-        cam = ADComponent(cam_class, "cam1:")
-        # In the AD IOC, cam --> codec & image
-        codec1 = ADComponent(CodecPlugin_V34, "Codec1:")  # needed by PVA and HDF
-        if use_image:
-            image = ADComponent(ID8_ImagePlugin, "image1:")
-
-        # In the AD IOC, codec1 --> hdf1 & pva
-        hdf1 = ADComponent(
-            ID8_EpicsFileNameHDF5Plugin,
-            "HDF1:",
-            write_path_template=f"{PurePath(write_path)}/",
-            read_path_template=f"{PurePath(read_path)}/",
-            kind="normal",
-        )
-        if use_pva:
-            pva = ADComponent(ID8_PvaPlugin, "Pva1:")
-
-        # If AD IOC sends codec1 to roi (& roi1?)
-        if use_process:
-            proc1 = ADComponent(ID8_ProcessPlugin, "Proc1:")
-        if use_overlay:
-            over1 = ADComponent(ID8_OverlayPlugin, "Over1:")
-        if use_roi:
-            roi1 = ADComponent(ID8_ROIPlugin, "ROI1:")
-        if use_stats:
-            stats1 = ADComponent(ID8_StatsPlugin, "Stats1:")
-        if use_transform:
-            trans1 = ADComponent(ID8_TransformPlugin, "Trans1:")
-
-    # tricky: Make it look as if we defined a custom class for this detector.
-    # Use the cam class name.
-    title = cam_class.__name__.rstrip("_V34").rstrip("Cam")
-    AreaDetector.__name__ = f"ID8_{title}"
-    AreaDetector.__qualname__ = AreaDetector.__name__
-
-    # ADSimDetector does not subclass from CamBase_V34
-    # TODO: Find different way to validate.
-    # if not issubclass(cam_class, CamBase_V34):
-    #     raise TypeError(f"{cam_class} must be a subclass of  {CamBase_V34.__name__}")
-
-    t0 = time.time()
-    try:
-        connection_timeout = iconfig.get("PV_CONNECTION_TIMEOUT", 15)
-        det = AreaDetector(prefix, name=name, labels=labels, **kwargs)
-        det.wait_for_connection(timeout=connection_timeout)
-    except (KeyError, NameError, TimeoutError) as exinfo:
-        # fmt: off
-        logger.warning(
-            "Error connecting with PV='%s in %.2fs, %s",
-            prefix, time.time() - t0, str(exinfo),
-        )
-        logger.warning("Setting '%s' to 'None'.", name)
-        det = None
-        # fmt: on
-
-    else:
-        # just in case these things are not defined in the class source code
-        det.cam.stage_sigs["wait_for_plugins"] = "Yes"
-        for nm in det.component_names:
-            obj = getattr(det, nm)
-            if "blocking_callbacks" in dir(obj):  # is it a plugin?
-                obj.stage_sigs["blocking_callbacks"] = "No"
-
-        plugin = det.hdf1  # for convenience below
-        plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
-        plugin.stage_sigs.move_to_end("capture", last=True)
-
-        if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
-            if det.connected:
-                if not AD_plugin_primed(plugin):
-                    AD_prime_plugin2(plugin)
-
-    return det
