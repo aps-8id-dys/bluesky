@@ -2,9 +2,9 @@ from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-from ..plans.shutter_logic import blockbeam
-from ..plans.shutter_logic import pre_align
-from ..plans.shutter_logic import showbeam
+from .shutter_logic import blockbeam
+from .shutter_logic import pre_align
+from .shutter_logic import showbeam
 
 rheometer = oregistry["rheometer"]
 sample = oregistry["sample"]
