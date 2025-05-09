@@ -20,20 +20,9 @@ __all__ = """
     rheometer
 """.split()
 
-import logging
-
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
-
-logger = logging.getLogger(__name__)
-
-logger.info(__file__)
-
-
-IOC = "8idiAerotech:"
-
-# TODO: refactor from labels to ophydregistry?
 
 
 class AerotechSampleStage(Device):
@@ -63,14 +52,14 @@ class AerotechRheometerStage(Device):
     yaw = Component(EpicsMotor, "m12", labels=("rheometer", "motor"))
 
 
-try:
-    sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
-    detector = AerotechDetectorStage(IOC, name="detector", labels=("detector", "stage"))
-    rheometer = AerotechRheometerStage(
-        IOC, name="rheometer", labels=("rheometer", "stage")
-    )
-except Exception as exinfo:
-    logger.warning("Could not connect with Aerotech controller. %s", exinfo)
-    sample = None
-    detector = None
-    rheometer = None
+# try:
+#     sample = AerotechSampleStage(IOC, name="sample", labels=("sample", "stage"))
+#     detector = AerotechDetectorStage(IOC, name="detector", labels=("detector", "stage"))
+#     rheometer = AerotechRheometerStage(
+#         IOC, name="rheometer", labels=("rheometer", "stage")
+#     )
+# except Exception as exinfo:
+#     logger.warning("Could not connect with Aerotech controller. %s", exinfo)
+#     sample = None
+#     detector = None
+#     rheometer = None

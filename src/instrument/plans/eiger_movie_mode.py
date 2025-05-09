@@ -14,7 +14,6 @@ warnings.filterwarnings("ignore")
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 from bluesky import preprocessors as bpp
-# from ..callbacks.nexus_data_file_writer import nxwriter
 from ..devices.registers_device import pv_registers
 from ..devices.filters_8id import filter_8ide, filter_8idi
 from ..devices.ad_eiger_4M import eiger4M

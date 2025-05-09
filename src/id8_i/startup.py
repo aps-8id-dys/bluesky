@@ -63,8 +63,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     from .callbacks.spec_data_file_writer import init_specwriter_with_RE
     from .callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
     from .callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from .callbacks.spec_data_file_writer import specwriter  # noqa: F401
+    from .callbacks.spec_data_file_writer import specwriter
 
+    specwriter.write_new_scan_header = False  # issue #1032
     init_specwriter_with_RE(RE)
 
 # These imports must come after the above setup.
@@ -87,3 +88,13 @@ RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 if host_on_aps_subnet():
     RE(make_devices(clear=False, file="device_aps_only.yml"))
     RE(make_devices(clear=False, file="ad_device.yml"))
+
+try:
+    RE(make_devices(clear=False, file="flight_tube_devices.yml"))
+except Exception as excuse:
+    print(f"Could not import Flight Tube: {excuse}")
+
+try:
+    RE(make_devices(clear=False, file="aerotech_stages_devices.yml"))
+except Exception as excuse:
+    print(f"Could not import Aerotech: {excuse}")

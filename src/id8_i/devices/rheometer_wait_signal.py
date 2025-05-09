@@ -15,6 +15,3 @@ class Rheometer_Wait(Device):
     """
 
     pulse_count = Component(EpicsSignalRO, "UpCntr-1_COUNTS")
-
-
-mcr_wait_signal = Rheometer_Wait("8idMZ4:SG:", name="mcr_wait_signal")
