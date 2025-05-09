@@ -7,7 +7,7 @@ from ..devices.ad_rigaku_3M import rigaku3M
 from ..devices.aerotech_stages import sample, rheometer
 from ..devices.slit import sl4
 from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from .nexus_utils import create_nexus_format_metadata
+from ..plans.nexus_utils import create_nexus_format_metadata
 from dm.proc_web_service.api.workflowProcApi import WorkflowProcApi
 from dm.common.utility.configurationManager import ConfigurationManager
 

@@ -1,9 +1,8 @@
-
-from bluesky import plans as bp
+from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 import datetime
 
-from ..devices.rheometer_wait_signal import mcr_wait_signal
+mcr_wait_signal = oregistry["mcr_wait_signal"]
 
 def wait_for_mcr(delay_time=0.01):
 

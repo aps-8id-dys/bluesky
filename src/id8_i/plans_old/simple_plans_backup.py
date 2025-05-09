@@ -28,7 +28,7 @@ from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
 from ..initialize_bs_tools import cat
 from .sample_info_unpack import sort_qnw
 from ..plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff
-from .nexus_utils import create_nexus_format_metadata
+from ..plans.nexus_utils import create_nexus_format_metadata
 # from .shutter_logic_8ide import showbeam, blockbeam, shutteron, shutteroff
 
 

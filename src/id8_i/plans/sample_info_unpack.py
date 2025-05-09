@@ -6,14 +6,12 @@ import json
 
 import bluesky.plan_stubs as bps
 import numpy as np
+from apsbits.core.instrument_init import oregistry
 
-from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample, rheometer
-from ..devices.registers_device import pv_registers
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from .util_8idi import temp2str
-from ..devices.filters_8id import filter_8idi
-# from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
+sample = oregistry["sample"]
+rheometer = oregistry["rheometer"]
+filter_8idi = oregistry["filter_8idi"]
+pv_registers = oregistry["pv_registers"]
 
 def select_sample(env: int):
     # yield from bps.mv(eiger4M.cam.acquire_time, 0.1)

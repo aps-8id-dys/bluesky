@@ -16,17 +16,14 @@ __all__ = [
     "set_qnw",
 ]
 
-import logging
-
+from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 
-from ..devices import qnw_env1, qnw_env2, qnw_env3
-# from ..devices import qnw_vac1, qnw_vac2, qnw_vac3
-from .sample_info_unpack import sort_qnw
+from ..plans_old.sample_info_unpack import sort_qnw
 
-logger = logging.getLogger(__name__)
-logger.info(__file__)
-
+qnw_env1 = oregistry["qnw_env1"]
+qnw_env2 = oregistry["qnw_env2"]
+qnw_env3 = oregistry["qnw_env3"]
 
 # def set_qnw(qnw_number: int, setpoint: float, wait: bool = True, ramprate: float = 0.3):
 #     """

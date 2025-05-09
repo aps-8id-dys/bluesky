@@ -1,25 +1,24 @@
-import warnings
-import h5py 
-import time
-import warnings
-import numpy as np
 import datetime
-import h5py 
-from ..devices.registers_device import pv_registers
-from ..devices.filters_8id import filter_8ide, filter_8idi
-from ..devices.ad_eiger_4M import eiger4M
-from ..devices.aerotech_stages import sample, detector, rheometer
-from ..devices.softglue import softglue_8idi
-from ..devices.slit import sl4
-from ..devices.qnw_device import qnw_env1, qnw_env2, qnw_env3
-from ..devices.qnw_vac_device import qnw_vac1, qnw_vac2, qnw_vac3
-from ..devices.lakeshore import lakeshore1, lakeshore2
-from ..devices.tetramm_picoammeter import tetramm1
-from ..devices.micellaneous_devices import mono_8id, flight_path_8idi
-from .APS8IDI_xpcs_schema import xpcs_schema
-from .APS8IDI_default_metadata import default_metadata
 
+import h5py
+from apsbits.core.instrument_init import oregistry
 
+from ..utils.APS8IDI_default_metadata import default_metadata
+from ..utils.APS8IDI_xpcs_schema import xpcs_schema
+
+detector = oregistry["detector"]
+rheometer = oregistry["rheometer"]
+sample = oregistry["sample"]
+filter_8ide = oregistry["filter_8ide"]
+filter_8idi = oregistry["filter_8idi"]
+lakeshore1 = oregistry["lakeshore1"]
+flight_path_8idi = oregistry["flight_path_8idi"]
+mono_8id = oregistry["mono_8id"]
+qnw_env1 = oregistry["qnw_env1"]
+qnw_env2 = oregistry["qnw_env2"]
+qnw_env3 = oregistry["qnw_env3"]
+tetramm1 = oregistry["tetramm1"]
+pv_registers = oregistry["pv_registers"]
 
 default_units_keymap = {
     "NX_COUNT": "one",         # Used for frame_sum, frame_average, delay_difference

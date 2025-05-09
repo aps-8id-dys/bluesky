@@ -1,12 +1,11 @@
 import epics as pe
-from bluesky import plans as bp
 from bluesky import plan_stubs as bps
+from bluesky import plans as bp
 
-from ..devices.aerotech_stages import sample
-from ..devices.tetramm_picoammeter import tetramm1
-from ..devices.ad_eiger_4M import eiger4M
 from ..devices.aerotech_stages import rheometer
+from ..devices.aerotech_stages import sample
 from ..devices.filters_8id import filter_8idi
+from ..devices.tetramm_picoammeter import tetramm1
 from ..plans.shutter_logic import blockbeam
 from ..plans.shutter_logic import pre_align
 from ..plans.shutter_logic import showbeam
