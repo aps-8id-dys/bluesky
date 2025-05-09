@@ -13,8 +13,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
@@ -25,7 +25,7 @@ apstools.devices.area_detector_factory.ad_creator:
 
 - name: adsim16M
   prefix: "8idSimDetector16m:"
-  # IOC host: 8idpixirad
+  # IOC host: beryl
   labels: [ "area_detector", "detectors" ]
   plugins:
   - cam:
@@ -36,8 +36,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
@@ -60,10 +60,9 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      # TODO #41 switch to the Voyager-based path structure: "/gdata/..."
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
       # same filesystem for IOC & Bluesky
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
@@ -86,8 +85,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
@@ -109,8 +108,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
@@ -132,8 +131,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
@@ -154,8 +153,8 @@ apstools.devices.area_detector_factory.ad_creator:
       class: id8_common.devices.area_detector.ID8_CodecPlugin
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - pva: { class: id8_common.devices.area_detector.ID8_PvaPlugin }
@@ -176,7 +175,7 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
       write_path_template: "/extdisk/" # TODO: Confirm
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
@@ -199,8 +198,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
@@ -222,8 +221,8 @@ apstools.devices.area_detector_factory.ad_creator:
   - image: { class: id8_common.devices.area_detector.ID8_ImagePlugin }
   - hdf1:
       class: id8_common.devices.area_detector.ID8_EpicsFileNameHDF5Plugin
-      read_path_template: /home/8ididata/2023-2/pvaccess_test/
-      write_path_template: /home/8ididata/2023-2/pvaccess_test/
+      read_path_template: /gdata/dm/8IDI/2025-2/
+      write_path_template: /gdata/dm/8IDI/2025-2/
       kind: normal
   - over1: { class: id8_common.devices.area_detector.ID8_OverlayPlugin }
   - proc1: { class: id8_common.devices.area_detector.ID8_ProcessPlugin }
