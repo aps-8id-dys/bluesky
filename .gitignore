@@ -43,3 +43,6 @@ old_code/
 
 # user-defined plans
 user_plans/
+
+# dictionary md file
+.re_md_dict.yml
