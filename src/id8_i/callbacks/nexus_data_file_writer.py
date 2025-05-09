@@ -10,7 +10,6 @@ from apsbits.utils.aps_functions import host_on_aps_subnet
 from apsbits.utils.config_loaders import get_config
 
 logger = logging.getLogger(__name__)
-logger.bsdev(__file__)
 
 if host_on_aps_subnet():
     from apstools.callbacks import NXWriterAPS as NXWriter

@@ -17,7 +17,6 @@ from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
 logger = logging.getLogger(__name__)
-logger.bsdev(__file__)
 
 DEFAULT_MD = {"title": "test run with simulator(s)"}
 

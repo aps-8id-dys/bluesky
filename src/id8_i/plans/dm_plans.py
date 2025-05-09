@@ -9,15 +9,10 @@ Plans in support of APS Data Management
     ~dm_submit_workflow_job
 """
 
-import logging
-
 from apstools.devices import DM_WorkflowConnector
 from apstools.utils import dm_api_proc
 from apstools.utils import share_bluesky_metadata_with_dm
 from bluesky import plan_stubs as bps
-
-logger = logging.getLogger(__name__)
-logger.bsdev(__file__)
 
 
 def dm_kickoff_workflow(run, argsDict, timeout=None, wait=False):
