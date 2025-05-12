@@ -64,5 +64,7 @@ from .ad_flag3 import flag3ad
 from .ad_flag4 import flag4ad
 from .ad_lambda_2M import lambda2M
 from .ad_rigaku_3M import rigaku3M
-from .ad_rigaku_3M import rigaku500k
+# from .ad_rigaku_3M import rigaku500k
 from .ad_sim_4M import adsim4M
+
+from .camera_stage_8idi import cam_x, cam_y

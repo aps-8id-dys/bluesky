@@ -41,33 +41,33 @@ def rigaku_acq_ZDT_series(acq_time=2e-5,
                           process=True, 
                           sample_move=False):
     
-    try:
-        yield from post_align()
-        yield from shutteroff()
-        workflowProcApi, dmuser = dm_setup(process)
-        folder_prefix = gen_folder_prefix()
+    # try:
+    yield from post_align()
+    yield from shutteroff()
+    workflowProcApi, dmuser = dm_setup(process)
+    folder_prefix = gen_folder_prefix()
 
-        for ii in range(num_rep):
+    for ii in range(num_rep):
 
-            if sample_move:
-                yield from mesh_grid_move()
+        if sample_move:
+            yield from mesh_grid_move()
 
-            file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
-            yield from setup_rigaku_ZDT_series(acq_time, num_frames, file_name)
+        file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
+        yield from setup_rigaku_ZDT_series(acq_time, num_frames, file_name)
 
-            yield from showbeam()
-            yield from bps.sleep(0.1)
-            yield from bp.count([rigaku3M])
-            yield from blockbeam()
+        yield from showbeam()
+        yield from bps.sleep(0.1)
+        yield from bp.count([rigaku3M])
+        yield from blockbeam()
 
-            metadata_fname = pv_registers.metadata_full_path.get()
-            create_nexus_format_metadata(metadata_fname, det=rigaku3M)
-            
-            dm_run_job('rigaku', process, workflowProcApi, dmuser, file_name)
+        metadata_fname = pv_registers.metadata_full_path.get()
+        create_nexus_format_metadata(metadata_fname, det=rigaku3M)
+        
+        # dm_run_job('rigaku', process, workflowProcApi, dmuser, file_name)
 
-            yield from bps.sleep(wait_time)
+        yield from bps.sleep(wait_time)
 
-    except Exception as e:
-        print(f"Error occurred during measurement: {e}")
-    finally:
-        pass
+    # except Exception as e:
+    #     print(f"Error occurred during measurement: {e}")
+    # finally:
+    #     pass
