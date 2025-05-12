@@ -4,7 +4,7 @@ from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
 
-
+# TODO: Make it more generic
 class LabJack(Device):
     """A device class for controlling LabJack data acquisition devices.
 
