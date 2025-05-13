@@ -43,7 +43,7 @@ logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 oregistry.clear()
 
 # Configure the session with callbacks, devices, and plans.
-aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
+# aps_dm_setup(iconfig.get("DM_SETUP_FILE")) #TODO: This line is broken
 
 # Command-line tools, such as %wa, %ct, ...
 register_bluesky_magics()
@@ -86,8 +86,8 @@ else:
 RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
 if host_on_aps_subnet():
-    RE(make_devices(clear=False, file="device_aps_only.yml"))
-    RE(make_devices(clear=False, file="ad_device.yml"))
+    RE(make_devices(clear=False, file="devices_aps_only.yml"))
+    # RE(make_devices(clear=False, file="ad_devices.yml"))
 
 try:
     RE(make_devices(clear=False, file="flight_tube_devices.yml"))
@@ -98,3 +98,6 @@ try:
     RE(make_devices(clear=False, file="aerotech_stages_devices.yml"))
 except Exception as excuse:
     print(f"Could not import Aerotech: {excuse}")
+
+from .plans.scan_8idi import att
+from .plans.scan_8idi import x_lup

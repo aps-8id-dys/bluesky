@@ -22,11 +22,11 @@ id8_i.devices.xy_motors.XY_Motors:
   prefix: "8iddSoft:CR8-D1:US"
   x_motor: m2
   y_motor: m3
-- name: win_e
+- name: win_i
   prefix: 8ide:US
   x_motor: m13
   y_motor: m12
-- name: win_i
+- name: win_e
   prefix: 8ide:US
   x_motor: m23
   y_motor: m24
@@ -255,6 +255,21 @@ id8_i.devices.qnw_vac_device.QnwDevice:
 - name: qnw_vac3
   prefix: "8idiSoft:QNWvac_3:"
   readback_pv: null
+
+id8_i.devices.tetramm_picoammeter.MyTetrAMM:
+- name: tetramm1
+  prefix: "8idTetra:QUAD1:"
+  port_name: "QUAD1"
+- name: tetramm2
+  prefix: "8idTetra:QUAD2:"
+  port_name: "QUAD2"
+- name: tetramm3
+  prefix: "8idTetra:QUAD3:"
+  port_name: "QUAD3"
+- name: tetramm4
+  prefix: "8idTetra:QUAD4:"
+  port_name: "QUAD4"
+
 
 ############################### THESE ARE EXAMPLES OF OTHER DEVICES THAT YOU CAN USE
 # ophyd.Signal:
