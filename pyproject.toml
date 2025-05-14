@@ -8,7 +8,7 @@ version = "0.0.1"
 description = "APS 8ID Beamline Bluesky Instrument Control"
 readme = "README.md"
 requires-python = ">=3.11"
-keywords = []
+keywords = ["bluesky", "BITS", "8ID"]
 classifiers = []
 dependencies = [ "apsbits"]
 
@@ -53,7 +53,7 @@ file = "LICENSE"
 [project.optional-dependencies]
 dev = [ "build", "isort", "mypy", "pre-commit", "pytest", "ruff",]
 doc = [ "babel", "ipykernel", "jinja2", "markupsafe", "myst_parser", "nbsphinx", "pydata-sphinx-theme", "pygments-ipython-console", "pygments", "sphinx-design", "sphinx-tabs", "sphinx",]
-all = [ "bits_instrument[dev,doc]",]
+all = [ "bits_xpcs[dev,doc]",]
 
 [project.urls]
 Homepage = "https://BCDA-APS.github.io/BITS/"
@@ -79,7 +79,7 @@ line-ending = "auto"
 [tool.setuptools.package-dir]
 "id8_common" = "src/id8_common"
 "id8_i" = "src/id8_i"
-"aps_8id_bs_instrument" = "src/instrument"
+# "aps_8id_bs_instrument" = "src/instrument"
 #"" = "src"
 
 [tool.setuptools.package-data]
