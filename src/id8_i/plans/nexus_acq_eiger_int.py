@@ -6,9 +6,9 @@ from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-from ..utils.dm_util import dm_run_job
-from ..utils.dm_util import dm_setup
-from ..utils.nexus_utils import create_nexus_format_metadata
+# from ..utils.dm_util import dm_run_job
+# from ..utils.dm_util import dm_setup
+# from ..utils.nexus_utils import create_nexus_format_metadata
 from .sample_info_unpack import gen_folder_prefix
 from .sample_info_unpack import mesh_grid_move
 from .shutter_logic import blockbeam
@@ -76,7 +76,7 @@ def eiger_acq_int_series(
     try:
         yield from post_align()
         yield from shutteroff()
-        workflowProcApi, dmuser = dm_setup(process)
+        # workflowProcApi, dmuser = dm_setup(process)
         folder_prefix = gen_folder_prefix()
 
         for ii in range(num_rep):
@@ -93,10 +93,10 @@ def eiger_acq_int_series(
             yield from bp.count([eiger4M])
             yield from blockbeam()
 
-            metadata_fname = pv_registers.metadata_full_path.get()
-            create_nexus_format_metadata(metadata_fname, det=eiger4M)
+            # metadata_fname = pv_registers.metadata_full_path.get()
+            # create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
-            dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
+            # dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
     except Exception as e:
         print(f"Error occurred during measurement: {e}")
     finally:

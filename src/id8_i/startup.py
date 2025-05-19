@@ -87,7 +87,7 @@ RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
 if host_on_aps_subnet():
     RE(make_devices(clear=False, file="devices_aps_only.yml"))
-    # RE(make_devices(clear=False, file="ad_devices.yml"))
+    RE(make_devices(clear=False, file="ad_devices.yml"))
 
 try:
     RE(make_devices(clear=False, file="flight_tube_devices.yml"))
@@ -101,3 +101,5 @@ except Exception as excuse:
 
 from .plans.scan_8idi import att
 from .plans.scan_8idi import x_lup
+from .plans.nexus_acq_eiger_int import setup_eiger_int_series
+from .plans.nexus_acq_eiger_int import eiger_acq_int_series
