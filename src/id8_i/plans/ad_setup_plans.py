@@ -9,8 +9,6 @@ from apstools.devices import AD_EpicsFileNameHDF5Plugin
 from bluesky import plan_stubs as bps
 from ophyd import Kind
 
-eiger4M = oregistry["eiger4M"]
-
 
 def write_if_new(signal, value):
     """Write an ophyd signal if it has a new value."""
@@ -75,7 +73,7 @@ def eiger4M_acquire_setup(
     """
     Prepare the Eiger4M detector for the next acquisition(s).
     """
-    det = eiger4M
+    det = oregistry["eiger4M"]  # Override 'det' arg.
     cam = det.cam
 
     yield from write_if_new(cam.num_triggers, num_triggers)
