@@ -23,6 +23,7 @@ from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
+from id8_i.plans.ad_setup_plans import ad_initial_setup
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -83,21 +84,33 @@ else:
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 
-RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
-if host_on_aps_subnet():
-    RE(make_devices(clear=False, file="devices_aps_only.yml"))
-    RE(make_devices(clear=False, file="ad_devices.yml"))
+def _startup_create_devices_plan():
+    """Create ALL devices using a single call to RE on startup."""
 
-try:
-    RE(make_devices(clear=False, file="flight_tube_devices.yml"))
-except Exception as excuse:
-    print(f"Could not import Flight Tube: {excuse}")
+    ############################
+    # These device files MUST load or startup will stop.
+    yield from make_devices(clear=False, file="devices.yml")
 
-try:
-    RE(make_devices(clear=False, file="aerotech_stages_devices.yml"))
-except Exception as excuse:
-    print(f"Could not import Aerotech: {excuse}")
+    if host_on_aps_subnet():
+        yield from make_devices(clear=False, file="devices_aps_only.yml")
+        yield from make_devices(clear=False, file="ad_devices.yml")
+        yield from ad_initial_setup()
+
+    ############################
+    # These device files can fail gracefully.  Startup will continue.
+    device_files = [
+        "flight_tube_devices.yml",
+        "aerotech_stages_devices.yml",
+    ]
+    for device_file in device_files:
+        try:
+            yield from make_devices(clear=False, file=device_file)
+        except Exception as excuse:
+            print(f"Could not import {device_file!r}: {excuse}")
+
+
+RE(_startup_create_devices_plan())
 
 from .plans.scan_8idi import att
 from .plans.scan_8idi import x_lup

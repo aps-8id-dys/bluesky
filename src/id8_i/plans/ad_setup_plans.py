@@ -5,9 +5,15 @@ Bluesky plans to setup various Area Detectors for acquisition.
 import pathlib
 
 from apsbits.core.instrument_init import oregistry
+from apsbits.utils.config_loaders import get_config
 from apstools.devices import AD_EpicsFileNameHDF5Plugin
+from apstools.devices import AD_plugin_primed
+from apstools.devices import AD_prime_plugin2
 from bluesky import plan_stubs as bps
+from bluesky.utils import plan
 from ophyd import Kind
+
+iconfig = get_config()
 
 
 def write_if_new(signal, value):
@@ -24,6 +30,42 @@ class HDF5PluginError(RuntimeError):
     """An error with configuration of the HDF5 plugin."""
 
 
+@plan
+def ad_initial_setup():
+    """Configure staging, etc. for all labeled '"area_detector"' objects."""
+    from id8_common.devices.area_detector import ad_setup
+
+    for det in oregistry.findall("area_detector", allow_none=True):
+        # print(f"{det.name=!r}")
+        ad_setup(det, iconfig)  # General setup for all area detectors.
+
+        # Plugin priming (aka warmup) decision can be different for each detector.
+        priming_allowed = False  # Disable completely, for now.
+
+        if priming_allowed:  # TODO: Should this detector should be warmed up?
+            det.wait_for_connection()
+
+            if det.name == "eiger4M":
+                det.cam.wait_for_connection()
+                yield from bps.mv(
+                    # fmt: off
+                    det.cam.data_source, "Stream",
+                    det.cam.stream_decompress, "Disable",
+                    # fmt: on
+                )
+
+            for attr in det.component_names:
+                plugin = getattr(det, attr)
+                # Which plugins need?  File writers only?
+                # match component_names:  lazy_open  compression
+                key = "lazy_open"
+                if hasattr(plugin, "component_names") and key in plugin.component_names:
+                    if not AD_plugin_primed(plugin):
+                        print(f"Priming {det.name!r} plugin {attr!r}")
+                        AD_prime_plugin2(plugin)
+
+
+@plan
 def ad_acquire_setup(
     det,  # area detector object
     acquire_time: float = 0.01,
@@ -60,6 +102,7 @@ def ad_acquire_setup(
     hdf.write_path_template = hdf.read_path_template = f"{path}/"
 
 
+@plan
 def eiger4M_acquire_setup(
     det,  # area detector object
     # acquire_time: float = 0.01,
@@ -93,11 +136,10 @@ def eiger4M_acquire_setup(
     # Raise DetectorStateError on the first fail.
     for k, v in attrs.items():
         if getattr(cam, k).get() not in v:
-            raise DetectorStateError(
-                f"{det.name} PV {getattr(cam, k).pvname!r} not in {v!r}"
-            )
+            raise DetectorStateError(f"{det.name} PV {getattr(cam, k).pvname!r} not in {v!r}")
 
 
+@plan
 def setup_hdf5_plugin(
     hdf,  # Area Detector's HDF5 plugin
     write_path: (str, pathlib.Path),  # Directory (as seen from the EPICS IOC)
@@ -175,8 +217,7 @@ def setup_hdf5_plugin(
     # Check that path exists now (might have just been created).
     if hdf.file_path_exists.get() not in (1, "Yes"):
         raise HDF5PluginError(
-            f"File path {write_path!r} does not exist."
-            f"  PV ({hdf.file_path!r}) = {hdf.file_path.get()!r}."
+            f"File path {write_path!r} does not exist." f"  PV ({hdf.file_path!r}) = {hdf.file_path.get()!r}."
         )
     hdf.write_path_template = hdf.file_path.get()
     if read_path is None:

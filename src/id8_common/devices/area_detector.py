@@ -46,10 +46,10 @@ def ad_setup(det: AreaDetector, iconfig: dict) -> None:
     plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
     plugin.stage_sigs.move_to_end("capture", last=True)
 
-    if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
-        if det.connected:
-            if not AD_plugin_primed(plugin):
-                AD_prime_plugin2(plugin)
+    # if iconfig.get("ALLOW_AREA_DETECTOR_WARMUP", False):
+    #     if det.connected:
+    #         if not AD_plugin_primed(plugin):
+    #             AD_prime_plugin2(plugin)
 
 
 class CamBase_V34(CamBase):
