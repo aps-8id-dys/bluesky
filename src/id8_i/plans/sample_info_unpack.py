@@ -110,7 +110,7 @@ def gen_folder_prefix() -> str:
 
     header_name = f'{sam_dict["header"]}{sam_dict["meas_num"]:04d}'
     folder_name = f"{header_name}_{sample_name}_a{att_level:04}"
-    print(folder_name)
+    # print(folder_name)
 
     return folder_name
 

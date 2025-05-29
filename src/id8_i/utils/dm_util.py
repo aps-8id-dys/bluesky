@@ -52,8 +52,8 @@ def dm_run_job(
         exp_name = pv_registers.experiment_name.get()
         qmap_file = pv_registers.qmap_file.get()
         workflow_name = pv_registers.workflow_name.get()
-        # analysis_machine = pv_registers.analysis_machine.get()
-        analysis_machine = get_machine_name()
+        analysis_machine = pv_registers.analysis_machine.get()
+        # analysis_machine = get_machine_name()
 
         if det_name == "rigaku":
             filepath = f"{filename}.bin.000"
@@ -66,7 +66,7 @@ def dm_run_job(
             "filePath": filepath,
             "qmap": f"{qmap_file}",
             "analysisMachine": f"{analysis_machine}",
-            "gpuID": -2,
+            "gpuID": 0,
         }
         job = workflowProcApi.startProcessingJob(
             dmuser, f"{workflow_name}", argsDict=argsDict

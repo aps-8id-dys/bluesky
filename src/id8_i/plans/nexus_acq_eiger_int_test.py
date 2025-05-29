@@ -6,9 +6,9 @@ from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
-# from ..utils.dm_util import dm_run_job
-# from ..utils.dm_util import dm_setup
-# from ..utils.nexus_utils import create_nexus_format_metadata
+from ..utils.dm_util import dm_run_job
+from ..utils.dm_util import dm_setup
+from ..utils.nexus_utils import create_nexus_format_metadata
 from .sample_info_unpack import gen_folder_prefix
 from .sample_info_unpack import mesh_grid_move
 from .shutter_logic import blockbeam
@@ -34,7 +34,7 @@ def setup_eiger_int_series(acq_time, num_frames, file_name):
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
-    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
+    file_path = f"/gdata/dm/8ID/8IDI/{cycle_name}/{exp_name}/data/{file_name}"
 
     acq_period = acq_time
     yield from bps.mv(eiger4M.cam.trigger_mode, "Internal Series")  # 0
@@ -54,11 +54,33 @@ def setup_eiger_int_series(acq_time, num_frames, file_name):
         pv_registers.metadata_full_path, f"{file_path}/{file_name}_metadata.hdf"
     )
 
-    # print(f"DIAGNOSTIC {eiger4M.stage_sigs=}")
-    # print(f"DIAGNOSTIC {eiger4M.cam.stage_sigs=}")
-    # print(f"DIAGNOSTIC {eiger4M.hdf1.stage_sigs=}")
-    # print(f"DIAGNOSTIC {eiger4M.process1.stage_sigs=}")
-    # print(f"DIAGNOSTIC {eiger4M.transform1.stage_sigs=}")
+############# Homebrew acquisition plan #############
+def eiger_acquire():
+
+    yield from showbeam()
+    yield from bps.sleep(0.1)
+    yield from bps.mv(eiger4M.hdf1.capture, 1)
+    yield from bps.mv(eiger4M.cam.acquire, 1)
+        
+    while True:
+        det_status = eiger4M.cam.acquire_busy.get()
+        if det_status == 1:
+            yield from bps.sleep(0.1)
+        if det_status == 0:
+            break
+    yield from blockbeam()
+
+    frame_num_set = eiger4M.hdf1.queue_size.get()
+    count = 0
+    while count < 100:
+        frame_num_processed = eiger4M.hdf1.queue_free.get()
+        if frame_num_processed == frame_num_set:
+            break
+        else:
+            yield from bps.sleep(0.1)
+            count=+1
+        eiger4M.hdf1.capture.put(0)
+############# Homebrew acquisition plan ends #############
 
 
 def eiger_acq_int_series(
@@ -82,7 +104,7 @@ def eiger_acq_int_series(
     try:
         yield from post_align()
         yield from shutteroff()
-        # workflowProcApi, dmuser = dm_setup(process)
+        workflowProcApi, dmuser = dm_setup(process)
         folder_prefix = gen_folder_prefix()
 
         for ii in range(num_rep):
@@ -94,15 +116,16 @@ def eiger_acq_int_series(
             file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
             yield from setup_eiger_int_series(acq_time, num_frames, file_name)
 
-            yield from showbeam()
-            yield from bps.sleep(0.1)
-            yield from bp.count([eiger4M])
-            yield from blockbeam()
+            print(f"\nStarting Measurement {file_name}")
+            yield from eiger_acquire()
+            print(f"Measurement {file_name} Complete")
 
-            # metadata_fname = pv_registers.metadata_full_path.get()
-            # create_nexus_format_metadata(metadata_fname, det=eiger4M)
+            metadata_fname = pv_registers.metadata_full_path.get()
+            create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
-            # dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
+            dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
+    except KeyboardInterrupt:
+        raise RuntimeError("\n Bluesky plan stopped by user (Ctrl+C).")
     except Exception as e:
         print(f"Error occurred during measurement: {e}")
     finally:

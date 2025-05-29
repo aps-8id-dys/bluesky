@@ -32,6 +32,8 @@ from ophyd.status import Status
 logger = logging.getLogger(__name__)
 logger.info(__file__)
 
+PLUGINS__CLEAR_STAGE_SIGS = "image process1 transform1".split()
+
 
 def ad_setup(det: AreaDetector, iconfig: dict) -> None:
     """not a plan: Steps to prepare an area detector object."""
@@ -41,6 +43,8 @@ def ad_setup(det: AreaDetector, iconfig: dict) -> None:
         obj = getattr(det, nm)
         if "blocking_callbacks" in dir(obj):  # is it a plugin?
             obj.stage_sigs["blocking_callbacks"] = "No"
+    for nm in PLUGINS__CLEAR_STAGE_SIGS:
+        getattr(det, nm).stage_sigs = {}
 
     plugin = det.hdf1  # for convenience below
     plugin.kind = Kind.config | Kind.normal  # Ensure plugin's read is called.
@@ -110,7 +114,10 @@ class Lambda2MCam(CamBase_V34):
     serial_number = ADComponent(EpicsSignalRO, "SerialNumber_RBV", kind="omitted")
     temperature = ADComponent(EpicsSignalWithRBV, "Temperature", kind="config")
     wait_for_plugins = ADComponent(
-        EpicsSignal, "WaitForPlugins", string=True, kind="config"
+        EpicsSignal,
+        "WaitForPlugins",
+        string=True,
+        kind="config",
     )
 
     energy_threshold = ADComponent(EpicsSignalWithRBV, "EnergyThreshold", kind="config")
@@ -124,9 +131,7 @@ class Rigaku3MCam(CamBase_V34):
     """Support for the RigakuSi3M camera controls."""
 
     _html_docs = ["Rigaku3MCam.html"]
-    wait_for_plugins = ADComponent(
-        EpicsSignal, "WaitForPlugins", string=True, kind="config"
-    )
+    wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins", string=True, kind="config")
 
     # sparse_enable = ADComponent(EpicsSignal, "SparseEnable", string=True)
     fast_file_name = ADComponent(EpicsSignalWithRBV, "FileName", string=True)
