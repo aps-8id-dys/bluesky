@@ -39,11 +39,11 @@ id8_i.devices.fast_shutter.FastShutter:
 - name: shutter_8ide
   prefix: "8ideSoft:fastshutter:"
 
-id8_i.devices.filters_8id.Filter2Device:
+id8_i.devices.avs_filters.AVSfilters:
 - name: filter_8ide
   prefix: "8idPyFilter:FL2:"
-- name: filter_8idi
-  prefix: "8idPyFilter:FL3:"
+# - name: filter_8idi
+#   prefix: "8idPyFilter:FL3:"
 
 id8_i.devices.granite.granite_device:
 - name: granite

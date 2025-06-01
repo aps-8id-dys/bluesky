@@ -14,7 +14,7 @@ from bluesky import plan_stubs as bps
 
 sample = oregistry["sample"]
 rheometer = oregistry["rheometer"]
-filter_8idi = oregistry["filter_8idi"]
+filter = oregistry["filter_8ide"]
 pv_registers = oregistry["pv_registers"]
 
 SAMPLE_INFO_PATH = Path("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json")
@@ -106,7 +106,7 @@ def gen_folder_prefix() -> str:
     pv_registers.sample_name.put(sam_dict["sample_name"])
     sample_name = pv_registers.sample_name.get()
 
-    att_level = int(filter_8idi.attenuation_readback.get())
+    att_level = int(filter.attenuation.readback.get())
 
     header_name = f'{sam_dict["header"]}{sam_dict["meas_num"]:04d}'
     folder_name = f"{header_name}_{sample_name}_a{att_level:04}"

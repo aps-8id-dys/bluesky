@@ -22,7 +22,6 @@ detector = oregistry["detector"]
 rheometer = oregistry["rheometer"]
 sample = oregistry["sample"]
 filter_8ide = oregistry["filter_8ide"]
-filter_8idi = oregistry["filter_8idi"]
 lakeshore1 = oregistry["lakeshore1"]
 flight_path_8idi = oregistry["flight_path_8idi"]
 mono_8id = oregistry["mono_8id"]
@@ -171,16 +170,16 @@ def create_runtime_metadata_dict(
             tetramm1.current1.mean_value.get()
         ),
         "/entry/instrument/attenuator_1/attenuator_transmission": (
-            filter_8ide.transmission_readback.get()
+            filter_8ide.transmission.readback.get()
         ),
         "/entry/instrument/attenuator_1/attenuator_index": (
-            filter_8idi.atten_index_readback.get()
+            filter_8ide.index.readback.get()
         ),
         "/entry/instrument/attenuator_2/attenuator_transmission": (
-            filter_8idi.transmission_readback.get()
+            0
         ),
         "/entry/instrument/attenuator_2/attenuator_index": (
-            filter_8idi.atten_index_readback.get()
+            0
         ),
         "/entry/sample/position_x": sample.x.position,
         "/entry/sample/position_y": sample.y.position,

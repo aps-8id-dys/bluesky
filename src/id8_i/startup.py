@@ -112,14 +112,10 @@ def _startup_create_devices_plan():
 
 RE(_startup_create_devices_plan())
 
-from .plans.scan_8idi import att
-from .plans.scan_8idi import x_lup
-# from .plans.nexus_acq_eiger_int import setup_eiger_int_series
-# from .plans.nexus_acq_eiger_int import eiger_acq_int_series
-from .plans.nexus_acq_eiger_int_test import setup_eiger_int_series
-from .plans.nexus_acq_eiger_int_test import eiger_acq_int_series
+from .plans.nexus_acq_eiger_int_test import setup_eiger_int_series, eiger_acq_int_series
+from .plans.nexus_acq_eiger_ext_test import setup_eiger_ext_trig, eiger_acq_ext_trig
 
 from .plans.sample_info_unpack import select_sample
 from .plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff, pre_align, post_align 
 
-from .plans.nexus_acq_eiger_ext_test import eiger_acq_ext_trig, setup_eiger_ext_trig
+from .plans.scan_8idi import att

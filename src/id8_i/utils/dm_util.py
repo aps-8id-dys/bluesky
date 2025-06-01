@@ -66,7 +66,7 @@ def dm_run_job(
             "filePath": filepath,
             "qmap": f"{qmap_file}",
             "analysisMachine": f"{analysis_machine}",
-            "gpuID": 0,
+            "gpuID": -2,
         }
         job = workflowProcApi.startProcessingJob(
             dmuser, f"{workflow_name}", argsDict=argsDict
