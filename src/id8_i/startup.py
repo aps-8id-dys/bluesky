@@ -112,6 +112,24 @@ def _startup_create_devices_plan():
 
 RE(_startup_create_devices_plan())
 
+pv_registers = oregistry["pv_registers"]
+
+spec_file_name = pv_registers.spec_file
+spec_file_name.wait_for_connection()
+_fname = spec_file_name.get()
+
+if len(_fname) > 0 and _fname.endswith(".dat"):
+    # PV should contain a valid file name
+    specwriter.newfile(_fname)
+else:
+    logger.warning(
+        f"SPEC file name {_fname!r} from EPICS PV"
+        f" {spec_file_name.pvname!r} is unacceptable."
+        "  File name must be of form 'NAME.dat' where NAME"
+        " is at least 1 character."
+        f"  Using {specwriter.spec_filename}."
+            )
+
 from .plans.nexus_acq_eiger_int_test import setup_eiger_int_series, eiger_acq_int_series
 from .plans.nexus_acq_eiger_ext_test import setup_eiger_ext_trig, eiger_acq_ext_trig
 
