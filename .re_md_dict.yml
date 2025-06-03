@@ -1,0 +1,58 @@
+# Written by StoredDict.
+# Dictionary contents written: 2025-05-09 16:10:29.072029
+
+beamline_id: demo_instrument
+conda_prefix: /opt/homebrew/Caskroom/miniforge/base/envs/xpcs_bits
+databroker_catalog: temp
+iconfig:
+  BEC:
+    BASELINE: true
+    HEADING: true
+    PLOTS: false
+    TABLE: true
+  DATABROKER_CATALOG: temp
+  DM_SETUP_FILE: /home/dm/etc/dm.setup.sh
+  ICONFIG_PATH: /Users/ecodrea/8id-bits/src/id8_i/configs/iconfig.yml
+  ICONFIG_VERSION: 2.0.0
+  INSTRUMENT_FOLDER: configs
+  INSTRUMENT_PATH: /Users/ecodrea/8id-bits/src/id8_i/configs
+  NEXUS_DATA_FILES:
+    ENABLE: false
+    FILE_EXTENSION: hdf
+  OPHYD:
+    CONTROL_LAYER: PyEpics
+    TIMEOUTS:
+      PV_CONNECTION: 5
+      PV_READ: 5
+      PV_WRITE: 5
+  RUN_ENGINE:
+    DEFAULT_METADATA:
+      beamline_id: demo_instrument
+      databroker_catalog: temp
+      instrument_name: Most Glorious Scientific Instrument
+      proposal_id: commissioning
+    MD_PATH: .re_md_dict.yml
+    USE_PROGRESS_BAR: false
+  SPEC_DATA_FILES:
+    ENABLE: true
+    FILE_EXTENSION: dat
+  XMODE_DEBUG_LEVEL: Plain
+instrument_name: Most Glorious Scientific Instrument
+login_id: ecodrea@jinx
+pid: 18669
+proposal_id: commissioning
+versions:
+  apsbits: 1.0.3
+  apstools: 1.7.3
+  bluesky: 1.14.0
+  databroker: 1.2.5
+  epics: 3.5.7
+  h5py: 3.13.0
+  intake: 0.6.4
+  matplotlib: 3.10.1
+  numpy: 1.26.4
+  ophyd: 1.10.5
+  pyRestTable: 2020.0.10
+  pysumreg: 1.0.7
+  python: 3.11.12
+  spec2nexus: 2021.2.6
