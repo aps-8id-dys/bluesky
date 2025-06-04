@@ -118,7 +118,7 @@ spec_file_name = pv_registers.spec_file
 spec_file_name.wait_for_connection()
 _fname = spec_file_name.get()
 
-if len(_fname) > 0 and _fname.endswith(".dat"):
+if len(_fname) > 4 and _fname.endswith(".dat"):
     # PV should contain a valid file name
     specwriter.newfile(_fname)
 else:
