@@ -1,8 +1,8 @@
 # Written by StoredDict.
-# Dictionary contents written: 2025-05-09 16:10:29.072029
+# Dictionary contents written: 2025-06-05 17:08:08.848039
 
 beamline_id: demo_instrument
-conda_prefix: /opt/homebrew/Caskroom/miniforge/base/envs/xpcs_bits
+conda_prefix: /home/beams/8IDIUSER/.conda/envs/8idi_bits
 databroker_catalog: temp
 iconfig:
   BEC:
@@ -12,10 +12,10 @@ iconfig:
     TABLE: true
   DATABROKER_CATALOG: temp
   DM_SETUP_FILE: /home/dm/etc/dm.setup.sh
-  ICONFIG_PATH: /Users/ecodrea/8id-bits/src/id8_i/configs/iconfig.yml
+  ICONFIG_PATH: /home/beams10/8IDIUSER/bluesky/src/id8_i/configs/iconfig.yml
   ICONFIG_VERSION: 2.0.0
   INSTRUMENT_FOLDER: configs
-  INSTRUMENT_PATH: /Users/ecodrea/8id-bits/src/id8_i/configs
+  INSTRUMENT_PATH: /home/beams10/8IDIUSER/bluesky/src/id8_i/configs
   NEXUS_DATA_FILES:
     ENABLE: false
     FILE_EXTENSION: hdf
@@ -38,8 +38,8 @@ iconfig:
     FILE_EXTENSION: dat
   XMODE_DEBUG_LEVEL: Plain
 instrument_name: Most Glorious Scientific Instrument
-login_id: ecodrea@jinx
-pid: 18669
+login_id: 8idiuser@amber.xray.aps.anl.gov
+pid: 439258
 proposal_id: commissioning
 versions:
   apsbits: 1.0.3
@@ -49,7 +49,7 @@ versions:
   epics: 3.5.7
   h5py: 3.13.0
   intake: 0.6.4
-  matplotlib: 3.10.1
+  matplotlib: 3.10.3
   numpy: 1.26.4
   ophyd: 1.10.5
   pyRestTable: 2020.0.10
