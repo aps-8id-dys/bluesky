@@ -20,8 +20,11 @@ from .nexus_acq_eiger_ext import setup_softglue_ext_trig
 from .nexus_acq_eiger_ext import softglue_start_pulses
 from .nexus_acq_eiger_ext import softglue_stop_pulses
 
-from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
-from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
+# from .nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series
+# from .nexus_acq_rigaku_zdt import rigaku_acq_ZDT_series
+
+from .nexus_acq_rigaku_zdt_robust_test import setup_rigaku_ZDT_series
+from .nexus_acq_rigaku_zdt_robust_test import rigaku_acq_ZDT_series
 
 from .nexus_acq_rigaku_zdt_fly import setup_rigaku_ZDT_fly
 from .nexus_acq_rigaku_zdt_fly import rigaku_acq_ZDT_fly
