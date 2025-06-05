@@ -91,6 +91,7 @@ def _startup_create_devices_plan():
     ############################
     # These device files MUST load or startup will stop.
     yield from make_devices(clear=False, file="devices.yml")
+    yield from make_devices(clear=False, file="transfocator.yml")
 
     if host_on_aps_subnet():
         yield from make_devices(clear=False, file="devices_aps_only.yml")
