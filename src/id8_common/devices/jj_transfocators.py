@@ -60,7 +60,7 @@ class fpower_index(PVPositioner):
     """
 
     readback = Cpt(EpicsSignalRO, "1:sortedIndex_RBV")
-    setpoint = Cpt(EpicsSignal, "1:sortedInde")
+    setpoint = Cpt(EpicsSignal, "1:sortedIndex")
     done = Cpt(EpicsSignalRO, "sysBusy")
 
 
@@ -87,10 +87,10 @@ class JJtransfocator(Device):
 
     energy_keV_local = Cpt(EpicsSignal, "EnergyLocal", kind="config")
     energy_keV_mono = Cpt(EpicsSignalRO, "EnergyBeamline", kind="config")
-    energy_keV_lookup = Cpt(EpicsSignalRO, "energy_rbv", kind="hinted")
+    energy_keV_lookup = Cpt(EpicsSignalRO, "energy_RBV", kind="hinted")
 
     beamMode = Cpt(EpicsSignal, "beamMode", string=True, kind="config")
-    energyMode = Cpt(EpicsSignal, "energySelect", string=True, kind="config")
+    energyMode = Cpt(EpicsSignal, "EnergySelect", string=True, kind="config")
 
 
 class JJtransfocator1x(JJtransfocator):

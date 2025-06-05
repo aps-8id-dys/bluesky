@@ -1,4 +1,4 @@
-id8_common.devices.JJtransfocator2x:
+id8_common.devices.jj_transfocators.JJtransfocator2x:
 - name: crl8id
   prefix: "8idPyCRL:CRL8ID:"
   labels: ["transfocators", "baseline"]
@@ -10,4 +10,3 @@ id8_common.devices.JJtransfocator2x:
   yaw2_motor: "8iddSoft:TRANS:m27"
   x2_motor: "8iddSoft:TRANS:m26"
   y2_motor: "8iddSoft:TRANS:m25"
-  z2_motor: "8iddSoft:TRANS:m24"
