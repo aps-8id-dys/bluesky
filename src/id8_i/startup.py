@@ -138,3 +138,5 @@ from .plans.sample_info_unpack import select_sample
 from .plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff, pre_align, post_align 
 
 from .plans.scan_8idi import att
+
+from .plans.select_detector import select_detector

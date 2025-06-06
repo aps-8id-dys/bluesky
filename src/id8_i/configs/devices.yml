@@ -270,6 +270,23 @@ id8_i.devices.tetramm_picoammeter.MyTetrAMM:
   prefix: "8idTetra:QUAD4:"
   port_name: "QUAD4"
 
+id8_i.devices.sydor_tp4u.SydorTP4U: # Does not connect off beamline; Aps only
+- name: xbpm2
+  prefix: "8idiSoft:T4U_BPM:"
+
+id8_i.devices.idt_mono.IDTMono:
+- name: idt_mono
+  prefix: "8idaSoft:MONO:"
+  labels: ["mono", "baseline"]
+  bragg_motor: "MONO:m1"
+  xtal_gap_motor: "MONO:m2"
+  flag_motor: "MONO:m3"
+  coarse_pitch_motor: "MONO:m5"
+  coarse_roll_motor: "MONO:m6"
+  x_pitch_motor: "MONO:m7"
+  y_pitch_motor: "MONO:m8"
+  pitch_piezo: "LJT703:Ao2"
+  roll_piezo: "LJT703:Ao3"
 
 ############################### THESE ARE EXAMPLES OF OTHER DEVICES THAT YOU CAN USE
 # ophyd.Signal:

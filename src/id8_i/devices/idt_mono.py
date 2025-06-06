@@ -25,6 +25,8 @@ class IDTMono(Device):
         coarse_roll_motor: str,
         x_pitch_motor: str,
         y_pitch_motor: str,
+        pitch_piezo: str,
+        roll_piezo: str,
         *args,
         **kwargs,
     ):
@@ -52,6 +54,8 @@ class IDTMono(Device):
         self._coarse_roll_motor = coarse_roll_motor
         self._x_pitch_motor = x_pitch_motor
         self._y_pitch_motor = y_pitch_motor
+        self._pitch_piezo = pitch_piezo
+        self._roll_piezo = roll_piezo
 
         super().__init__(prefix, *args, **kwargs)
 
@@ -66,3 +70,7 @@ class IDTMono(Device):
     )
     x_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_x_pitch_motor}", labels={"motors"})
     y_pitch = FCpt(EpicsMotor, "{motor_prefix}:{_y_pitch_motor}", labels={"motors"})
+
+    # TODO: These are Labjack signals instead of motors
+    pitch_piezo = FCpt(EpicsMotor, "{motor_prefix}:{_pitch_piezo}", labels={"motors"})
+    roll_piezo = FCpt(EpicsMotor, "{motor_prefix}:{_roll_piezo}", labels={"motors"})
