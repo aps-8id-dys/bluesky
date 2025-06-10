@@ -131,10 +131,10 @@ else:
         f"  Using {specwriter.spec_filename}."
             )
 
-from .plans.nexus_acq_eiger_int_test import setup_eiger_int_series, eiger_acq_int_series
-from .plans.nexus_acq_eiger_ext_test import setup_eiger_ext_trig, eiger_acq_ext_trig
+from .plans.nexus_acq_eiger_int import setup_eiger_int_series, eiger_acq_int_series
+from .plans.nexus_acq_eiger_ext import setup_eiger_ext_trig, eiger_acq_ext_trig
 
-from .plans.nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series, rigaku_acq_ZDT_series
+from .plans.nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series, rigaku_acq_ZDT_series, rigaku_zdt_acquire
 
 from .plans.sample_info_unpack import select_sample, gen_folder_prefix
 from .plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff, pre_align, post_align 

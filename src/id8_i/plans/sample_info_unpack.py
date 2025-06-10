@@ -103,8 +103,10 @@ def gen_folder_prefix() -> str:
     """
     sam_dict = sort_qnw()
     pv_registers.measurement_num.put(int(sam_dict["meas_num"]) + 1)
+
+    sample_name = sam_dict["sample_name"]
     pv_registers.sample_name.put(sam_dict["sample_name"])
-    sample_name = pv_registers.sample_name.get()
+
 
     att_level = int(filter.attenuation.readback.get())
 

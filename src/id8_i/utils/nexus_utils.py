@@ -162,6 +162,9 @@ def create_runtime_metadata_dict(
         "/entry/instrument/detector_1/distance": (
             flight_path_8idi.length.position / 1000.0  # Not calibrated
         ),
+        "/entry/instrument/detector_1/flightpath_swing": (
+            flight_path_8idi.swing.position
+        ),
         "/entry/instrument/incident_beam/incident_energy": (
             mono_8id.energy_readback.get()
         ),

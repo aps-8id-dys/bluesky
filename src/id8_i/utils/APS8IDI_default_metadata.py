@@ -28,6 +28,7 @@ default_metadata = {
     "/entry/instrument/detector_1/rotation_x": 0.0,
     "/entry/instrument/detector_1/rotation_y": 0.0,
     "/entry/instrument/detector_1/rotation_z": 0.0,
+    "/entry/instrument/detector_1/flightpath_swing": 0.0,
     "/entry/instrument/detector_1/compression": "bslz4",
     "/entry/instrument/incident_beam/extent": 1e-06,
     "/entry/instrument/incident_beam/incident_energy": 12.0,

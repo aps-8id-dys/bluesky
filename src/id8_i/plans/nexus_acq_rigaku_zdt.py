@@ -57,6 +57,31 @@ def setup_rigaku_ZDT_series(acq_time, num_frames, file_name):
     os.makedirs(f"/gdata/dm/8ID/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
+############# Homebrew acquisition plan #############
+def rigaku_zdt_acquire():
+
+    yield from showbeam()
+    yield from bps.sleep(0.1)
+    yield from bps.mv(rigaku3M.cam.acquire, 1)
+    # yield from bps.sleep(2.0)
+        
+    while True:
+        det_status = rigaku3M.cam.detector_state.get()
+        if det_status != 1:
+            yield from bps.sleep(0.1)
+        if det_status == 1:
+            break
+
+    while True:
+        det_status = rigaku3M.cam.detector_state.get()
+        if det_status != 0:
+            yield from bps.sleep(0.1)
+        if det_status == 0:
+            break
+   
+    yield from blockbeam()
+############# Homebrew acquisition plan ends #############
+
 def rigaku_acq_ZDT_series(
     acq_time=2e-5,
     num_frame=100000,
@@ -89,10 +114,9 @@ def rigaku_acq_ZDT_series(
         print(file_name)
         yield from setup_rigaku_ZDT_series(acq_time, num_frame, file_name)
 
-        yield from showbeam()
-        yield from bps.sleep(0.1)
-        yield from bp.count([rigaku3M])
-        yield from blockbeam()
+        print(f"\nStarting Measurement {file_name}")
+        yield from rigaku_zdt_acquire()
+        print(f"Measurement {file_name} Complete")
 
         metadata_fname = pv_registers.metadata_full_path.get()
         create_nexus_format_metadata(metadata_fname, det=rigaku3M)

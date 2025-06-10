@@ -42,14 +42,16 @@ def setup_eiger_ext_trig(
     cycle_name = pv_registers.cycle_name.get()
     exp_name = pv_registers.experiment_name.get()
 
-    file_path = f"/gdata/dm/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
+    file_path = f"/gdata/dm/8ID/8IDI/{cycle_name}/{exp_name}/data/{file_name}/"
 
     yield from bps.mv(eiger4M.cam.trigger_mode, "External Enable")
     yield from bps.mv(eiger4M.cam.acquire_time, acq_time)
     yield from bps.mv(eiger4M.cam.acquire_period, acq_period)
+
+    yield from bps.mv(eiger4M.cam.num_triggers, num_frames)
+
     yield from bps.mv(eiger4M.hdf1.file_name, file_name)
     yield from bps.mv(eiger4M.hdf1.file_path, file_path)
-    yield from bps.mv(eiger4M.cam.num_triggers, num_frames)
     yield from bps.mv(eiger4M.hdf1.num_capture, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
@@ -59,34 +61,66 @@ def setup_eiger_ext_trig(
         f"{file_path}/{file_name}_metadata.hdf",
     )
 
-
-def setup_softglue_ext_trig(
-    acq_time: float,
-    acq_period: float,
-    num_frames: int,
-):
-    """Setup external triggering parameters.
-
-    Args:
-        acq_time: Acquisition time per frame in seconds
-        acq_period: Time between frames in seconds
-        num_frames: Number of frames to acquire
-    """
     yield from bps.mv(softglue_8idi.acq_time, acq_time)
     yield from bps.mv(softglue_8idi.acq_period, acq_period)
-    # Generate n+1 triggers, in case softglue triggered before area detector.
-    # Add 10 more pulses to be safe since we're also sending stop signal.
-    yield from bps.mv(softglue_8idi.num_triggers, num_frames + 10)
+    yield from bps.mv(softglue_8idi.num_triggers, num_frames)
 
 
-def softglue_start_pulses():
-    """Start generating trigger pulses."""
+# def setup_softglue_ext_trig(
+#     acq_time: float,
+#     acq_period: float,
+#     num_frames: int,
+# ):
+#     """Setup external triggering parameters.
+
+#     Args:
+#         acq_time: Acquisition time per frame in seconds
+#         acq_period: Time between frames in seconds
+#         num_frames: Number of frames to acquire
+#     """
+#     yield from bps.mv(softglue_8idi.acq_time, acq_time)
+#     yield from bps.mv(softglue_8idi.acq_period, acq_period)
+#     yield from bps.mv(softglue_8idi.num_triggers, num_frames)
+
+# def softglue_start_pulses():
+#     """Start generating trigger pulses."""
+#     yield from bps.mv(softglue_8idi.start_pulses, "1!")
+
+
+# def softglue_stop_pulses():
+#     """Stop generating trigger pulses."""
+#     yield from bps.mv(softglue_8idi.stop_pulses, "1!")
+
+
+############# Homebrew acquisition plan #############
+def eiger_acquire():
+
+    yield from showbeam()
+    yield from bps.sleep(0.1)
+    yield from bps.mv(eiger4M.hdf1.capture, 1)
+    yield from bps.mv(eiger4M.cam.acquire, 1)
+
     yield from bps.mv(softglue_8idi.start_pulses, "1!")
+        
+    while True:
+        det_status = eiger4M.cam.acquire_busy.get()
+        if det_status == 1:
+            yield from bps.sleep(0.1)
+        if det_status == 0:
+            break
+    yield from blockbeam()
 
-
-def softglue_stop_pulses():
-    """Stop generating trigger pulses."""
-    yield from bps.mv(softglue_8idi.stop_pulses, "1!")
+    frame_num_set = eiger4M.hdf1.queue_size.get()
+    count = 0
+    while count < 100:
+        frame_num_processed = eiger4M.hdf1.queue_free.get()
+        if frame_num_processed == frame_num_set:
+            break
+        else:
+            yield from bps.sleep(0.1)
+            count=+1
+        eiger4M.hdf1.capture.put(0)
+############# Homebrew acquisition plan ends #############
 
 
 def eiger_acq_ext_trig(
@@ -110,7 +144,7 @@ def eiger_acq_ext_trig(
         process: Whether to process data after acquisition
     """
     try:
-        yield from setup_softglue_ext_trig(acq_time, acq_period, num_frames)
+        # yield from setup_softglue_ext_trig(acq_time, acq_period, num_frames)
         yield from post_align()
         yield from shutteron()
 
@@ -126,18 +160,25 @@ def eiger_acq_ext_trig(
             file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
             yield from setup_eiger_ext_trig(acq_time, acq_period, num_frames, file_name)
 
-            yield from showbeam()
-            yield from bps.sleep(0.1)
-            yield from softglue_start_pulses()
-            yield from bp.count([eiger4M])
-            yield from softglue_stop_pulses()
-            yield from blockbeam()
+            # yield from showbeam()
+            # yield from bps.sleep(0.1)
+            # yield from softglue_start_pulses()
+            # yield from bp.count([eiger4M])
+            # yield from softglue_stop_pulses()
+            # yield from blockbeam()
+
+            print(f"\nStarting Measurement {file_name}")
+            yield from eiger_acquire()
+            print(f"Measurement {file_name} Complete")
 
             metadata_fname = pv_registers.metadata_full_path.get()
             create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
             dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
+    except KeyboardInterrupt:
+        raise RuntimeError("\n Bluesky plan stopped by user (Ctrl+C).")
     except Exception as e:
         print(f"Error occurred during measurement: {e}")
     finally:
         pass
+

@@ -184,6 +184,13 @@ xpcs_schema = {
                     "description": "Distance between sample and detector",
                     "data": 12.0,
                 },
+                "flightpath_swing": {
+                    "type": "NX_NUMBER",
+                    "units": "NX_ANGLE",
+                    "required": False,
+                    "description": "Swing angle of the flight path",
+                    "data": 0,
+                },
                 "frame_time": {
                     "type": "NX_NUMBER",
                     "units": "NX_TIME",

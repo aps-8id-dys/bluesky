@@ -15,7 +15,7 @@ pv_registers = oregistry["pv_registers"]
 detector = oregistry["detector"]
 
 
-def select_detector(det: Literal["eiger", "rigaku"]):
+def select_detector(det: Literal["eiger4M", "rigaku3M"]):
     """Select and configure a detector for data collection.
 
     This plan sets up the detector-specific parameters including workflow name,
@@ -33,7 +33,7 @@ def select_detector(det: Literal["eiger", "rigaku"]):
             pass
         else:
             yield from bps.mv(pv_registers.workflow_name, "xpcs8-boost-corr")
-            yield from bps.mv(pv_registers.qmap_file, "eiger4m_qmap_default.h5")
+            yield from bps.mv(pv_registers.qmap_file, "eiger4m_qmap_default.hdf")
 
             det_x_position = pv_registers.eiger_det_x0.get()
             det_y_position = pv_registers.eiger_det_y0.get()
@@ -51,7 +51,7 @@ def select_detector(det: Literal["eiger", "rigaku"]):
 
     elif det == "rigaku3M":
         yield from bps.mv(pv_registers.workflow_name, "xpcs8-boost-corr")
-        yield from bps.mv(pv_registers.qmap_file, "rigaku3m_qmap_default.h5")
+        yield from bps.mv(pv_registers.qmap_file, "rigaku3m_qmap_default.hdf")
 
         det_x_position = pv_registers.rigaku_det_x0.get()
         det_y_position = pv_registers.rigaku_det_y0.get()
