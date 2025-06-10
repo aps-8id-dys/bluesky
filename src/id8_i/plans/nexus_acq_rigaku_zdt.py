@@ -41,20 +41,20 @@ def setup_rigaku_ZDT_series(acq_time, num_frames, file_name):
 
     yield from bps.mv(rigaku3M.cam.acquire_time, acq_time)
     yield from bps.mv(rigaku3M.cam.acquire_period, acq_period)
-    yield from bps.mv(rigaku3M.cam.file_name, f"{file_name}.bin")
-    yield from bps.mv(rigaku3M.cam.file_path, file_path)
+    yield from bps.mv(rigaku3M.cam.fast_file_name, f"{file_name}.bin")
+    yield from bps.mv(rigaku3M.cam.fast_file_path, file_path)
     yield from bps.mv(rigaku3M.cam.num_images, num_frames)
 
     yield from bps.mv(pv_registers.file_name, file_name)
     yield from bps.mv(
-        pv_registers.file_path, f"/gdata/dm/8IDI/{cycle_name}/{file_path}"
+        pv_registers.file_path, f"/gdata/dm/8ID/8IDI/{cycle_name}/{file_path}"
     )
     yield from bps.mv(
         pv_registers.metadata_full_path,
-        f"/gdata/dm/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf",
+        f"/gdata/dm/8ID/8IDI/{cycle_name}/{file_path}/{file_name}_metadata.hdf",
     )
 
-    os.makedirs(f"/gdata/dm/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
+    os.makedirs(f"/gdata/dm/8ID/8IDI/{cycle_name}/{file_path}", mode=0o770, exist_ok=True)
 
 
 def rigaku_acq_ZDT_series(
@@ -75,32 +75,33 @@ def rigaku_acq_ZDT_series(
         process: Whether to process data after acquisition
         sample_move: Whether to move sample between repetitions
     """
-    try:
-        yield from post_align()
-        yield from shutteroff()
-        workflowProcApi, dmuser = dm_setup(process)
-        folder_prefix = gen_folder_prefix()
+    # try:
+    yield from post_align()
+    yield from shutteroff()
+    workflowProcApi, dmuser = dm_setup(process)
+    folder_prefix = gen_folder_prefix()
 
-        for ii in range(num_rep):
-            if sample_move:
-                yield from mesh_grid_move()
+    for ii in range(num_rep):
+        if sample_move:
+            yield from mesh_grid_move()
 
-            file_name = f"{folder_prefix}_f{num_frame:06d}_r{ii+1:05d}"
-            yield from setup_rigaku_ZDT_series(acq_time, num_frame, file_name)
+        file_name = f"{folder_prefix}_f{num_frame:06d}_r{ii+1:05d}"
+        print(file_name)
+        yield from setup_rigaku_ZDT_series(acq_time, num_frame, file_name)
 
-            yield from showbeam()
-            yield from bps.sleep(0.1)
-            yield from bp.count([rigaku3M])
-            yield from blockbeam()
+        yield from showbeam()
+        yield from bps.sleep(0.1)
+        yield from bp.count([rigaku3M])
+        yield from blockbeam()
 
-            metadata_fname = pv_registers.metadata_full_path.get()
-            create_nexus_format_metadata(metadata_fname, det=rigaku3M)
+        metadata_fname = pv_registers.metadata_full_path.get()
+        create_nexus_format_metadata(metadata_fname, det=rigaku3M)
 
-            dm_run_job("rigaku", process, workflowProcApi, dmuser, file_name)
+        dm_run_job("rigaku", process, workflowProcApi, dmuser, file_name)
 
-            yield from bps.sleep(wait_time)
+        yield from bps.sleep(wait_time)
 
-    except Exception as e:
-        print(f"Error occurred during measurement: {e}")
-    finally:
-        pass
+    # except Exception as e:
+    #     print(f"Error occurred during measurement: {e}")
+    # finally:
+    #     pass

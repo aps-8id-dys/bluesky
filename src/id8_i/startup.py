@@ -134,9 +134,13 @@ else:
 from .plans.nexus_acq_eiger_int_test import setup_eiger_int_series, eiger_acq_int_series
 from .plans.nexus_acq_eiger_ext_test import setup_eiger_ext_trig, eiger_acq_ext_trig
 
-from .plans.sample_info_unpack import select_sample
+from .plans.nexus_acq_rigaku_zdt import setup_rigaku_ZDT_series, rigaku_acq_ZDT_series
+
+from .plans.sample_info_unpack import select_sample, gen_folder_prefix
 from .plans.shutter_logic import showbeam, blockbeam, shutteron, shutteroff, pre_align, post_align 
 
-from .plans.scan_8idi import att
+from .plans.scan_8idi import att, x_lup, y_lup
 
 from .plans.select_detector import select_detector
+
+from .plans.master_plan import run_measurement_info

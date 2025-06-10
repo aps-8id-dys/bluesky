@@ -17,7 +17,7 @@ rheometer = oregistry["rheometer"]
 filter = oregistry["filter_8ide"]
 pv_registers = oregistry["pv_registers"]
 
-SAMPLE_INFO_PATH = Path("/home/beams/8IDIUSER/bluesky/user_plans/sample_info.json")
+SAMPLE_INFO_PATH = Path("/home/beams/8IDIUSER/bluesky/src/user_plans/sample_info.json")
 
 
 def select_sample(env: int):

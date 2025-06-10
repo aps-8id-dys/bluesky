@@ -28,60 +28,56 @@ def att(att_ratio: Optional[float] = None):
     Args:
         att_ratio: Attenuation ratio to set (0-15)
     """
-    yield from bps.mv(filter.attenuation.setpoint, att_ratio)
-    yield from bps.sleep(2)
-    yield from bps.mv(filter.attenuation.setpoint, att_ratio)
-    yield from bps.sleep(2)
-    yield from bps.mv(filter.attenuation.setpoint, att_ratio)
-    yield from bps.sleep(2)
+    yield from bps.mv(filter.attenuation, att_ratio)
+    yield from bps.sleep(0.5)
 
 
-# def x_lup(
-#     rel_begin: float = -3,
-#     rel_end: float = 3,
-#     num_pts: int = 60,
-#     att_level: int = 7,
-#     det: Device = tetramm1,
-# ):
-#     """Perform a relative scan along the sample X axis.
+def x_lup(
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 60,
+    att_ratio: int = 7,
+    det: Device = tetramm1,
+):
+    """Perform a relative scan along the sample X axis.
 
-#     Args:
-#         rel_begin: Start position relative to current position (mm)
-#         rel_end: End position relative to current position (mm)
-#         num_pts: Number of points in the scan
-#         att_level: Attenuation level to use (0-15)
-#         det: Detector to use for the scan
-#     """
-#     yield from pre_align()
-#     yield from bps.mv(filter_8idi.attenuation_set, att_level)
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
+    yield from pre_align()
+    yield from bps.mv(filter.attenuation, att_ratio)
 
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], sample.x, rel_begin, rel_end, num_pts)
-#     yield from blockbeam()
+    yield from showbeam()
+    yield from bp.rel_scan([det], sample.x, rel_begin, rel_end, num_pts)
+    yield from blockbeam()
 
 
-# def y_lup(
-#     rel_begin: float = -3,
-#     rel_end: float = 3,
-#     num_pts: int = 60,
-#     att_level: int = 7,
-#     det: Device = tetramm1,
-# ):
-#     """Perform a relative scan along the sample Y axis.
+def y_lup(
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 60,
+    att_ratio: int = 7,
+    det: Device = tetramm1,
+):
+    """Perform a relative scan along the sample Y axis.
 
-#     Args:
-#         rel_begin: Start position relative to current position (mm)
-#         rel_end: End position relative to current position (mm)
-#         num_pts: Number of points in the scan
-#         att_level: Attenuation level to use (0-15)
-#         det: Detector to use for the scan
-#     """
-#     yield from pre_align()
-#     yield from bps.mv(filter_8idi.attenuation_set, att_level)
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
+    yield from pre_align()
+    yield from bps.mv(filter.attenuation, att_ratio)
 
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], sample.y, rel_begin, rel_end, num_pts)
-#     yield from blockbeam()
+    yield from showbeam()
+    yield from bp.rel_scan([det], sample.y, rel_begin, rel_end, num_pts)
+    yield from blockbeam()
 
 
 # def rheo_x_lup(
