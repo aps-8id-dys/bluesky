@@ -152,8 +152,8 @@ def create_runtime_metadata_dict(
         "/entry/instrument/detector_1/beam_center_y": (
             pv_registers.current_db_y0.get()
         ),
-        "/entry/instrument/detector_1/beam_center_position_x": detector.x.position,
-        "/entry/instrument/detector_1/beam_center_position_y": detector.y.position,
+        "/entry/instrument/detector_1/beam_center_position_x": pv_registers.current_det_x0,
+        "/entry/instrument/detector_1/beam_center_position_y": pv_registers.current_det_y0,
         "/entry/instrument/detector_1/position_x": detector.x.position,
         "/entry/instrument/detector_1/position_y": detector.y.position,
         "/entry/instrument/detector_1/count_time": det.cam.acquire_time.get(),

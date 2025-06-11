@@ -39,7 +39,7 @@ def run_measurement_info(file_name='measurement_info.json'):
             yield from select_sample(sam_index)
 
             print(f'Detector name: {det_name}')
-            yield from select_detector(det_name)
+            # yield from select_detector(det_name)
 
             for ii in range(len(att_list)):
 
