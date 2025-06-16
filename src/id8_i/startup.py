@@ -144,3 +144,5 @@ from .plans.scan_8idi import att, x_lup, y_lup
 from .plans.select_detector import select_detector
 
 from .plans.master_plan import run_measurement_info
+
+from id8_user_plans.write_measurement_info import write_measurement_info

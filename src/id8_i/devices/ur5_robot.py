@@ -15,5 +15,5 @@ class UR5_Pipette(Device):
     This device provides read-only access to the monochromator energy readback value.
     """
 
-    step_1 = Component(EpicsSignal, "Run.PROC", name="step_1")
-    step_2 = Component(EpicsSignal, "Run.DISP", name="step_2")
+    step_1 = Component(EpicsSignal, "PipettePMS:Run.PROC", name="step_1")
+    step_2 = Component(EpicsSignal, "PipetteDR:Run.PROC", name="step_2")

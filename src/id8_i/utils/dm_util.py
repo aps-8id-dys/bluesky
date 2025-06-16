@@ -53,7 +53,6 @@ def dm_run_job(
         qmap_file = pv_registers.qmap_file.get()
         workflow_name = pv_registers.workflow_name.get()
         analysis_machine = pv_registers.analysis_machine.get()
-        # analysis_machine = get_machine_name()
 
         if det_name == "rigaku":
             filepath = f"{filename}.bin.000"
@@ -61,13 +60,29 @@ def dm_run_job(
             filepath = f"{filename}.h5"
         else:
             pass
-        argsDict = {
-            "experimentName": exp_name,
-            "filePath": filepath,
-            "qmap": f"{qmap_file}",
-            "analysisMachine": f"{analysis_machine}",
-            "gpuID": -2,
-        }
+
+        if analysis_machine == "polaris":
+            argsDict = {
+                "experimentName": exp_name,
+                "filePath": filepath,
+                "qmap": f"{qmap_file}",
+                "analysisMachine": "polaris",
+                "gpuID": 0,
+                "demand": "True"
+            }
+        elif analysis_machine == "local":
+            machine_name = get_machine_name()
+            argsDict = {
+                "experimentName": exp_name,
+                "filePath": filepath,
+                "qmap": f"{qmap_file}",
+                "analysisMachine": machine_name,
+                "gpuID": -2,
+                "demand": "True"
+            }
+        else:
+            print("Analysis machine must be 'polaris' or 'local'")
+
         job = workflowProcApi.startProcessingJob(
             dmuser, f"{workflow_name}", argsDict=argsDict
         )

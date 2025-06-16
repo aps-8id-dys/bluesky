@@ -247,7 +247,7 @@ id8_i.devices.mono.Mono:
 
 id8_i.devices.ur5_robot.UR5_Pipette:
 - name: robotic_pipette
-  prefix: "8idiur5:UR5:PipettePMS:"
+  prefix: "8idiur5:UR5:"
 
 id8_i.devices.qnw_vac_device.QnwDevice:
 - name: qnw_vac1

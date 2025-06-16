@@ -31,7 +31,9 @@ def run_measurement_info(file_name='measurement_info.json'):
             acq_period_list = block_value.get("acq_period_list")
             num_frames_list = block_value.get("num_frames_list")
             num_reps_list = block_value.get("num_reps_list")
-            fly_scan_yes_list = block_value.get("fly_scan_yes_list")
+            num_reps_list = block_value.get("num_reps_list")
+            # fly_scan_yes_list = block_value.get("fly_scan_yes_list")
+            sample_move_yes_list = block_value.get("sample_move_yes_list")
 
             print(f'\n --- Measurement Block {block_key} ---')
 
@@ -52,13 +54,15 @@ def run_measurement_info(file_name='measurement_info.json'):
                     acq_period = acq_period_list[ii][jj]
                     num_frames = num_frames_list[ii][jj]
                     num_reps = num_reps_list[ii][jj]
-                    fly_scan_yes = fly_scan_yes_list[ii][jj]
+                    # fly_scan_yes = fly_scan_yes_list[ii][jj]
+                    sample_move_yes = sample_move_yes_list[ii][jj]
+
 
                     print(f'    Acquisition Time: {acq_time}')
                     print(f'    Acquisition Period: {acq_period}')
                     print(f'    Number of Frames: {num_frames}')
                     print(f'    Number of Repeats: {num_reps}')
-                    print(f"    Fly Scan? {'Yes' if fly_scan_yes == 1 else 'No'}\n")  
+                    # print(f"    Fly Scan? {'Yes' if fly_scan_yes == 1 else 'No'}\n")  
 
                     if det_name == 'eiger4M':
                         if acq_time == acq_period:
@@ -68,7 +72,7 @@ def run_measurement_info(file_name='measurement_info.json'):
                                                                 num_rep=num_reps,
                                                                 wait_time=0,
                                                                 process=True,
-                                                                sample_move=True,
+                                                                sample_move=sample_move_yes,
                                                             )
                         else:
                             if acq_period >= 0.1:
@@ -79,16 +83,16 @@ def run_measurement_info(file_name='measurement_info.json'):
                                                                     num_rep=num_reps,
                                                                     wait_time=0,
                                                                     process=True,
-                                                                    sample_move=True,
+                                                                    sample_move=sample_move_yes,
                                                                 )
                     elif det_name == 'rigaku3M':
                         yield from  rigaku_acq_ZDT_series(
-                                                            acq_time=acq_time,
-                                                            num_frame=num_frames,
+                                                            acq_time=2e-5,
+                                                            num_frame=100000,
                                                             num_rep=num_reps,
                                                             wait_time=0,
                                                             process=True,
-                                                            sample_move=True,
+                                                            sample_move=sample_move_yes,
                                                         )
                     else:
                         print('Detector name must be eiger4M or rigaku3M')

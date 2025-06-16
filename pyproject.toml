@@ -79,6 +79,8 @@ line-ending = "auto"
 [tool.setuptools.package-dir]
 "id8_common" = "src/id8_common"
 "id8_i" = "src/id8_i"
+"id8_user_plans" = "src/user_plans"
+
 # "aps_8id_bs_instrument" = "src/instrument"
 #"" = "src"
 

@@ -23,7 +23,7 @@ class EpicsPvStorageRegisters(Device):
     workflow_name = Component(EpicsSignal, "StrReg6", string=True)
     experiment_name = Component(EpicsSignal, "StrReg7", string=True)
     cycle_name = Component(EpicsSignal, "StrReg8", string=True)
-    sample_name = Component(EpicsSignal, "StrReg14", string=True)
+    sample_name = Component(EpicsSignal, "StrReg9", string=True)
     spec_file = Component(EpicsSignal, "StrReg10", string=True)
     analysis_type = Component(EpicsSignal, "StrReg11", string=True)
     start_bluesky = Component(EpicsSignal, "StrReg12", string=True)
