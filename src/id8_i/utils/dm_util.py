@@ -81,7 +81,14 @@ def dm_run_job(
                 "demand": "True"
             }
         else:
-            print("Analysis machine must be 'polaris' or 'local'")
+            argsDict = {
+                "experimentName": exp_name,
+                "filePath": filepath,
+                "qmap": f"{qmap_file}",
+                "analysisMachine": analysis_machine,
+                "gpuID": -2,
+                "demand": "True"
+            }
 
         job = workflowProcApi.startProcessingJob(
             dmuser, f"{workflow_name}", argsDict=argsDict

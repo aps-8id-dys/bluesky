@@ -80,81 +80,81 @@ def y_lup(
     yield from blockbeam()
 
 
-# def rheo_x_lup(
-#     rel_begin: float = -3,
-#     rel_end: float = 3,
-#     num_pts: int = 30,
-#     att_level: int = 10,
-#     det: Device = tetramm1,
-# ):
-#     """Perform a relative scan along the rheometer X axis.
+def rheo_x_lup(
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 30,
+    att_ratio: int = 10,
+    det: Device = tetramm1,
+):
+    """Perform a relative scan along the rheometer X axis.
 
-#     Args:
-#         rel_begin: Start position relative to current position (mm)
-#         rel_end: End position relative to current position (mm)
-#         num_pts: Number of points in the scan
-#         att_level: Attenuation level to use (0-15)
-#         det: Detector to use for the scan
-#     """
-#     yield from pre_align()
-#     yield from bps.mv(filter_8idi.attenuation_set, att_level)
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
+    yield from pre_align()
+    yield from bps.mv(filter.attenuation, att_ratio)
 
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], rheometer.x, rel_begin, rel_end, num_pts)
-#     yield from blockbeam()
-
-
-# def rheo_y_lup(
-#     rel_begin: float = -3,
-#     rel_end: float = 3,
-#     num_pts: int = 30,
-#     att_level: int = 10,
-#     det: Device = tetramm1,
-# ):
-#     """Perform a relative scan along the rheometer Y axis.
-
-#     Args:
-#         rel_begin: Start position relative to current position (mm)
-#         rel_end: End position relative to current position (mm)
-#         num_pts: Number of points in the scan
-#         att_level: Attenuation level to use (0-15)
-#         det: Detector to use for the scan
-#     """
-#     yield from pre_align()
-#     yield from bps.mv(filter_8idi.attenuation_set, att_level)
-
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], rheometer.y, rel_begin, rel_end, num_pts)
-#     yield from blockbeam()
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.x, rel_begin, rel_end, num_pts)
+    yield from blockbeam()
 
 
-# def rheo_set_x_lup(
-#     att_level: int = 10,
-#     det: Device = tetramm1,
-# ):
-#     """Perform a series of scans at specific rheometer X positions.
+def rheo_y_lup(
+    rel_begin: float = -3,
+    rel_end: float = 3,
+    num_pts: int = 30,
+    att_ratio: int = 10,
+    det: Device = tetramm1,
+):
+    """Perform a relative scan along the rheometer Y axis.
 
-#     This plan moves the rheometer to three specific X positions and performs
-#     relative scans around each position.
+    Args:
+        rel_begin: Start position relative to current position (mm)
+        rel_end: End position relative to current position (mm)
+        num_pts: Number of points in the scan
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
+    yield from pre_align()
+    yield from bps.mv(filter.attenuation, att_ratio)
 
-#     Args:
-#         att_level: Attenuation level to use (0-15)
-#         det: Detector to use for the scan
-#     """
-#     yield from pre_align()
-#     yield from bps.mv(filter_8idi.attenuation_set, att_level)
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.y, rel_begin, rel_end, num_pts)
+    yield from blockbeam()
 
-#     yield from bps.mv(rheometer.x, -8.99)
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
-#     yield from blockbeam()
 
-#     yield from bps.mv(rheometer.x, 2.12)
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
-#     yield from blockbeam()
+def rheo_set_x_lup(
+    att_ratio: int = 10,
+    det: Device = tetramm1,
+):
+    """Perform a series of scans at specific rheometer X positions.
 
-#     yield from bps.mv(rheometer.x, -3.53)
-#     yield from showbeam()
-#     yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
-#     yield from blockbeam()
+    This plan moves the rheometer to three specific X positions and performs
+    relative scans around each position.
+
+    Args:
+        att_level: Attenuation level to use (0-15)
+        det: Detector to use for the scan
+    """
+    yield from pre_align()
+    yield from bps.mv(filter.attenuation, att_ratio)
+
+    yield from bps.mv(rheometer.x, -8.99)
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
+    yield from blockbeam()
+
+    yield from bps.mv(rheometer.x, 2.12)
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
+    yield from blockbeam()
+
+    yield from bps.mv(rheometer.x, -3.53)
+    yield from showbeam()
+    yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
+    yield from blockbeam()
