@@ -13,5 +13,5 @@ class LabJack(Device):
     digital I/O, counter inputs, and device configuration.
     """
 
-    operation = Component(EpicsSignal, "Bo0")
-    logic = Component(EpicsSignal, "Bo1")
+    operation = Component(EpicsSignal, "Bi0.VAL", write_pv="Bo0", name="operation")
+    logic = Component(EpicsSignal, "Bi1.VAL", write_pv="Bo1", name="logic")

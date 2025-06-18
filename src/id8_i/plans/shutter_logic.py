@@ -14,12 +14,14 @@ labjack = oregistry["labjack"]
 
 def showbeam():
     """Open the beam shutter to show the beam."""
-    yield from bps.mv(labjack.operation, 0)
+    if labjack.operation.get(use_cache=False) != 0:
+        yield from bps.mv(labjack.operation, 0)
 
 
 def blockbeam():
     """Block the beam by closing the shutter."""
-    yield from bps.mv(labjack.operation, 1)
+    if labjack.operation.get(use_cache=False) != 1:
+        yield from bps.mv(labjack.operation, 1)
 
 
 def shutteron():

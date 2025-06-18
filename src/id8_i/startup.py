@@ -145,4 +145,6 @@ from .plans.select_detector import select_detector
 
 from .plans.master_plan import run_measurement_info
 
+from .plans.pv_break_test import break_pv
+
 from id8_user_plans.write_measurement_info import write_measurement_info

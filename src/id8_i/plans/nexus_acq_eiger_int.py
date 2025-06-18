@@ -101,32 +101,32 @@ def eiger_acq_int_series(
         process: Whether to process data after acquisition
         sample_move: Whether to move sample between repetitions
     """
-    try:
-        yield from post_align()
-        yield from shutteroff()
-        workflowProcApi, dmuser = dm_setup(process)
-        folder_prefix = gen_folder_prefix()
+    # try:
+    yield from post_align()
+    yield from shutteroff()
+    workflowProcApi, dmuser = dm_setup(process)
+    folder_prefix = gen_folder_prefix()
 
-        for ii in range(num_rep):
-            yield from bps.sleep(wait_time)
+    for ii in range(num_rep):
+        yield from bps.sleep(wait_time)
 
-            if sample_move:
-                yield from mesh_grid_move()
+        if sample_move:
+            yield from mesh_grid_move()
 
-            file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
-            yield from setup_eiger_int_series(acq_time, num_frames, file_name)
+        file_name = f"{folder_prefix}_f{num_frames:06d}_r{ii+1:05d}"
+        yield from setup_eiger_int_series(acq_time, num_frames, file_name)
 
-            print(f"\nStarting Measurement {file_name}")
-            yield from eiger_acquire()
-            print(f"Measurement {file_name} Complete")
+        print(f"\nStarting Measurement {file_name}")
+        yield from eiger_acquire()
+        print(f"Measurement {file_name} Complete")
 
-            metadata_fname = pv_registers.metadata_full_path.get()
-            create_nexus_format_metadata(metadata_fname, det=eiger4M)
+        metadata_fname = pv_registers.metadata_full_path.get()
+        create_nexus_format_metadata(metadata_fname, det=eiger4M)
 
-            dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
-    except KeyboardInterrupt:
-        raise RuntimeError("\n Bluesky plan stopped by user (Ctrl+C).")
-    except Exception as e:
-        print(f"Error occurred during measurement: {e}")
-    finally:
-        pass
+        dm_run_job("eiger", process, workflowProcApi, dmuser, file_name)
+    # except KeyboardInterrupt:
+    #     raise RuntimeError("\n Bluesky plan stopped by user (Ctrl+C).")
+    # except Exception as e:
+    #     print(f"Error occurred during measurement: {e}")
+    # finally:
+    #     pass
