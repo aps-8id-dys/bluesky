@@ -1,5 +1,6 @@
 """LabJack LJT705 in 8-ID-I."""
 
+from id8_common.devices.epics_signal_wo import EpicsSignalWO
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignal
@@ -13,5 +14,5 @@ class LabJack(Device):
     digital I/O, counter inputs, and device configuration.
     """
 
-    operation = Component(EpicsSignal, "Bo0")
+    operation = Component(EpicsSignalWO, "Bo0", kind="omitted")
     logic = Component(EpicsSignal, "Bo1")

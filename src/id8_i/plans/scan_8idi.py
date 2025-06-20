@@ -144,17 +144,17 @@ def rheo_set_x_lup(
     yield from pre_align()
     yield from bps.mv(filter.attenuation, att_ratio)
 
-    yield from bps.mv(rheometer.x, -8.99)
+    yield from bps.mv(rheometer.x, -14.0)
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
     yield from blockbeam()
 
-    yield from bps.mv(rheometer.x, 2.12)
+    yield from bps.mv(rheometer.x, -2.6)
     yield from showbeam()
     yield from bp.rel_scan([det], rheometer.x, -0.5, 0.5, 100)
     yield from blockbeam()
 
-    yield from bps.mv(rheometer.x, -3.53)
-    yield from showbeam()
-    yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
-    yield from blockbeam()
+    #yield from bps.mv(rheometer.x, -3.53)
+    #yield from showbeam()
+    #yield from bp.rel_scan([det], rheometer.x, -8, 8, 160)
+    #yield from blockbeam()

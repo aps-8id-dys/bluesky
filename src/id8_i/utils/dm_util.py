@@ -53,6 +53,8 @@ def dm_run_job(
         qmap_file = pv_registers.qmap_file.get()
         workflow_name = pv_registers.workflow_name.get()
         analysis_machine = pv_registers.analysis_machine.get()
+        analysis_type = pv_registers.analysis_type.get()
+        cycle_name = pv_registers.cycle_name.get()
 
         if det_name == "rigaku":
             filepath = f"{filename}.bin.000"
@@ -62,33 +64,25 @@ def dm_run_job(
             pass
 
         if analysis_machine == "polaris":
-            argsDict = {
-                "experimentName": exp_name,
-                "filePath": filepath,
-                "qmap": f"{qmap_file}",
-                "analysisMachine": "polaris",
-                "gpuID": 0,
-                "demand": "True"
-            }
+            gpuID = 0
+            machine_name = analysis_machine
         elif analysis_machine == "local":
+            gpuID = -2
             machine_name = get_machine_name()
-            argsDict = {
-                "experimentName": exp_name,
-                "filePath": filepath,
-                "qmap": f"{qmap_file}",
-                "analysisMachine": machine_name,
-                "gpuID": -2,
-                "demand": "True"
-            }
         else:
-            argsDict = {
-                "experimentName": exp_name,
-                "filePath": filepath,
-                "qmap": f"{qmap_file}",
-                "analysisMachine": analysis_machine,
-                "gpuID": -2,
-                "demand": "True"
-            }
+            gpuID = -2
+            machine_name = analysis_machine
+        
+        argsDict = {
+            "experimentName": exp_name,
+            "filePath": filepath,
+            "qmap": f"{qmap_file}",
+            "analysisMachine": machine_name,
+            "gpuID": gpuID,
+            "demand": "True",
+            "type": analysis_type,
+            "downloadDirectory": f"/home/8-id-i/{cycle_name}/{exp_name}/{analysis_type}/" 
+        }
 
         job = workflowProcApi.startProcessingJob(
             dmuser, f"{workflow_name}", argsDict=argsDict
